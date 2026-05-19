@@ -7,7 +7,7 @@ const Uploadbudget = () => {
   // ──  original state ──────────────────────────────────────────
   const [user, SetUser] = useState({})
   // for our everchanging endpoint
-  const bsaeUrl="http://127.0.0.1:5000"
+  const baseUrl="https://financial-backend-ps2l.onrender.com"
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user")
@@ -35,8 +35,7 @@ const Uploadbudget = () => {
   useEffect(() => {
     const fetchBudget = async () => {
       try {
-        const response = await axios.get(
-          "/api/get_spendings",
+        const response = await axios.get(baseUrl + "/api/get_spendings",
           { headers: { Authorization: `Bearer ${token}` } }
         )
         const data = response.data
@@ -94,9 +93,7 @@ const Uploadbudget = () => {
     setLoading(isUpdate ? "Updating your budget..." : "Adding your budget...")
 
     try {
-      const response = await axios.post(bsaeUrl +
-        "/api/upload_budget",
-        { amount_limit, month },
+      const response = await axios.post(baseUrl +"/api/upload_budget",{ amount_limit, month },
         { headers: { Authorization: `Bearer ${token}` } }
       )
       setLoading("")
