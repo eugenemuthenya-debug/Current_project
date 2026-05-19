@@ -7,7 +7,7 @@ const Uploadbudget = () => {
   // ──  original state ──────────────────────────────────────────
   const [user, SetUser] = useState({})
   // for our everchanging endpoint
-  const bsaeUrl="http://127.0.0.1:5000/api"
+  const bsaeUrl="http://127.0.0.1:5000"
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user")
@@ -36,7 +36,7 @@ const Uploadbudget = () => {
     const fetchBudget = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:5000/api/get_spendings",
+          "/api/get_spendings",
           { headers: { Authorization: `Bearer ${token}` } }
         )
         const data = response.data
@@ -95,7 +95,7 @@ const Uploadbudget = () => {
 
     try {
       const response = await axios.post(bsaeUrl +
-        "/upload_budget",
+        "/api/upload_budget",
         { amount_limit, month },
         { headers: { Authorization: `Bearer ${token}` } }
       )

@@ -24,7 +24,7 @@ import os
 from datetime import timedelta
 # to prevent brute force attacks,we can set a limit on how many times user can attempt to login within a certain time frame
 # we first need to install flask-limiter via pip install flask-limiter
-# from flask_limiter import Limiter
+from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
 
@@ -33,11 +33,11 @@ app = Flask(__name__)
 CORS(app)
 
 # to prevent brute force attacks
-# limiter = Limiter(
-#     get_remote_address,
-#     app=app,
-#     default_limits=["200 per day"]
-# )
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["200 per day"]
+)
 
 # Load secret key from environment variable for jwt in order for us to use them
 # but for now we are using localhost
@@ -50,22 +50,22 @@ bcrypt  = Bcrypt(app)
 
 # # we can configure our db and set all requrements necessary for the connection and store it under a variable
 # # it is inform of key value pair (dictionry)
-DB_CONFIG ={
-    "host":"localhost",
-    "user":"root",
-    "password":"",
-    "database":"mindgame_financial_system"}
+# DB_CONFIG ={
+#     "host":"localhost",
+#     "user":"root",
+#     "password":"",
+#     "database":"mindgame_financial_system"}
     
 
 
 # Single DB config using environment variables — no hardcoding
 # now tht always data doesn't work,we use render but the db lives inside alwaysdata
-# DB_CONFIG = {
-#     "host":     os.environ.get("DB_HOST"),
-#     "user":     os.environ.get("DB_USER"),
-#     "password": os.environ.get("DB_PASSWORD"),
-#     "database": os.environ.get("DB_NAME")
-# }
+DB_CONFIG = {
+    "host":     os.environ.get("DB_HOST"),
+    "user":     os.environ.get("DB_USER"),
+    "password": os.environ.get("DB_PASSWORD"),
+    "database": os.environ.get("DB_NAME")
+}
 
 # dict cursor=false:makes the result come bck as key value pair instead of a list 
 # 1.we definr our get db cred function and we can re use it in every route tht requires it
@@ -84,7 +84,7 @@ def get_db(dict_cursor=False):
 
 # -----------Register--------------------[success]
 @app.route("/api/signup", methods=["POST"])
-# @limiter.limit("5 per minute")
+@limiter.limit("5 per minute")
 def signup():
 
     data = request.get_json()
@@ -148,7 +148,7 @@ def signup():
 
 # -----------Login--------------------[success]
 @app.route("/api/signin", methods=["POST"])
-# @limiter.limit("10 per minute")  # prevent password guessing
+@limiter.limit("10 per minute")  # prevent password guessing
 # we use json since its modern and handles complex data
 # request-->gets everything sent from react 
 # .get_json-->converts it into python dictionary for easy processing since our backend is python

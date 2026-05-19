@@ -15,7 +15,7 @@ const Signup = () => {
   // navigate function-->directs you to signin after creating your account
   const navigate = useNavigate()
   // incase we change our endpoint
-  const baseUrl="http://127.0.0.1:5000/api"
+  const baseUrl="http://127.0.0.1:5000"
 
   // messages for interactivity to remain with user
   const [error,   setError]   = useState("")
@@ -91,7 +91,7 @@ const Signup = () => {
       // axios --> library that helps make HTTP requests to our API
       // await --> waits for response before continuing
       const response = await axios.post(baseUrl +
-        "/signup", 
+        "/api/signup", 
         { username, email, phone, password }
       )
 
