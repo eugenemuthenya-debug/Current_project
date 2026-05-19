@@ -58,7 +58,7 @@ const Navbar = () => {
               <span style={N.welcome}>👋 {user.username}</span>
               <Link to="/dashboard"    className="nav-link-item active">Home</Link>
               <Link to="/addexpense"   className="nav-link-item">Add Expense</Link>
-              <Link to="/uploadbudget" className="nav-link-item">Upload Budget</Link>
+              <Link to="/uploadbudget" className="nav-link-item">Add Budget</Link>
               <Link to="/signin" onClick={logout} className="nav-link-item logout">Log out</Link>
             </>
           ) : (

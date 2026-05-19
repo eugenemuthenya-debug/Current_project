@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 import { Link, useNavigate } from 'react-router-dom'
 import Navbar from './Navbar'
-import API from '../api'
+
 
 const Signin = () => {
 
@@ -12,7 +13,9 @@ const Signin = () => {
   const [error,    setError]    = useState("")
   // navigate is used to navigate from one page to another with or without data
   const navigate = useNavigate()
-  // incase we need to change our base url from time to time we can create a function for it and call it in the submit function
+  const baseUrl="http://127.0.0.1:5000/api"
+  // incase we need to change our base url from time to time we can create a const for it and join with our endpoint
+  
   
 
   // ──  submit function when the user has filed the form,and when they press the submit btn,all of this is the logic behind it
@@ -23,7 +26,7 @@ const Signin = () => {
     setError("")
     setLoading("Please wait while we sign you in...")
     try {
-      const response = await API.post("/signin",{ email: email, password: password })
+      const response = await axios.post(baseUrl +"/signin",{ email: email, password: password })
         
       setLoading("")
       if (response.data.token) {

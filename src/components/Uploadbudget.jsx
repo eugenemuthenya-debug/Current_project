@@ -4,8 +4,10 @@ import axios from 'axios'
 
 const Uploadbudget = () => {
 
-  // ── Your original state, untouched ──────────────────────────────────────────
+  // ──  original state ──────────────────────────────────────────
   const [user, SetUser] = useState({})
+  // for our everchanging endpoint
+  const bsaeUrl="http://127.0.0.1:5000/api"
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user")
@@ -92,8 +94,8 @@ const Uploadbudget = () => {
     setLoading(isUpdate ? "Updating your budget..." : "Adding your budget...")
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:5000/api/upload_budget",
+      const response = await axios.post(bsaeUrl +
+        "/upload_budget",
         { amount_limit, month },
         { headers: { Authorization: `Bearer ${token}` } }
       )

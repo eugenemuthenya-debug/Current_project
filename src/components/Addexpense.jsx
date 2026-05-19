@@ -9,6 +9,8 @@ const Addexpense = () => {
 
   // ──  state ──────────────────────────────────────────
   const [user, setUser] = useState({});
+  // for our everchanging endpoint
+  const baseUrl="http://127.0.0.1:5000/api"
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -40,8 +42,8 @@ const Addexpense = () => {
     setError(""); setSuccess("");
     setLoading("Please wait while we add your expense...");
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:5000/api/add_expenses",
+      const response = await axios.post(baseUrl +
+        "/add_expenses",
         { description, amount, category_name: spending },
         { headers: { Authorization: `Bearer ${token}` } }
       );
