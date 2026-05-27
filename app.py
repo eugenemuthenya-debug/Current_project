@@ -21,7 +21,7 @@ from flask_jwt_extended import (
 )
 import pymysql
 import os
-from datetime import timedelta
+# from datetime import timedelta
 # to prevent brute force attacks,we can set a limit on how many times user can attempt to login within a certain time frame
 # we first need to install flask-limiter via pip install flask-limiter
 from flask_limiter import Limiter
@@ -43,7 +43,7 @@ limiter = Limiter(
 # but for now we are using localhost
 app.config["JWT_SECRET_KEY"] = "super-secret-key"
 # incase it is stolen it won't last forever
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=1)
+# app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=1)
 
 jwt     = JWTManager(app)
 bcrypt  = Bcrypt(app)
@@ -386,5 +386,5 @@ def upload_budget():
 #     finally:
 #         connection.close()
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)
