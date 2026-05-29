@@ -1,6 +1,7 @@
 import { useState } from "react"
 import Navbar from "./Navbar"
 import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 const Signup=()=>{
   // our hooks for user data
@@ -15,6 +16,7 @@ const Signup=()=>{
   const[error,setError]=useState()
   const[loading,setLoading]=useState()
   const[success,setSuccess]=useState()
+  const navigate=useNavigate()
 
   const submit=async (e)=>{
     // we prevent the page reloding
@@ -23,10 +25,20 @@ const Signup=()=>{
      setError("")
      setSuccess("")
      setLoading("")
+    //  --------password checker------
+    // we need a function that checks our passwords----
+    const pwdcheck =(pwd)=>{
+      // properties that we want it to check
+      
+    }
 
-    //  our request is sent
+    //  --------our request is sent---------
     const response=await axios.post(baseUrl + "/signup")
+
+      
     
+    setSuccess()
+
   }
 
   return(
