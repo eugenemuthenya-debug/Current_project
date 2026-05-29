@@ -8,6 +8,7 @@ Flask-Bcrypt==1.0.1
 flask-cors==6.0.2
 Flask-JWT-Extended==4.7.4
 Flask-Limiter==4.1.1
+gunicorn==26.0.0
 itsdangerous==2.2.0
 Jinja2==3.1.6
 limits==5.8.0
