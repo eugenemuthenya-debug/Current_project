@@ -21,7 +21,7 @@ from flask_jwt_extended import (
 )
 import pymysql
 import os
-# from datetime import timedelta
+from datetime import timedelta
 # to prevent brute force attacks,we can set a limit on how many times user can attempt to login within a certain time frame
 # we first need to install flask-limiter via pip install flask-limiter
 from flask_limiter import Limiter
@@ -43,29 +43,29 @@ limiter = Limiter(
 # but for now we are using localhost
 app.config["JWT_SECRET_KEY"] = "super-secret-key"
 # incase it is stolen it won't last forever
-# app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=1)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=1)
 
 jwt     = JWTManager(app)
 bcrypt  = Bcrypt(app)
 
 # # we can configure our db and set all requrements necessary for the connection and store it under a variable
 # # it is inform of key value pair (dictionry)
-# DB_CONFIG ={
-#     "host":"localhost",
-#     "user":"root",
-#     "password":"",
-#     "database":"mindgame_financial_system"}
+DB_CONFIG ={
+    "host":"localhost",
+    "user":"root",
+    "password":"",
+    "database":"mindgame_financial_system"}
     
 
 
 # Single DB config using environment variables — no hardcoding
 # now tht always data doesn't work,we use render but the db lives inside alwaysdata
-DB_CONFIG = {
-    "host":     os.environ.get("DB_HOST"),
-    "user":     os.environ.get("DB_USER"),
-    "password": os.environ.get("DB_PASSWORD"),
-    "database": os.environ.get("DB_NAME")
-}
+# DB_CONFIG = {
+#     "host":     os.environ.get("DB_HOST"),
+#     "user":     os.environ.get("DB_USER"),
+#     "password": os.environ.get("DB_PASSWORD"),
+#     "database": os.environ.get("DB_NAME")
+# }
 
 # dict cursor=false:makes the result come bck as key value pair instead of a list 
 # 1.we definr our get db cred function and we can re use it in every route tht requires it
@@ -92,7 +92,7 @@ def signup():
 
     # we use get method to avoid key error if any of the fields are missing
     # and we also strip whitespace from the inputs
-    username = data.get("username", "").strip()
+    username = data.get("username", "").strip().lower()
     password = data.get("password", "").strip()
     email    = data.get("email",    "").strip().lower()
     phone    = data.get("phone",    "").strip()
@@ -148,7 +148,7 @@ def signup():
 
 # -----------Login--------------------[success]
 @app.route("/api/signin", methods=["POST"])
-@limiter.limit("10 per minute")  # prevent password guessing
+@limiter.limit("5 per minute")  # prevent password guessing
 # we use json since its modern and handles complex data
 # request-->gets everything sent from react 
 # .get_json-->converts it into python dictionary for easy processing since our backend is python
@@ -386,5 +386,5 @@ def upload_budget():
 #     finally:
 #         connection.close()
 
-# if __name__ == "__main__":
-#     app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)

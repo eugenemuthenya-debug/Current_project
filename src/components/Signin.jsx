@@ -11,10 +11,20 @@ const Signin = () => {
   const [password, setPassword] = useState("")
   const [loading,  setLoading]  = useState("")
   const [error,    setError]    = useState("")
+  const [showPassword,setshowPassword]=useState(false)
+  
+  // false-->means everytime the field password stays hidden
   // navigate is used to navigate from one page to another with or without data
   const navigate = useNavigate()
+
+  const BaseUrl="http://127.0.0.1:5000/api"
   const baseUrl="https://financial-backend-ps2l.onrender.com/api"
   // incase we need to change our base url from time to time we can create a const for it and join with our endpoint
+
+  // the user to be able to toggle a button so they can view their password
+  // 1.create a const for showing the password
+  // 2.install and use bootstrao icons using npm i bootstrap-icons
+  // 3.import it in index.js (import "bootstrap-icons/font/bootstrap-icons.css")
   
   
 
@@ -26,7 +36,7 @@ const Signin = () => {
     setError("")
     setLoading("Please wait while we sign you in...")
     try {
-      const response = await axios.post(baseUrl +"/signin",{ email: email, password: password })
+      const response = await axios.post(BaseUrl +"/signin",{ email: email, password: password })
         
       setLoading("")
       if (response.data.token) {
@@ -133,12 +143,29 @@ const Signin = () => {
             <div style={{ ...S.fieldGroup, marginBottom: "1.5rem" }}>
               <label style={S.label}>Password</label>
               <input
-                type="password"
+                type={showPassword ? "text":"password"}
+                // this means tht when the showPassword is true,it will be visible and it will be a text input field and if flase,it will be a password input field & it will be hidden.
                 placeholder="••••••••"
                 className="signin-input"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+              />
+              {/* we create the eye logo/clickable */}
+              <i
+              className={showPassword ? "bi bi-eye-slash":"bi bi-eye"}
+              // every click flips the state
+              // if showPassword =false then when click,!showPassword=ture(if not false-->true)
+              onClick={()=>setshowPassword(!showPassword)}
+              style={{
+                position:"absolute",
+                right: "145px",
+                top: "68%",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+                fontSize: "18px"
+
+              }}
               />
             </div>
 

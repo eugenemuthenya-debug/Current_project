@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import {  Link ,NavLink } from 'react-router-dom'
 
 const Navbar = () => {
   // ── Your original logic, untouched ──────────────────────────────────────────
@@ -56,10 +56,19 @@ const Navbar = () => {
           {user ? (
             <>
               <span style={N.welcome}>👋 {user.username}</span>
-              <Link to="/dashboard"    className="nav-link-item active">Home</Link>
-              <Link to="/addexpense"   className="nav-link-item">Add Expense</Link>
-              <Link to="/uploadbudget" className="nav-link-item">Add Budget</Link>
-              <Link to="/signin" onClick={logout} className="nav-link-item logout">Log out</Link>
+              <NavLink to="/dashboard"    
+              className={({ isActive})=>
+              isActive ? "nav-link-item active" :
+              "nav-link-item"}>Home</NavLink>
+
+              <NavLink to="/addexpense"   
+              className={({ isActive})=>
+              isActive ? "nav-link-item active"
+              :"nav-link-item"}>Add Expense</NavLink>
+
+              <NavLink to="/uploadbudget" className="nav-link-item">Add Budget</NavLink>
+              
+              <NavLink to="/signin" onClick={logout} className="nav-link-item logout">Log out</NavLink>
             </>
           ) : (
             <>

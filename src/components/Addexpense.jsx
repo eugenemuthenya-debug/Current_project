@@ -3,14 +3,16 @@ import Navbar from './Navbar';
 import axios from 'axios';
 
 // Common spending categories for the quick-pick chips
+// this are predefined,they will be used later
 const CATEGORIES = ["Food", "Transport", "Rent", "Groceries", "Utilities", "Entertainment", "Health", "Other"];
 
+// main function
 const Addexpense = () => {
 
   // ──  state ──────────────────────────────────────────
   const [user, setUser] = useState({});
   // for our everchanging endpoint
-  // const baseUrl="https://financial-backend-ps2l.onrender.com"
+  const baseUrl="https://financial-backend-ps2l.onrender.com"
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -32,7 +34,7 @@ const Addexpense = () => {
   const [success,     setSuccess]     = useState("");
   const token = localStorage.getItem("token");
 
-  // ── original submit ─────────────────────────────────────────
+  // ──  submit ─────────────────────────────────────────
   const submit = async (e) => {
     e.preventDefault();
     if (Number(amount) <= 0) {
