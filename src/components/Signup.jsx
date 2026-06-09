@@ -27,10 +27,16 @@ const Signup=()=>{
      setLoading("")
     //  --------password checker------
     // we need a function that checks our passwords----
-    const pwdcheck =(pwd)=>{
+    const pwdcheck =(pwd)=>(
+      {
       // properties that we want it to check
-      
+      length : pwd.length> 8,
+      uppercase: /[A-z]/,
+      lowercase: /[a-z]/,
+      number: /[0-9]/,
+      special: /[^A-]/
     }
+    )
 
     //  --------our request is sent---------
     const response=await axios.post(baseUrl + "/signup")
