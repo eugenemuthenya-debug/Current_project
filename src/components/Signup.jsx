@@ -11,6 +11,7 @@ const Signup = () => {
   const [password, setPassword] = useState("")
   const [email,    setEmail]    = useState("")
   const [phone,    setPhone]    = useState("")
+  const [showPassword, setshowPassword] =useState(false)
 
   // navigate function-->directs you to signin after creating your account
   const navigate = useNavigate()
@@ -239,13 +240,27 @@ const Signup = () => {
             <div style={S.field}>
               <label style={S.label}>Password</label>
               <input
-                type="password"
+                type={showPassword ? "text":"password"}
                 placeholder="••••••••"
                 required
                 className="sup-input"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+
+              {/* eye icon/show password icon */}
+              <i
+              className={showPassword ? "bi bi-eye-slash":"bi bi-eye"}
+              // now we create the onclick listener
+              onClick={()=>setshowPassword(!showPassword)}
+              style={{
+                position:"absolute",
+                right: "145px",
+                top: "82%",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+                fontSize: "18px"
+              }}/>
 
               {/* Password strength checker — only shows when user starts typing */}
               {password.length > 0 && (
