@@ -256,7 +256,7 @@ const Signup = () => {
               style={{
                 position:"absolute",
                 right: "145px",
-                top: "82%",
+                top: "96%",
                 transform: "translateY(-50%)",
                 cursor: "pointer",
                 fontSize: "18px"
