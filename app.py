@@ -20,6 +20,8 @@ from flask_jwt_extended import (
     get_jwt_identity
 )
 import pymysql
+import re
+# re-->regular expression
 import os
 from datetime import timedelta
 # to prevent brute force attacks,we can set a limit on how many times user can attempt to login within a certain time frame
@@ -50,22 +52,22 @@ bcrypt  = Bcrypt(app)
 
 # # we can configure our db and set all requrements necessary for the connection and store it under a variable
 # # it is inform of key value pair (dictionry)
-DB_CONFIG ={
-    "host":"localhost",
-    "user":"root",
-    "password":"",
-    "database":"mindgame_financial_system"}
+# DB_CONFIG ={
+#     "host":"localhost",
+#     "user":"root",
+#     "password":"",
+#     "database":"mindgame_financial_system"}
     
 
 
 # Single DB config using environment variables — no hardcoding
 # now tht always data doesn't work,we use render but the db lives inside alwaysdata
-# DB_CONFIG = {
-#     "host":     os.environ.get("DB_HOST"),
-#     "user":     os.environ.get("DB_USER"),
-#     "password": os.environ.get("DB_PASSWORD"),
-#     "database": os.environ.get("DB_NAME")
-# }
+DB_CONFIG = {
+    "host":     os.environ.get("DB_HOST"),
+    "user":     os.environ.get("DB_USER"),
+    "password": os.environ.get("DB_PASSWORD"),
+    "database": os.environ.get("DB_NAME")
+}
 
 # dict cursor=false:makes the result come bck as key value pair instead of a list 
 # 1.we definr our get db cred function and we can re use it in every route tht requires it
@@ -100,6 +102,14 @@ def signup():
     # 1. check empty form fields first
     if not all([username, password, email, phone]):
         return jsonify({"error": "All fields are required"}), 400
+    
+    # to make sure the email is written in full
+    email_pattern=r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
+    if not re.match(email_pattern,email):
+        return jsonify({"error":"Invalid email address"}),400
+      
+    #  to ensure only allowed doamin 
+
 
     # 2. validate lengths — industry standard limits
     if len(username) > 30:
