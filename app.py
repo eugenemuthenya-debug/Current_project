@@ -108,7 +108,12 @@ def signup():
     if not re.match(email_pattern,email):
         return jsonify({"error":"Invalid email address"}),400
       
-    #  to ensure only allowed doamin 
+    #  to ensure only allowed doamins are accepted
+    
+    allowed_domains=["gmail.com", "yahoo.com", "outlook.com"]
+    domain=email.split("@")[1]
+    if domain not in allowed_domains :
+        return jsonify({"error": "Unsupported email provider"}), 400
 
 
     # 2. validate lengths — industry standard limits
