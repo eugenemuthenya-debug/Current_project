@@ -7,6 +7,8 @@ import Signin from './components/Signin';
 import Addexpense from './components/Addexpense';
 import Uploadbudget from './components/Uploadbudget';
 import Dashboard from './components/Dashboard';
+import Verifyemail from './components/Verifyemail';
+
 
 function App() {
   return (
@@ -18,6 +20,7 @@ function App() {
         <Route path='/addexpense' element={<Addexpense/>}/>
         <Route path='/uploadbudget' element={<Uploadbudget/>}/>
         <Route path='/dashboard' element={<Dashboard/>}/>
+        <Route path='/verify_email' element={<Verifyemail/>}/>
       </Routes>
     </Router>
   );

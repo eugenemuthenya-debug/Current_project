@@ -107,6 +107,13 @@ const Signup = () => {
       // catches the success message from flask and displays it
       setSuccess(response.data.message);
 
+      // redirect to verification page
+      navigate("/verify_email", {
+        state:{
+          email:response.data.email
+        }
+      })
+
       // clear form after successful submission
       setUsername("");
       setEmail("");

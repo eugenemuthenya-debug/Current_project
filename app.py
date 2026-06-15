@@ -20,11 +20,18 @@ from flask_jwt_extended import (
     get_jwt_identity
 )
 import pymysql
+# for generating otp
+import random
 import re
 # re-->regular expression
 import os
-from datetime import timedelta
+from datetime import timedelta , datetime
 # to prevent brute force attacks,we can set a limit on how many times user can attempt to login within a certain time frame
+# email verification code
+# 1. we import the library by using pip install flask-mail
+from flask_mail import Mail
+# now this sends the otp email
+from flask_mail import Message
 # we first need to install flask-limiter via pip install flask-limiter
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -41,12 +48,33 @@ limiter = Limiter(
     default_limits=["200 per day"]
 )
 
+
+
+
+# mail server app configuration
+# we tell our app which outgoing gmail server to use
+app.config['MAIL_SERVER']='smtp.gmail.com'
+
+# now we give it gmail's secure port
+app.config['MAIL_PORT']= 587
+
+# we encrypt our connection to the gmail port and server using tls,without it our connection to the server can easily be intercepted
+app.config['MAIL_USE_TLS']= True
+
+# now we give it the gmail of our website tht sends the mail,the users will see its from our website 
+app.config['MAIL_USERNAME'] ="Pesawazi@gmail.com"
+
+# our password
+app.config[MAIL_PASSWORD]= "foba xqky yzpe wafx"
+
+
 # Load secret key from environment variable for jwt in order for us to use them
 # but for now we are using localhost
 app.config["JWT_SECRET_KEY"] = "super-secret-key"
 # incase it is stolen it won't last forever
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=1)
 
+mail = Mail(app)
 jwt     = JWTManager(app)
 bcrypt  = Bcrypt(app)
 
@@ -135,6 +163,12 @@ def signup():
     # wiht .decode(utf-8):we deciode the encryted pass
     hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
 
+    # our container holding our otp
+    # this generates a random otp btw the range given and it needs to be a string
+    otp=str(random.randint(100000,999999))
+    # datetime.now-->genertates the current date and time and the otp is given 5 minutes to be alive
+    expiry = datetime.now() + timedelta(minutes=5)
+
     connection, cursor = get_db()
     try:
         # Check if record already exists
@@ -148,15 +182,82 @@ def signup():
             # figuring out which emails/usernames are registered
             return jsonify({"error": "Email or Username already registered"}), 409
 
-        sql = "INSERT INTO user_table(username, password, email, phone) VALUES (%s, %s, %s, %s)"
-        cursor.execute(sql, (username, hashed_password, email, phone))
+        sql = "INSERT INTO user_table(username, password, email, phone,is_verified,verification_code,verification_expiry) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        cursor.execute(sql, (username, hashed_password, email, phone,False,otp,expiry))
         connection.commit()
-        return jsonify({"message": "Thank you for joining"}), 201
+        # create the message
+        msg = Message("Verify Your Email",
+                      recipients=[email]
+                      )
+        msg.body =  f"""
+        Hello {username},
+
+        Your verification code is:
+
+        {otp}
+
+        This code expires in 5 minutes.
+
+        Pesa Wazi Team
+        """
+        mail.send(msg)
+
+        return jsonify({"message": "Account creaated.Check your email for the verification code."}), 201
 
     except Exception as e:
         print("Signup error:", str(e))   # we see it in logs, user doesn't
         return jsonify({"error": "Something went wrong. Please try again."}), 500
 
+    finally:
+        connection.close()
+
+
+
+# -----------Verification Endpoint--------------------[success]
+@app.route('/api/verify-email', methods=['POST'])
+def verify_email():
+    data = request.get_json()
+
+    email = data.get("email")
+    code = data.get("code")
+
+    connection, cursor = get_db(dict_cursor=True)
+
+    try:
+         cursor.execute(
+         """
+         SELECT *
+        FROM user_table
+        WHERE email=%s
+        """,(email,)
+    )
+         
+         user = cursor.fetchone()
+
+         if not user:
+             return jsonify ({"error":"User not found"}),404
+         
+         if user["verification_code"] != code :
+             return jsonify({"error":"Invalid code"}),400
+
+         cursor.execute(
+             
+              """
+            UPDATE user_table
+            SET is_verified=TRUE,
+                verification_code=NULL,
+                verification_expiry=NULL
+            WHERE email=%s
+            """,
+            (email,)
+             
+         ) 
+         connection.commit()
+         return jsonify({
+             "message":"Account created.Check your email.",
+             "email":email
+         }),201
+    
     finally:
         connection.close()
 
