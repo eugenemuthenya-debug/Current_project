@@ -12,7 +12,7 @@ const Verifyemail=  ()=>{
 
     // Data tht we need
     const [code,setCode]=useState("")
-    const baseUrl=""
+    const baseUrl="https://financial-backend-ps2l.onrender.com/api"
 
     const email=location.state?.email
 
