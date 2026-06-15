@@ -108,7 +108,7 @@ const Signup = () => {
       setSuccess(response.data.message);
 
       // redirect to verification page
-      navigate("/verify_email", {
+      navigate("/verify-email", {
         state:{
           email:response.data.email
         }
