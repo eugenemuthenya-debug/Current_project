@@ -65,7 +65,7 @@ app.config['MAIL_USE_TLS']= True
 app.config['MAIL_USERNAME'] ="Pesawazi@gmail.com"
 
 # our password
-app.config[MAIL_PASSWORD]= "foba xqky yzpe wafx"
+app.config['MAIL_PASSWORD']= "foba xqky yzpe wafx"
 
 
 # Load secret key from environment variable for jwt in order for us to use them

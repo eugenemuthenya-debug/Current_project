@@ -26,7 +26,7 @@ const Verifyemail=  ()=>{
         setLoading("Verifying your email...")
         // send request to flask
        try {
-         const response= axios.post( baseUrl +" /verify-email",{
+         const response= axios.post( baseUrl + "/verify-email",{
             email,
             code
         } )
