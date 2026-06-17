@@ -20,7 +20,7 @@ function App() {
         <Route path='/addexpense' element={<Addexpense/>}/>
         <Route path='/uploadbudget' element={<Uploadbudget/>}/>
         <Route path='/dashboard' element={<Dashboard/>}/>
-        <Route path='/verify_email' element={<Verifyemail/>}/>
+        <Route path='/verifyemail' element={<Verifyemail/>}/>
       </Routes>
     </Router>
   );
