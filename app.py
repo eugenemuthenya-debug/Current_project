@@ -53,19 +53,18 @@ limiter = Limiter(
 
 # mail server app configuration
 # we tell our app which outgoing gmail server to use
-app.config['MAIL_SERVER']='smtp.gmail.com'
-
+app.config['MAIL_SERVER']=os.environ.get('MAIL_SERVER')
 # now we give it gmail's secure port
-app.config['MAIL_PORT']= 587
+app.config['MAIL_PORT']= int(os.environ.get('MAIL_PORT',587))
 
 # we encrypt our connection to the gmail port and server using tls,without it our connection to the server can easily be intercepted
-app.config['MAIL_USE_TLS']= True
+app.config['MAIL_USE_TLS']=os.environ.get('MAIL_USE_TLS')=='True'
 
 # now we give it the gmail of our website tht sends the mail,the users will see its from our website 
-app.config['MAIL_USERNAME'] ="Pesawazi@gmail.com"
+app.config['MAIL_USERNAME'] =os.environ.get('MAIL_USERNAME')
 
 # our password
-app.config['MAIL_PASSWORD']= "foba xqky yzpe wafx"
+app.config['MAIL_PASSWORD']= os.environ.get('MAIL_PASSWORD')
 
 
 # Load secret key from environment variable for jwt in order for us to use them
