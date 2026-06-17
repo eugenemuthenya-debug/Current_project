@@ -27,7 +27,7 @@ const Verifyemail=  ()=>{
         // send request to flask
        try {
          const response= axios.post( baseUrl + "/verify-email",{
-            email,
+            // email,
             code
         } )
         setLoading("")
@@ -53,46 +53,37 @@ const Verifyemail=  ()=>{
     
     
 
-    return(
-        <div className="container mt-5">
+    return (
+      <div className="container mt-5">
+        <h2>Verify Email</h2>
 
-      <h2>Verify Email</h2>
+        <p>
+          Enter the 6 digit code sent to:
+          <strong> {email}</strong>
+        </p>
 
-      <p>
-        Enter the 6 digit code sent to:
-        <strong> {email}</strong>
-      </p>
+        <h5 className="text-danger">{error}</h5>
+        <h5 className="text-success">{success}</h5>
+        <h5 className="text-info">{loading}</h5>
 
-      <h5 className="text-danger">{error}</h5>
-      <h5 className="text-success">{success}</h5>
-      <h5 className="text-info">{loading}</h5>
+        <form onSubmit={submit}>
+          <input
+            type="text"
+            maxLength="6"
+            className="form-control"
+            placeholder="123456"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+          />
 
-      <form onSubmit={submit}>
+          <br />
 
-        <input
-          type="text"
-          maxLength="6"
-          className="form-control"
-          placeholder="123456"
-          value={code}
-          onChange={(e)=>setCode(e.target.value)}
-        />
-
-        <br />
-
-        <button
-          type="submit"
-          className="btn btn-primary"
-        >
-          Verify
-        </button>
-
-      </form>
-
+          <button type="submit" className="btn btn-primary">
+            Verify
+          </button>
+        </form>
       </div>
-
-        
-    )
+    );
 
 }
 
