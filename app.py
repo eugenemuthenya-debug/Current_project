@@ -27,11 +27,13 @@ import re
 import os
 from datetime import timedelta , datetime
 # to prevent brute force attacks,we can set a limit on how many times user can attempt to login within a certain time frame
+
 # email verification code
 # 1. we import the library by using pip install flask-mail
 from flask_mail import Mail
 # now this sends the otp email
 from flask_mail import Message
+
 # we first need to install flask-limiter via pip install flask-limiter
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -48,21 +50,15 @@ limiter = Limiter(
     default_limits=["200 per day"]
 )
 
-
-
-
 # mail server app configuration
 # we tell our app which outgoing gmail server to use
 app.config['MAIL_SERVER']=os.environ.get('MAIL_SERVER')
 # now we give it gmail's secure port
 app.config['MAIL_PORT']= int(os.environ.get('MAIL_PORT',587))
-
 # we encrypt our connection to the gmail port and server using tls,without it our connection to the server can easily be intercepted
 app.config['MAIL_USE_TLS']=os.environ.get('MAIL_USE_TLS')=='True'
-
 # now we give it the gmail of our website tht sends the mail,the users will see its from our website 
 app.config['MAIL_USERNAME'] =os.environ.get('MAIL_USERNAME')
-
 # our password
 app.config['MAIL_PASSWORD']= os.environ.get('MAIL_PASSWORD')
 
