@@ -132,6 +132,7 @@ const Signup = () => {
         setError("Network error. Please check your connection");
       }
     }
+    console.log("error is",error)
   };
 
   // ── UI ─────────────────────────────────────────────────────────────────────
