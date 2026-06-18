@@ -52,15 +52,15 @@ limiter = Limiter(
 
 # mail server app configuration
 # we tell our app which outgoing gmail server to use
-app.config['MAIL_SERVER']="smtp.gmail.com"
+app.config['MAIL_SERVER']=os.environ.get("MAIL_SERVER")
 # now we give it gmail's secure port
 app.config['MAIL_PORT']= int(os.environ.get('MAIL_PORT',587))
 # we encrypt our connection to the gmail port and server using tls,without it our connection to the server can easily be intercepted
 app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS', 'true').strip().lower() in ['true', '1', 'yes']
 # now we give it the gmail of our website tht sends the mail,the users will see its from our website 
-app.config['MAIL_USERNAME'] ="Pesawazi@gmail.com"
+app.config['MAIL_USERNAME'] =os.environ.get('MAIL_USERNAME')
 # our password
-app.config['MAIL_PASSWORD']="foba xqky yzpe wafx"
+app.config['MAIL_PASSWORD']=os.environ.get('MAIL_PASSWORD')
 
 # this is to check if the credentials are being passed and we found out that they aren't
 print("MAIL_SERVER:",app.config['MAIL_SERVER'])
@@ -187,32 +187,41 @@ def signup():
         sql = "INSERT INTO user_table(username, password, email, phone,is_verified,verification_code,verification_expiry) VALUES (%s, %s, %s, %s, %s, %s, %s)"
         cursor.execute(sql, (username, hashed_password, email, phone,False,otp,expiry))
         connection.commit()
+
         # create the message
-        msg = Message("Verify Your Email",
+        msg = Message("Verify your Email",
                       recipients=[email]
                       )
-        msg.body =  f"""
-        Hello {username},
+        msg.body= f"""
+          Hello {username},
 
-        Your verification code is:
+          Your verification code is;
 
-        {otp}
+          {otp}
 
-        This code expires in 5 minutes.
+          This code expires in 5 minutes.
 
-        Pesa Wazi Team
+          Pesa Wazi Team 
         """
-        mail.send(msg)
+        try:
+            mail.send(msg)
+            return jsonify({"message":"Account cretaed check your email for the verificatin code"})
+        
+        except Exception as e:
+         
+         import traceback
+         print(traceback.format_exc())
 
-        return jsonify({"message": "Account creaated.Check your email for the verification code."}), 201
+         return jsonify({"error":"Account cretaed but verification email could not be sent"}),500
 
     except Exception as e:
-        print("Signup error:", str(e))   # we see it in logs, user doesn't
-        return jsonify({"error": "Something went wrong. Please try again."}), 500
 
+        print("Signup error:", repr(e))   # we see it in logs, user doesn't
+        return jsonify({"error": "Something went wrong. Please try again."}), 500
+    
     finally:
         connection.close()
-
+    
 
 
 # -----------Verification Endpoint--------------------[success]
