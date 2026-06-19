@@ -175,7 +175,8 @@ def signup():
                 username=username
             )
 
-            return({"message":"Verification code sent to your email."}),201
+            return({"message":"Verification code sent to your email.",
+                    "email":email}),201
         except Exception as e:
             print("Resnd error",repr(e))
             return({"error":"Account creted but verification email could not be sent"}),500
@@ -280,7 +281,7 @@ def verify_email():
          connection.commit()
          return jsonify({
              "message":"Account created.Redirecting to log in .",
-             "email":email
+             
          }),201
     
     finally:
