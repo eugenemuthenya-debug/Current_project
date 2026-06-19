@@ -260,6 +260,41 @@ def smtp_test():
             "time_taken": round(time.time() - start, 2)
         }), 500
     
+# ---------login test-----------
+@app.route("/smtp-login-test")
+def smtp_login_test():
+
+    import smtplib
+
+    try:
+
+        server = smtplib.SMTP(
+            "smtp.gmail.com",
+            587,
+            timeout=10
+        )
+
+        server.starttls()
+
+        server.login(
+            app.config["MAIL_USERNAME"],
+            app.config["MAIL_PASSWORD"]
+        )
+
+        server.quit()
+
+        return jsonify({
+            "success": True,
+            "message": "Login successful"
+        })
+
+    except Exception as e:
+
+        return jsonify({
+            "success": False,
+            "error": repr(e)
+        }), 500    
+    
 
 
 # -----------Verification Endpoint--------------------[success]
