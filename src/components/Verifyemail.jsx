@@ -30,6 +30,7 @@ const Verifyemail=  ()=>{
         email,
         code,
       })
+      console.log(email)
 
       setSuccess(response.data.message)
 
@@ -46,6 +47,8 @@ const Verifyemail=  ()=>{
 
   if (!email) {
     return <p>No email found. Please sign up again.</p>
+
+    
     }
     
 
