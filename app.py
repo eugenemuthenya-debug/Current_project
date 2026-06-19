@@ -59,8 +59,6 @@ resend.api_key=os.environ.get("RESEND_API_KEY")
 jwt     = JWTManager(app)
 bcrypt  = Bcrypt(app)
 
-print("Resned api key=",app.config["RESEND_API_KEY"])
-
 # # we can configure our db and set all requrements necessary for the connection and store it under a variable
 # # it is inform of key value pair (dictionry)
 # DB_CONFIG ={
