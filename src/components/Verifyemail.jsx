@@ -30,7 +30,7 @@ const Verifyemail=  ()=>{
         email,
         code,
       })
-      console.log(email)
+      console.log("Email is",email)
 
       setSuccess(response.data.message)
 

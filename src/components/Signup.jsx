@@ -123,7 +123,11 @@ const Signup = () => {
 
       // redirect to login after 2 seconds — gives user time to read success message
       // setTimeout(() => navigate("/signin"), 2000);
-       setTimeout(()=> navigate("/verifyemail",{state:{email:response.data.email}}),2000);
+      setTimeout(() => {
+      navigate("/verifyemail", {
+      state: { email: response.data.email }
+       });
+      }, 2000);
     } catch (error) {
       setSuccess("");
       setLoading("");
