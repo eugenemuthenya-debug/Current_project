@@ -25,6 +25,7 @@ import random
 import re
 # re-->regular expression
 import os
+import time
 from datetime import timedelta , datetime
 # to prevent brute force attacks,we can set a limit on how many times user can attempt to login within a certain time frame
 
@@ -204,7 +205,10 @@ def signup():
           Pesa Wazi Team 
         """
         try:
+            start = time.time()
             mail.send(msg)
+            end = time.time()
+            print(f"Email sent in {end-start:.2f}seconds")
             return jsonify({"message":"Account cretaed check your email for the verificatin code"})
         
         except Exception as e:
@@ -513,5 +517,5 @@ def upload_budget():
 #     finally:
 #         connection.close()
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)
