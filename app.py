@@ -175,6 +175,7 @@ def signup():
             )
         except Exception as e:
             print("Resnd error",repr(e))
+            return({"error":"Account creted but verification email could not be sent"}),500
 
         
     except Exception as e:
@@ -209,30 +210,30 @@ def send_verification_email(email,otp,username):
 
 # --------test email------------
 
-@app.route("/test_email")
-def test_email():
+# @app.route("/test_email")
+# def test_email():
 
-    try:
-        resend.Emails.send({
-            "from":"onboarding@resend.dev",
-            "to":["eleazermum@gmail.com",
-                  "givensmehta97@gmail.com",
-                  "pesawazi@gmail.com",
-                  "muringemuthenya@gmail.com"],
-            "subject":"Pesa Wazi Test",
-            "text":"Resend is working."
+#     try:
+#         resend.Emails.send({
+#             "from":"onboarding@resend.dev",
+#             "to":["eleazermum@gmail.com",
+#                   "givensmehta97@gmail.com",
+#                   "pesawazi@gmail.com",
+#                   "muringemuthenya@gmail.com"],
+#             "subject":"Pesa Wazi Test",
+#             "text":"Resend is working."
 
             
-        })
+#         })
 
-        return{
-            "success":True
-        }
-    except Exception as e:
-        return{
-            "success":False,
-            "error":repr(e)
-        }
+#         return{
+#             "success":True
+#         }
+#     except Exception as e:
+#         return{
+#             "success":False,
+#             "error":repr(e)
+#         }
 
 # -----------Verification Endpoint--------------------[success]
 @app.route('/api/verify-email', methods=['POST'])
