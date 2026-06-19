@@ -25,7 +25,7 @@ import random
 import re
 # re-->regular expression
 import os
-
+import resend
 from datetime import timedelta , datetime
 # to prevent brute force attacks,we can set a limit on how many times user can attempt to login within a certain time frame
 
@@ -53,10 +53,13 @@ limiter = Limiter(
 app.config["JWT_SECRET_KEY"] = "super-secret-key"
 # incase it is stolen it won't last forever
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=1)
+resend.api_key=os.environ.get("RESEND_API_KEY")
 
 
 jwt     = JWTManager(app)
 bcrypt  = Bcrypt(app)
+
+print("Resned api key=",app.config["RESEND_API_KEY"])
 
 # # we can configure our db and set all requrements necessary for the connection and store it under a variable
 # # it is inform of key value pair (dictionry)
@@ -166,6 +169,15 @@ def signup():
         cursor.execute(sql, (username, hashed_password, email, phone,False,otp,expiry))
         connection.commit()
 
+        try:
+            send_verification_email(
+                email,
+                otp,
+                username
+            )
+        except Exception as e:
+            print("Resnd error",repr(e))
+
         
     except Exception as e:
 
@@ -176,9 +188,50 @@ def signup():
         connection.close()
 
 
+# -------our gmail message using resend-------------
+def send_verification_email(email,otp,username):
+    resend.Emails.send({
+        "from":"onboarding@resend.dev",
+        "to":[email],
+        "subject":"Verify Your Email",
+        "text":f"""
+          Hello {username},
 
+          Your verification code is :
+
+          {otp}
+
+          This code expires in 5 minutes,
+
+          Pesa Wazi Team
+
+         """
+    })
     
 
+# --------test email------------
+
+@app.route("/test_email")
+def test_email():
+
+    try:
+        resend.Emails.send({
+            "from":"onboarding@resend.dev",
+            "to":["eugenemuthenya@gmail.com"],
+            "subject":"Pesa Wazi Test",
+            "text":"Resend is working."
+
+            
+        })
+
+        return{
+            "success":True
+        }
+    except Exception as e:
+        return{
+            "success":False,
+            "error":repr(e)
+        }
 
 # -----------Verification Endpoint--------------------[success]
 @app.route('/api/verify-email', methods=['POST'])
