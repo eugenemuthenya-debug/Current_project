@@ -205,10 +205,9 @@ def signup():
           Pesa Wazi Team 
         """
         try:
-            start = time.time()
+            
             mail.send(msg)
-            end = time.time()
-            print(f"Email sent in {end-start:.2f}seconds")
+           
             return jsonify({"message":"Account cretaed check your email for the verificatin code"})
         
         except Exception as e:
@@ -225,6 +224,41 @@ def signup():
     
     finally:
         connection.close()
+
+
+
+# --------------test gmail route---------------
+@app.route("/smtp-test")
+def smtp_test():
+
+    import socket
+    import time
+
+    start = time.time()
+
+    try:
+
+        sock = socket.create_connection(
+            ("smtp.gmail.com", 587),
+            timeout=10
+        )
+
+        sock.close()
+
+        return jsonify({
+            "success": True,
+            "host": "smtp.gmail.com",
+            "port": 587,
+            "time_taken": round(time.time() - start, 2)
+        })
+
+    except Exception as e:
+
+        return jsonify({
+            "success": False,
+            "error": repr(e),
+            "time_taken": round(time.time() - start, 2)
+        }), 500
     
 
 
