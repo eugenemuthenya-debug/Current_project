@@ -173,6 +173,8 @@ def signup():
                 otp,
                 username
             )
+
+            return({"message":"Verification code sent to your email."})
         except Exception as e:
             print("Resnd error",repr(e))
             return({"error":"Account creted but verification email could not be sent"}),500
