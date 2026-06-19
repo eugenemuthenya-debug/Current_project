@@ -169,12 +169,12 @@ def signup():
 
         try:
             send_verification_email(
-                email,
-                otp,
-                username
+                email=email,
+                otp=otp,
+                username=username
             )
 
-            return({"message":"Verification code sent to your email."})
+            return({"message":"Verification code sent to your email."}),201
         except Exception as e:
             print("Resnd error",repr(e))
             return({"error":"Account creted but verification email could not be sent"}),500
@@ -278,7 +278,7 @@ def verify_email():
          ) 
          connection.commit()
          return jsonify({
-             "message":"Account created.Check your email.",
+             "message":"Account created.Redirecting to log in .",
              "email":email
          }),201
     
@@ -312,6 +312,9 @@ def signin():
         # so attackers can't tell which one is wrong
         if not user or not bcrypt.check_password_hash(user["password"], password):
             return jsonify({"error": "Invalid credentials"}), 401
+        
+        if not user["is_verified"]:
+            return jsonify({"error":"Please verify email before log in"}),403
 
         # user_id is baked into the token — every protected route uses this
         # to know whose data to fetch/save

@@ -113,7 +113,7 @@ const Signup = () => {
       //     email:response.data.email
       //   }
       // })
-      setTimeout(()=> navigate("/verifyemail",{state:{email:response.data.email}}),2000)
+     
 
       // clear form after successful submission
       setUsername("");
@@ -122,7 +122,8 @@ const Signup = () => {
       setPassword("");
 
       // redirect to login after 2 seconds — gives user time to read success message
-      setTimeout(() => navigate("/signin"), 2000);
+      // setTimeout(() => navigate("/signin"), 2000);
+       setTimeout(()=> navigate("/verifyemail",{state:{email:response.data.email}}),2000);
     } catch (error) {
       setSuccess("");
       setLoading("");

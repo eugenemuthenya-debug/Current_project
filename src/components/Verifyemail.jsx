@@ -6,8 +6,8 @@ const Verifyemail=  ()=>{
     const [loading,setLoading]=useState("")
     const [success,setSuccess]=useState("")
     const [error,setError]=useState("")
-    const [navigate]=useNavigate()
-    const [location]=useLocation
+    const navigate=useNavigate()
+    const location=useLocation()
     // useLocation-->allows you to receive data passed from another page
 
     // Data tht we need
@@ -26,27 +26,26 @@ const Verifyemail=  ()=>{
         setLoading("Verifying your email...")
         // send request to flask
        try {
-         const response= axios.post( baseUrl + "/verify-email",{
-            // email,
-            code
-        } )
-        setLoading("")
-        setSuccess( response.data.message)
+      const response = await axios.post(baseUrl + "/verify-email", {
+        email,
+        code,
+      })
 
-        // wait for redirecting
-        setTimeout(()=>{navigate("/signin")},
-        2000)
+      setSuccess(response.data.message)
+
+      setTimeout(() => {
         navigate("/signin")
+      }, 2000)
 
-        // error handling
-        
-        
-       } catch (error) {
-        setLoading("")
-        setError(error.response?.data?.error || 
-        error.message)
-        
-       }
+    } catch (err) {
+      setError(err.response?.data?.error || err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (!email) {
+    return <p>No email found. Please sign up again.</p>
     }
     
 
