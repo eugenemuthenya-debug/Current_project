@@ -296,6 +296,32 @@ def smtp_login_test():
         }), 500    
     
 
+# --------internet tets-------------
+@app.route("/internet-test")
+def internet_test():
+
+    import requests
+
+    try:
+
+        r = requests.get(
+            "https://www.google.com",
+            timeout=10
+        )
+
+        return {
+            "success": True,
+            "status": r.status_code
+        }
+
+    except Exception as e:
+
+        return {
+            "success": False,
+            "error": repr(e)
+        }
+    
+
 
 # -----------Verification Endpoint--------------------[success]
 @app.route('/api/verify-email', methods=['POST'])
