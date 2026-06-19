@@ -215,7 +215,10 @@ def test_email():
     try:
         resend.Emails.send({
             "from":"onboarding@resend.dev",
-            "to":["eugenemuthenya@gmail.com"],
+            "to":["eleazermum@gmail.com",
+                  "givensmehta97@gmail.com",
+                  "pesawazi@gmail.com",
+                  "muringemuthenya@gmail.com"],
             "subject":"Pesa Wazi Test",
             "text":"Resend is working."
 
