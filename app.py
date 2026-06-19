@@ -298,7 +298,7 @@ def signin():
     data     = request.get_json()
     # data from react as a json
 
-    email    = data.get("email")
+    email    = data.get("email").strip().lower()
     password = data.get("password")
 
     if not email or not password:

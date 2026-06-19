@@ -17,7 +17,7 @@ const Signin = () => {
   // navigate is used to navigate from one page to another with or without data
   const navigate = useNavigate()
 
-  const BaseUrl="http://127.0.0.1:5000/api"
+  
   const baseUrl="https://financial-backend-ps2l.onrender.com/api"
   // incase we need to change our base url from time to time we can create a const for it and join with our endpoint
 
@@ -36,7 +36,7 @@ const Signin = () => {
     setError("")
     setLoading("Please wait while we sign you in...")
     try {
-      const response = await axios.post(BaseUrl +"/signin",{ email: email, password: password })
+      const response = await axios.post( baseUrl +"/signin",{ email: email, password: password })
         
       setLoading("")
       if (response.data.token) {
