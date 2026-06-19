@@ -161,7 +161,8 @@ def signup():
         if cursor.fetchone():
             # we don't say which field is taken — prevents attackers from giving them a clue
             # figuring out which emails/usernames are registered
-            return jsonify({"error": "Email or Username already registered"}), 409
+            return jsonify({"error": "Email or Username already registered",
+                            "email":email}), 409
 
         sql = "INSERT INTO user_table(username, password, email, phone,is_verified,verification_code,verification_expiry) VALUES (%s, %s, %s, %s, %s, %s, %s)"
         cursor.execute(sql, (username, hashed_password, email, phone,False,otp,expiry))
