@@ -32,7 +32,7 @@ const Addexpense = () => {
   const [error,       setError]       = useState("");
   const [loading,     setLoading]     = useState("");
   const [success,     setSuccess]     = useState("");
-  const token = localStorage.getItem("token");
+  const accessToken = localStorage.getItem("access_token");
 
   // ──  submit ─────────────────────────────────────────
   const submit = async (e) => {
@@ -47,7 +47,7 @@ const Addexpense = () => {
       const response = await axios.post("https://financial-backend-ps2l.onrender.com/api/add_expenses",
         { description, amount, category_name: spending },
         
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${accessToken}` } }
       );
       setLoading("");
       setSuccess(response.data.message);

@@ -11,7 +11,7 @@ const Signin = () => {
   const [password, setPassword] = useState("")
   const [loading,  setLoading]  = useState("")
   const [error,    setError]    = useState("")
-  const [showPassword,setshowPassword]=useState(false)
+  const [showPassword,setShowPassword]=useState(false)
   
   // false-->means everytime the field password stays hidden
   // navigate is used to navigate from one page to another with or without data
@@ -39,11 +39,13 @@ const Signin = () => {
       const response = await axios.post( baseUrl +"/signin",{ email: email, password: password })
         
       setLoading("")
-      if (response.data.token) {
-        localStorage.setItem("token", response.data.token)
+      if (response.data.access_token) {
+        localStorage.setItem("access_token", response.data.access_token)
+        localStorage.setItem("refresh_token",response.data.refresh_token)
         localStorage.setItem("user", JSON.stringify(response.data.user))
         navigate("/dashboard")
       }
+      console.log(response.data)
     } catch (error) {
       setLoading("")
       if (error.response && error.response.data) {
@@ -139,35 +141,60 @@ const Signin = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-
-            <div style={{ ...S.fieldGroup, marginBottom: "1.5rem" }}>
+               
+                {/* Password */}
+            <div style={S.field}>
               <label style={S.label}>Password</label>
-              <input
-                type={showPassword ? "text":"password"}
-                // this means tht when the showPassword is true,it will be visible and it will be a text input field and if flase,it will be a password input field & it will be hidden.
-                placeholder="••••••••"
-                className="signin-input"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              {/* we create the eye logo/clickable */}
-              <i
-              className={showPassword ? "bi bi-eye-slash":"bi bi-eye"}
-              // every click flips the state
-              // if showPassword =false then when click,!showPassword=ture(if not false-->true)
-              onClick={()=>setshowPassword(!showPassword)}
-              style={{
-                position:"absolute",
-                right: "145px",
-                top: "68%",
-                transform: "translateY(-50%)",
-                cursor: "pointer",
-                fontSize: "18px"
 
-              }}
-              />
-            </div>
+              <div style={{position: "relative"}}>
+                {/* to prevent the icon from shifting when screen size differs/changes */}
+                {/* input-grp:puts the field and icon as one */}
+
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  required
+                  className="signin-input "
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  style={{paddingRight: "45px"}}
+                />
+
+                {/* eye icon/show password icon */}
+                {/* cursor:"pointer"-->chnages the cursor to a pointer when hovering over the show password icon  */}
+
+                {/* <span
+                  className="input-group-text"
+                  style={{
+                    background: "#0f1117",
+                    border: "1px solid #1f2535",
+                    borderLeft: "none",
+                    color: "#e8e8e8",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    // padding: "0 12px",
+                  }}
+                >
+                </span> */}
+
+                <i
+                    className={showPassword ? "bi bi-eye-slash" : "bi bi-eye"}
+                    onClick={()=>setShowPassword(!showPassword)}
+                    style={{
+                      position : "absolute",
+                      right :"15px",
+                      top :"50%",
+                      transform : "translateY(-50%)",
+                      fontSize : "18px",
+                      color: "#666",
+                      cursor :"pointer"
+
+                    }}
+                  />
+              </div>
+              </div>
+              <br/>
 
             <button
               type="submit"

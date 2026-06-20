@@ -26,7 +26,7 @@ const Uploadbudget = () => {
   const [loading,      setLoading] = useState("")
   const [success,      setSuccess] = useState("")
   const [error,        setError]   = useState("")
-  const token = localStorage.getItem("token")
+  const accessToken = localStorage.getItem("access_token")
 
   // ──  fetch existing budget on load ──────────────────────────────────────
   const [existingBudget, setExistingBudget] = useState(null) // holds current budget from API
@@ -36,7 +36,7 @@ const Uploadbudget = () => {
     const fetchBudget = async () => {
       try {
         const response = await axios.get(baseUrl + "/api/get_spendings",
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${accessToken}` } }
         )
         const data = response.data
         if (data && data.length > 0) {
@@ -55,8 +55,8 @@ const Uploadbudget = () => {
         console.log("No existing budget found")
       }
     }
-    if (token) fetchBudget()
-  }, [token])
+    if (accessToken) fetchBudget()
+  }, [accessToken])
 
   // ── Compute days remaining until budget month ends ──────────────────────────
   const getDaysRemaining = (monthStr) => {
@@ -94,7 +94,7 @@ const Uploadbudget = () => {
 
     try {
       const response = await axios.post(baseUrl +"/api/upload_budget",{ amount_limit, month },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${accessToken}` } }
       )
       setLoading("")
       setSuccess(response.data.message)

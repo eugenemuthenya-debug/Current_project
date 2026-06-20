@@ -174,3 +174,8 @@
 //             "success": False,
 //             "error": repr(e)
 //         }
+
+
+// inorder for us to use them
+// # but for now we are using localhost
+// app.config["JWT_SECRET_KEY"] = "super-secret-key"

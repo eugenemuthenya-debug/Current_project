@@ -17,7 +17,8 @@ from flask_jwt_extended import (
     JWTManager,
     create_access_token,
     jwt_required,
-    get_jwt_identity
+    get_jwt_identity,
+    create_refresh_token
 )
 import pymysql
 # for generating otp
@@ -48,11 +49,10 @@ limiter = Limiter(
 
 
 
-# Load secret key from environment variable for jwt in order for us to use them
-# but for now we are using localhost
-app.config["JWT_SECRET_KEY"] = "super-secret-key"
+
 # incase it is stolen it won't last forever
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=1)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=15)
+app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
 resend.api_key=os.environ.get("RESEND_API_KEY")
 
 
@@ -298,8 +298,8 @@ def signin():
     data     = request.get_json()
     # data from react as a json
 
-    email    = data.get("email").strip().lower()
-    password = data.get("password")
+    email    = data.get("email","").strip().lower()
+    password = data.get("password","")
 
     if not email or not password:
         return jsonify({"error": "Email and password are required"}), 400
@@ -322,9 +322,12 @@ def signin():
         # to know whose data to fetch/save
         access_token = create_access_token(identity=str(user["user_id"]))
 
+        refresh_token=create_refresh_token(identity=str(user["user_id"]))
+
         return jsonify({
             "message": "Login successful",
-            "token":   access_token,
+            "access_token":   access_token,
+            "refresh_token": refresh_token,
             "user": {
                 "user_id":  user["user_id"],
                 "username": user["username"],
@@ -339,6 +342,22 @@ def signin():
 
     finally:
         connection.close()
+
+
+
+# --------------refresh endpoint------------------
+@app.route("/api/refresh",methods=["POST"])
+@jwt_required(refresh=True)
+def refresh():
+    user_id=get_jwt_identity()
+
+    new_access_token= create_access_token(
+        identity=user_id,
+        expires_delta=timedelta(minutes=15)
+    )
+
+    return jsonify({
+        "token":new_access_token    }),200
 
 
 # ----------Add Expense---------------[success]
