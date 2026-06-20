@@ -32,7 +32,7 @@ const Addexpense = () => {
   const [error,       setError]       = useState("");
   const [loading,     setLoading]     = useState("");
   const [success,     setSuccess]     = useState("");
-  const accessToken = localStorage.getItem("access_token");
+  // const accessToken = localStorage.getItem("access_token");
 
   // ──  submit ─────────────────────────────────────────
   const submit = async (e) => {
@@ -45,6 +45,7 @@ const Addexpense = () => {
     setLoading("Please wait while we add your expense...");
     try {
       const response = await api.post("/add_expenses",
+        { description, amount, category_name: spending }
       );
       setLoading("");
       setSuccess(response.data.message);
