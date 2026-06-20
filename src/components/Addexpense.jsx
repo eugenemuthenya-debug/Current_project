@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
-import axios from 'axios';
+import api from '../api/axiosInstance';
 
 // Common spending categories for the quick-pick chips
 // this are predefined,they will be used later
@@ -12,7 +12,7 @@ const Addexpense = () => {
   // ──  state ──────────────────────────────────────────
   const [user, setUser] = useState({});
   // for our everchanging endpoint
-  const baseUrl="https://financial-backend-ps2l.onrender.com"
+  // const baseUrl="https://financial-backend-ps2l.onrender.com"
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -44,10 +44,7 @@ const Addexpense = () => {
     setError(""); setSuccess("");
     setLoading("Please wait while we add your expense...");
     try {
-      const response = await axios.post("https://financial-backend-ps2l.onrender.com/api/add_expenses",
-        { description, amount, category_name: spending },
-        
-        { headers: { Authorization: `Bearer ${accessToken}` } }
+      const response = await api.post("/add_expenses",
       );
       setLoading("");
       setSuccess(response.data.message);
