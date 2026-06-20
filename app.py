@@ -358,7 +358,7 @@ def refresh():
     )
 
     return jsonify({
-        "token":new_access_token    }),200
+        "access_token":new_access_token    }),200
 
 
 # ----------Add Expense---------------[success]
