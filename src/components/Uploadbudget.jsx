@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from './Navbar'
-import axios from 'axios'
+import api from '../api/axiosInstance'
 
 const Uploadbudget = () => {
 
@@ -35,7 +35,7 @@ const Uploadbudget = () => {
   useEffect(() => {
     const fetchBudget = async () => {
       try {
-        const response = await axios.get(baseUrl + "/api/get_spendings",
+        const response = await api.get("/get_spendings",
           { headers: { Authorization: `Bearer ${accessToken}` } }
         )
         const data = response.data
@@ -93,7 +93,7 @@ const Uploadbudget = () => {
     setLoading(isUpdate ? "Updating your budget..." : "Adding your budget...")
 
     try {
-      const response = await axios.post(baseUrl +"/api/upload_budget",{ amount_limit, month },
+      const response = await api.post("/upload_budget",{ amount_limit, month },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       )
       setLoading("")
