@@ -1,6 +1,7 @@
-import axios from "axios"
+import api from "../api/axiosInstance"
 import { useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
+
 
 const Verifyemail=  ()=>{
     const [loading,setLoading]=useState("")
@@ -12,7 +13,7 @@ const Verifyemail=  ()=>{
 
     // Data tht we need
     const [code,setCode]=useState("")
-    const baseUrl="https://financial-backend-ps2l.onrender.com/api"
+    // const baseUrl="https://financial-backend-ps2l.onrender.com/api"
 
     const email=location.state?.email
 
@@ -26,7 +27,7 @@ const Verifyemail=  ()=>{
         setLoading("Verifying your email...")
         // send request to flask
        try {
-      const response = await axios.post(baseUrl + "/verify-email", {
+      const response = await api.post("/verify-email", {
         email,
         code,
       })
