@@ -7,7 +7,7 @@ const Uploadbudget = () => {
   // ──  original state ──────────────────────────────────────────
   const [user, SetUser] = useState({})
   // for our everchanging endpoint
-  const baseUrl="https://financial-backend-ps2l.onrender.com"
+  
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user")

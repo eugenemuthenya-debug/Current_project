@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import axios from 'axios'
+import api from '../api/axiosInstance'
 import { Link, useNavigate } from 'react-router-dom'
 import Navbar from './Navbar'
 
@@ -18,7 +18,7 @@ const Signin = () => {
   const navigate = useNavigate()
 
   
-  const baseUrl="https://financial-backend-ps2l.onrender.com/api"
+  // const baseUrl="https://financial-backend-ps2l.onrender.com/api"
   // incase we need to change our base url from time to time we can create a const for it and join with our endpoint
 
   // the user to be able to toggle a button so they can view their password
@@ -36,7 +36,7 @@ const Signin = () => {
     setError("")
     setLoading("Please wait while we sign you in...")
     try {
-      const response = await axios.post( baseUrl +"/signin",{ email: email, password: password })
+      const response = await api.post("/signin",{ email: email, password: password })
         
       setLoading("")
       if (response.data.access_token) {

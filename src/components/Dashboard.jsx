@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from './Navbar'
-import axios from 'axios'
+import api from '../api/axiosInstance';
 
-const baseUrl="https://financial-backend-ps2l.onrender.com"
+
 const CAT_COLORS = {
   Rent: "#185FA5", Groceries: "#3B6D11", Transport: "#BA7517",
   Utilities: "#534AB7", Entertainment: "#993556", Food: "#993C1D",
@@ -101,7 +101,7 @@ const Dashboard = () => {
       //fetching data
       setLoading("Please wait while we fetch your data...")
       try {
-        const response = await axios.get(baseUrl + "/api/get_spendings",
+        const response = await api.get("/get_spendings",
            { headers: { Authorization: `Bearer ${accessToken}` } }
 
        
