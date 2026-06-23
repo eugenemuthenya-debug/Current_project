@@ -52,7 +52,7 @@ limiter = Limiter(
 
 # incase it is stolen it won't last forever
 app.config["JWT_SECRET_KEY"]=os.environ.get("JWT_SECRET_KEY")
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(seconds=20)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=15)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
 resend.api_key=os.environ.get("RESEND_API_KEY")
 

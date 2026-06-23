@@ -2,13 +2,15 @@ import React, { useState } from 'react'
 import {  Link ,NavLink } from 'react-router-dom'
 
 const Navbar = () => {
-  // ── Your original logic, untouched ──────────────────────────────────────────
+  // ── log out ──────────────────────────────────────────
   const user = JSON.parse(localStorage.getItem("user"))
   const logout = () => {
-    localStorage.clear("user")
+    localStorage.removeItem("access_token")
+    localStorage.removeItem("refresh_token")
+    localStorage.removeItem("user")
   }
 
-  // ── New: mobile menu toggle ──────────────────────────────────────────────────
+  // ── New: mobile menu ──────────────────────────────────────────────────
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (

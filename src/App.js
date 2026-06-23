@@ -8,6 +8,7 @@ import Addexpense from './components/Addexpense';
 import Uploadbudget from './components/Uploadbudget';
 import Dashboard from './components/Dashboard';
 import Verifyemail from './components/Verifyemail';
+import ProtectedRoute from './components/protectedRoute';
 
 
 function App() {
@@ -19,8 +20,13 @@ function App() {
         <Route path='/signin' element={<Signin/>}/>
         <Route path='/addexpense' element={<Addexpense/>}/>
         <Route path='/uploadbudget' element={<Uploadbudget/>}/>
-        <Route path='/dashboard' element={<Dashboard/>}/>
         <Route path='/verifyemail' element={<Verifyemail/>}/>
+        <Route path='/dashboard' element={
+          <ProtectedRoute>
+            <Dashboard/>
+            </ProtectedRoute>
+        }/>
+        
       </Routes>
     </Router>
   );

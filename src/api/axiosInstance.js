@@ -27,8 +27,11 @@ const api = axios.create({
         async (error)=>{
 
             const originalRequest=error.config
-            if (error.response?.status=== 401){
+            if (error.response?.status=== 401  && !originalRequest._retry){
+                originalRequest._retry= true
                 console.log("Access token expired")
+
+                // refresh logic
                 try {
                     const refreshToken=localStorage.getItem("refresh_token")
                     const response=await axios.post("https://financial-backend-ps2l.onrender.com/api/refresh",
@@ -49,6 +52,11 @@ const api = axios.create({
                     
                 } catch (refreshError) {
                     console.log("Refresh failed")
+                    localStorage.removeItem("access_token")
+                    localStorage.removeItem("refresh_token")
+                    localStorage.removeItem("user")
+                    window.location.href="/signin"
+                    
                     return Promise.reject(refreshError)
                     
                 }

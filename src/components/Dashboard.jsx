@@ -97,18 +97,18 @@ const Dashboard = () => {
     const getData = async () => {
 
       // token from sign in component
-      const accessToken = localStorage.getItem('access_token')
+      // const accessToken = localStorage.getItem('access_token')
       //fetching data
       setLoading("Please wait while we fetch your data...")
       try {
         const response = await api.get("/get_spendings",
-           { headers: { Authorization: `Bearer ${accessToken}` } }
+          //  { headers: { Authorization: `Bearer ${accessToken}` } }
 
        
         )
 
-         console.log("RAW DATA:", response.data) 
-         console.log(accessToken)     
+        //  console.log("RAW DATA:", response.data) 
+        //  console.log(accessToken)     
         //  console.log("FIRST ITEM:", response.data[0])
         setLoading("")
         setSpentData(response.data.map(item => ({
