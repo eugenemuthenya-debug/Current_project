@@ -25,8 +25,11 @@ const api = axios.create({
         },
 
         async (error)=>{
+
+            const originalRequest=error.config
             if (error.response?.status=== 401){
                 console.log("Access token expired")
+                console.log(originalRequest)
             }
             return Promise.reject(error)
         }
