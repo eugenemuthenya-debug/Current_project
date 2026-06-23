@@ -32,11 +32,11 @@ function App() {
         }/>
 
         <Route path='/verifyemail' element={
-          <ProtectedRoute>
+          
             <Verifyemail/>
-          </ProtectedRoute>
+          
         }/>
-        
+
         <Route path='/dashboard' element={
           <ProtectedRoute>
             <Dashboard/>
