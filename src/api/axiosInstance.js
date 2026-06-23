@@ -33,8 +33,8 @@ const api = axios.create({
                     const refreshToken=localStorage.getItem("refresh_token")
                     const response=await axios.post("https://financial-backend-ps2l.onrender.com/api/refresh",
                         {},
-                    {headers:
-                        `Bearer ${refreshToken}`})
+                    { headers: {Authorization :`Bearer ${refreshToken}`}
+                     })
 
                         console.log("New Token received")
                         console.log(response.data)
