@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from "../api/axiosInstance";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 
@@ -15,7 +15,7 @@ const Signup = () => {
   // navigate function-->directs you to signin after creating your account
   const navigate = useNavigate();
   // incase we change our endpoint
-  const baseUrl = "https://financial-backend-ps2l.onrender.com/api";
+  // const baseUrl = "https://financial-backend-ps2l.onrender.com/api";
 
   // messages for interactivity to remain with user
   const [error, setError] = useState("");
@@ -97,8 +97,8 @@ const Signup = () => {
     try {
       // axios --> library that helps make HTTP requests to our API
       // await --> waits for response before continuing
-      const response = await axios.post(
-        baseUrl + "/signup",
+      const response = await api.post(
+        "/signup",
 
         { username, email, phone, password },
       );
