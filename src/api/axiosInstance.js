@@ -36,8 +36,16 @@ const api = axios.create({
                     { headers: {Authorization :`Bearer ${refreshToken}`}
                      })
 
-                        console.log("New Token received")
-                        console.log(response.data)
+                     const newAccessToken=response.data.access_token
+                     localStorage.setItem("access_token",newAccessToken)
+
+                      console.log("New Token received")
+                      console.log(response.data)
+
+                     originalRequest.headers.Authorization= `Bearer ${newAccessToken}`
+                     return api(originalRequest)
+
+                       
                     
                 } catch (refreshError) {
                     console.log("Refresh failed")
