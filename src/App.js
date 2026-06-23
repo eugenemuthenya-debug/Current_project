@@ -18,9 +18,25 @@ function App() {
       <Routes>
         <Route path='/signup' element={<Signup/>}/>
         <Route path='/signin' element={<Signin/>}/>
-        <Route path='/addexpense' element={<Addexpense/>}/>
-        <Route path='/uploadbudget' element={<Uploadbudget/>}/>
-        <Route path='/verifyemail' element={<Verifyemail/>}/>
+
+        <Route path='/addexpense' element={
+          <ProtectedRoute>
+            <Addexpense/>
+          </ProtectedRoute>
+        }/>
+
+        <Route path='/uploadbudget' element={
+          <ProtectedRoute>
+            <Uploadbudget/>
+          </ProtectedRoute>
+        }/>
+
+        <Route path='/verifyemail' element={
+          <ProtectedRoute>
+            <Verifyemail/>
+          </ProtectedRoute>
+        }/>
+        
         <Route path='/dashboard' element={
           <ProtectedRoute>
             <Dashboard/>

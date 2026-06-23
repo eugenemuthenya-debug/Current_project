@@ -10,3 +10,4 @@ const ProtectedRoute = ({children})=>{
 }
 
 export default ProtectedRoute
+// this prevents any unauthorized access to the dashboard without log in credentials.
