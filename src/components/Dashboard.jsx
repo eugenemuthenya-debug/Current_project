@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Navbar from './Navbar'
 import api from '../api/axiosInstance';
 import Tutorialmodel from './Tutorialmodel';
+import CategoryPieChart from './CategoryPiechart';
 
 
 
@@ -172,6 +173,8 @@ const Dashboard = () => {
   // username from first record,if available
   const username = spentData[0]?.username || "";
   const phone = spentData[0]?.phone || "";
+
+  <CategoryPieChart data={catList}/>
   // UI
 
 
