@@ -112,7 +112,7 @@ const Uploadbudget = () => {
     } catch (error) {
       setLoading("")
       setError(error.response?.data?.message || error.message)
-      console.log("Full error:", error.response?.data)
+      // console.log("Full error:", error.response?.data)
     }
   }
 

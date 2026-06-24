@@ -11,6 +11,7 @@ import Verifyemail from './components/Verifyemail';
 import ProtectedRoute from './components/protectedRoute';
 
 
+
 function App() {
   return (
     <Router>
@@ -32,9 +33,7 @@ function App() {
         }/>
 
         <Route path='/verifyemail' element={
-          
-            <Verifyemail/>
-          
+          <Verifyemail/>
         }/>
 
         <Route path='/dashboard' element={
@@ -42,6 +41,8 @@ function App() {
             <Dashboard/>
             </ProtectedRoute>
         }/>
+
+        
         
       </Routes>
     </Router>

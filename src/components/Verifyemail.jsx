@@ -3,6 +3,7 @@ import { useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
 
+
 const Verifyemail=  ()=>{
     const [loading,setLoading]=useState("")
     const [success,setSuccess]=useState("")
@@ -15,7 +16,7 @@ const Verifyemail=  ()=>{
     const [code,setCode]=useState("")
     // const baseUrl="https://financial-backend-ps2l.onrender.com/api"
 
-    const email=location.state?.email
+    const email=location.state?.email || localStorage.getItem("verification_email")
 
     // now we submit since we are moving with our email
     const submit = async (e)=>{
@@ -31,7 +32,7 @@ const Verifyemail=  ()=>{
         email,
         code,
       })
-      console.log("Email is",email)
+      // console.log("Email is",email)
 
       setSuccess(response.data.message)
 
@@ -46,12 +47,33 @@ const Verifyemail=  ()=>{
     }
   }
 
-  if (!email) {
-    return <p>No email found. Please sign up again.</p>
+  // if (!email) {
+  //   return <p>No email found. Please sign up again.</p>
+  // }
+    
+    const resendCode= (async)=>{
+      setError("")
+      setSuccess("")
 
-    
+      try{
+        const response =  api.post("/resend-verification",
+        {email}
+      )
+      setLoading("")
+      setSuccess(response.data.message)
+
+      }
+      
+      catch(error){
+        setLoading("")
+        setSuccess("")
+        if (error.response && error.response.data) {
+        setError(error.response.data.error || "Verification code not sent")
+
+      }
     }
-    
+
+    }
 
     
     
@@ -85,6 +107,10 @@ const Verifyemail=  ()=>{
             Verify
           </button>
         </form>
+        <p>Didn't receive code?{" "}
+          <br/>
+          <button type="button" className="btn btn-primary" onClick={resendCode}>Resend code</button>
+        </p>
       </div>
     );
 

@@ -45,7 +45,7 @@ const Signin = () => {
         localStorage.setItem("user", JSON.stringify(response.data.user))
         navigate("/dashboard")
       }
-      console.log(response.data)
+      // console.log(response.data)
     } catch (error) {
       setLoading("")
       if (error.response && error.response.data) {

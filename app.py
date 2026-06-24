@@ -149,8 +149,7 @@ def signup():
     # this generates a random otp btw the range given and it needs to be a string
     otp=str(random.randint(100000,999999))
     # datetime.now-->genertates the current date and time and the otp is given 5 minutes to be alive
-    expiry = datetime.now() + timedelta(minutes=5)
-
+    expiry=datetime.now() + timedelta(minutes=5)
     connection, cursor = get_db()
     try:
         # Check if record already exists
@@ -190,6 +189,62 @@ def signup():
     
     finally:
         connection.close()
+
+
+
+# -------------------resend verification----------------------
+@app.route("/api/resend-verification",methods=["POST"])
+@limiter.limit("3 per minute")
+def resendVerification():
+
+ data=request.get_json()
+ connection,cursor=get_db(dict_cursor=True)
+
+ email=data.get("email")
+   
+ try:
+       cursor.execute(
+         """
+        SELECT * 
+        FROM user_table
+        WHERE email=%s
+         """,(email)
+       )
+
+       user=cursor.fetchone()
+
+       if not user:
+           return jsonify({"error":"User not found"}),404
+
+       if user["is_verified"]: 
+           return jsonify({"error":"Account already verified"})   
+       otp=str(random.randint(100000,999999))
+       expiry=datetime.now() + timedelta(minutes=5)
+       
+       cursor.execute(
+           """"
+           UPDATE user_table 
+           SET verification_code=%s and
+           verification_expiry=%s
+           WHERE email = %s
+           """,
+           (otp,expiry,email)
+       )
+
+       connection.commit()
+       send_verification_email(
+           email=email,
+           otp=otp,
+           username=user["username"]
+       )
+       return jsonify({"message":"A new verification code has been sent "}),200
+ finally:
+     connection.close()
+
+
+
+        
+
 
 
 # -------our gmail message using resend-------------
@@ -240,6 +295,11 @@ def send_verification_email(email,otp,username):
 #             "error":repr(e)
 #         }
 
+
+
+
+
+
 # -----------Verification Endpoint--------------------[success]
 @app.route('/api/verify-email', methods=['POST'])
 def verify_email():
@@ -287,6 +347,9 @@ def verify_email():
     
     finally:
         connection.close()
+
+
+
 
 
 # -----------Login--------------------[success]

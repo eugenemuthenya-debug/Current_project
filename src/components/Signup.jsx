@@ -107,6 +107,8 @@ const Signup = () => {
       // catches the success message from flask and displays it
       setSuccess(response.data.message);
 
+      localStorage.setItem("verification_email",email)
+
       
       // navigate("/verify-email", {
       //   state:{
@@ -137,7 +139,7 @@ const Signup = () => {
         setError("Network error. Please check your connection");
       }
     }
-    console.log("error is",{error})
+    // console.log("error is",{error})
   };
 
   // ── UI ─────────────────────────────────────────────────────────────────────
