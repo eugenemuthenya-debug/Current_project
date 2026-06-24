@@ -179,7 +179,7 @@ def signup():
                     "email":email}),201
         except Exception as e:
             print("Resnd error",repr(e))
-            return({"error":"Account creted but verification email could not be sent"}),500
+            return({"error":"Account created but verification email could not be sent"}),500
 
         
     except Exception as e:
@@ -216,8 +216,8 @@ def resendVerification():
        if not user:
            return jsonify({"error":"User not found"}),404
 
-       if user["is_verified"]: 
-           return jsonify({"error":"Account already verified"})   
+    #    if user["is_verified"]: 
+    #        return jsonify({"error":"Account already verified"}) ,400  
        otp=str(random.randint(100000,999999))
        expiry=datetime.now() + timedelta(minutes=5)
        
