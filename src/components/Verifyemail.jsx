@@ -51,12 +51,13 @@ const Verifyemail=  ()=>{
   //   return <p>No email found. Please sign up again.</p>
   // }
     
-    const resendCode= (async)=>{
+    const resendCode= async ()=>{
       setError("")
       setSuccess("")
+      setLoading("Sending new verification code...")
 
       try{
-        const response =  api.post("/resend-verification",
+        const response = await api.post("/resend-verification",
         {email}
       )
       setLoading("")
@@ -70,6 +71,9 @@ const Verifyemail=  ()=>{
         if (error.response && error.response.data) {
         setError(error.response.data.error || "Verification code not sent")
 
+      }
+      else{
+        setError(error.message)
       }
     }
 
@@ -110,6 +114,17 @@ const Verifyemail=  ()=>{
         <p>Didn't receive code?{" "}
           <br/>
           <button type="button" className="btn btn-primary" onClick={resendCode}>Resend code</button>
+        </p>
+
+        <br/>
+        <p>Already have an account {" "}
+          <button type="button" className="btn btn-primary" onClick={()=>navigate("/signin")}>Back to sign in</button>
+        </p>
+
+        <br/>
+        <p>
+          Wrong email? {" "}
+          <button type="button" className="btn btn-primary" onClick={()=>navigate("/signup")}>Back to sign up</button>
         </p>
       </div>
     );
