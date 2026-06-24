@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from './Navbar'
 import api from '../api/axiosInstance';
+import Tutorialmodel from './Tutorialmodel';
 
 
 const CAT_COLORS = {
@@ -83,6 +84,7 @@ const S = {
 const Dashboard = () => {
 
   //messages
+  const [showTutorial,setShowTutorial]=useState(false)
   const [loading, setLoading] = useState("")
   const [error, setError] = useState("")
 
@@ -94,6 +96,10 @@ const Dashboard = () => {
 
   // useEffect-->
   useEffect(() => {
+    const seenTutorial=localStorage.getItem("hasSeenTutorial")
+    if (!seenTutorial){
+      setShowTutorial(true)
+    }
     const getData = async () => {
 
       // token from sign in component
@@ -164,7 +170,13 @@ const Dashboard = () => {
 
 
   return (
+
     <div>
+      {
+        showTutorial && (
+          <Tutorialmodel onClose={()=>setShowTutorial(false)}/>
+        )
+      }
       <Navbar />
       <div style={S.page}>
         {/* spinner/error banners */}

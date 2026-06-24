@@ -12,6 +12,7 @@ import ProtectedRoute from './components/protectedRoute';
 
 
 
+
 function App() {
   return (
     <Router>
@@ -19,6 +20,7 @@ function App() {
       <Routes>
         <Route path='/signup' element={<Signup/>}/>
         <Route path='/signin' element={<Signin/>}/>
+        
 
         <Route path='/addexpense' element={
           <ProtectedRoute>
