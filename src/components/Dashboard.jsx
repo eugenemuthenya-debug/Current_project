@@ -4,6 +4,9 @@ import api from '../api/axiosInstance';
 import Tutorialmodel from './Tutorialmodel';
 
 
+
+
+
 const CAT_COLORS = {
   Rent: "#185FA5", Groceries: "#3B6D11", Transport: "#BA7517",
   Utilities: "#534AB7", Entertainment: "#993556", Food: "#993C1D",
@@ -100,6 +103,9 @@ const Dashboard = () => {
     if (!seenTutorial){
       setShowTutorial(true)
     }
+    console.log(
+  localStorage.getItem("hasSeenTutorial")
+)
     const getData = async () => {
 
       // token from sign in component
@@ -172,11 +178,9 @@ const Dashboard = () => {
   return (
 
     <div>
-      {
-        showTutorial && (
+      { showTutorial && (
           <Tutorialmodel onClose={()=>setShowTutorial(false)}/>
-        )
-      }
+        )}
       <Navbar />
       <div style={S.page}>
         {/* spinner/error banners */}

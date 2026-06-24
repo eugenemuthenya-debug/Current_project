@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-const TutorialModel=({onClose})=>{
+const Tutorialmodel=({onClose})=>{
     // this stores and shows render the current tutorial page tht the new user is on
     const [step,setStep]=useState(1)
     // when user cliks next,render knws which page to deploy next
@@ -36,7 +36,7 @@ const TutorialModel=({onClose})=>{
                         Set a budget before recording expense.It could be daily,weekly,monthly or even yearly.
                     </p>
 
-                    <button onClick={nextStep}Next></button>
+                    <button onClick={nextStep}>Next</button>
                     </>
                 )}
 
@@ -75,4 +75,6 @@ const TutorialModel=({onClose})=>{
 
     )
 }
-export default TutorialModel()
+// this is a blueprint we are giving react to call after something has happened
+// we do not give it closing brackets () since we don't want it to be rendered immediately,but after smthng else
+export default Tutorialmodel
