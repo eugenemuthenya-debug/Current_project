@@ -216,8 +216,8 @@ def resendVerification():
        if not user:
            return jsonify({"error":"User not found"}),404
 
-    #    if user["is_verified"]: 
-    #        return jsonify({"error":"Account already verified"}) ,400  
+       if user["is_verified"]: 
+           return jsonify({"error":"Account already verified"}) ,400  
        otp=str(random.randint(100000,999999))
        expiry=datetime.now() + timedelta(minutes=5)
        
