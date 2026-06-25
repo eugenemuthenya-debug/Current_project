@@ -249,6 +249,11 @@ const S = {
     animation: "spin 0.8s linear infinite",
     flexShrink: 0,
   },
+  periodText:{
+    fontSize: "13px",
+    color: "#17f00b",
+    marginTop: "10px",
+  },
 };
 
 // our main function
@@ -270,7 +275,7 @@ const Dashboard = () => {
     if (!seenTutorial) {
       setShowTutorial(true);
     }
-    console.log(localStorage.getItem("hasSeenTutorial"));
+    // console.log(localStorage.getItem("hasSeenTutorial"));
     const getData = async () => {
       // token from sign in component
       // const accessToken = localStorage.getItem('access_token')
@@ -308,6 +313,8 @@ const Dashboard = () => {
     getData();
   }, []);
 
+  
+
   // since we created our view state,we will be able to use to filter our data based on the view month selected by user
 
   // 1.create a function called view
@@ -317,7 +324,8 @@ const Dashboard = () => {
     const now = new Date()
     
     return spentData.filter((item)=>{
-      const expenseDate=new Date(item.Date)
+      const expenseDate=new Date(item.date)
+         
       return(
         expenseDate.getMonth() === now.getMonth() &&
         expenseDate.getFullYear() === now.getFullYear()
@@ -331,6 +339,10 @@ const Dashboard = () => {
   const totalSpent = filtered.reduce((s, d) => s + d.amount, 0);
   const latestlimit = filtered[0]?.amount_limit || 0;
   const remaining = latestlimit - totalSpent;
+  const currentMonth= new Date().toLocaleString("default",{
+    month:"long",
+    year:"numeric"
+  })
 
   const catTotals = {};
   filtered.forEach(({ spending, amount }) => {
@@ -351,6 +363,7 @@ const Dashboard = () => {
     date,
     amount,
   }));
+  console.log("First item fil:", filtered[0])
   
 
   // username from first record,if available
@@ -397,6 +410,14 @@ const Dashboard = () => {
                 </button>
               ))}
             </div>
+
+            <p style={S.periodText}>
+              {view === "month"
+              ? `Showing expenses for ${currentMonth}`
+               : `Showing all ${filtered.length} recorded transactions`}
+            </p>
+
+
           </div>
         </div>
 
@@ -445,9 +466,9 @@ const Dashboard = () => {
 
             <CategoryPieChart data={catList} />
           </div>
-
+         
           <div style={S.card}>
-            <div style={S.cardTitle}>Monthly Spending Trend</div>
+          <div style={S.cardTitle}>Monthly Spending Trend</div>
 
             <MonthlyTrend data={trendData} />
           </div>
