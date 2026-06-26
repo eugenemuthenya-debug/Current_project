@@ -235,7 +235,7 @@ const Tutorialmodel=({username,onClose})=>{
                 gap:"8px",
                 marginTop:"30px",
                 }}>
-                    {[1,2,3,4,5,6].map((dot)=>(
+                    {Array.from({length: totalSteps},(_,i)=>i+1).map((dot)=>(
                         <div 
                         key={dot}
                         style={{
