@@ -61,13 +61,19 @@ const S ={
         color:"#9ca3af",
     }
 }
-const Tutorialmodel=({onClose})=>{
+
+
+
+
+const Tutorialmodel=({username,onClose})=>{
     // this stores and shows render the current tutorial page tht the new user is on
     const [step,setStep]=useState(1)
+    
     // when user cliks next,render knws which page to deploy next
     const nextStep=()=>{
         setStep(step+1)
     }
+    const totalSteps=4
     const finishTutorial=()=>{
         localStorage.setItem("hasSeenTutorial","true")
         onClose()
@@ -79,10 +85,11 @@ const Tutorialmodel=({onClose})=>{
             <div style={S.modal}>
                 {step === 1 &&(
                     <>
-                    <h2 style={S.title}>👋 Welocme ,{} to your financial Tracker</h2>
+                    <h2 style={S.title}>👋 Welocme {username ? `,${username}`:""} ! to your financial Tracker</h2>
 
                     <p style={S.text}>
-                        This application helps you manage your budget and track expenses. 
+                        This application helps you manage your budget, track your expenses,
+                        and understand your spending habits with interactive charts and insights. 
                     </p>
 
                     <button  style={S.button} onClick={nextStep}>Start Tour</button>
@@ -127,14 +134,35 @@ const Tutorialmodel=({onClose})=>{
                         View summaries and monitor your financial progress. 
                     </p>
 
-                    <button  style={S.button}onClick={finishTutorial}>Finihs</button>
+                    <button  style={S.button}onClick={finishTutorial}>Finish</button>
                     </>
                 )}
+
+                <div style={{
+                display:"flex",
+                justifyContent:"center",
+                gap:"8px",
+                marginTop:"20px",
+                }}>
+                    {[1,2,3,4].map((dot)=>(
+                        <div 
+                        key={dot}
+                        style={{
+                            width:"10px",
+                            height:"10px",
+                            borderRadius:"50%",
+                            background:
+                            step=== dot
+                            ? "#3b82f6"
+                            : "#374151", 
+                        }}/>
+                    ))}
+                    <div/>
+
+            </div>
             </div>
 
-            <div>
-
-            </div>
+            
 
         </div>
 

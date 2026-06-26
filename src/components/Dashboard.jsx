@@ -363,7 +363,7 @@ const Dashboard = () => {
     date,
     amount,
   }));
-  console.log("First item fil:", filtered[0])
+  
   
 
   // username from first record,if available
@@ -374,7 +374,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      {showTutorial && <Tutorialmodel onClose={() => setShowTutorial(false)} />}
+      {showTutorial && <Tutorialmodel  username={username} onClose={() => setShowTutorial(false)} />}
       <Navbar />
       <div style={S.page}>
         {/* spinner/error banners */}

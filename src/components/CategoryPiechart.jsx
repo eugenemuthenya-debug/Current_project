@@ -20,7 +20,7 @@ const CategoryPieChart=({data}) =>{
         name:category,
         value:amount
     }))
-    console.log("Chart dat",chartData)
+    // console.log("Chart dat",chartData)
 
     return(
         <div style={{width:"100%",height:300}}>
