@@ -73,7 +73,7 @@ const Tutorialmodel=({username,onClose})=>{
     const nextStep=()=>{
         setStep(step+1)
     }
-    const totalSteps=4
+    const totalSteps=6
     const finishTutorial=()=>{
         localStorage.setItem("hasSeenTutorial","true")
         onClose()
@@ -98,10 +98,12 @@ const Tutorialmodel=({username,onClose})=>{
 
                 {step === 2 &&(
                     <>
-                    <h2> 💰 Budgets</h2>
+                    <h2 style={S.title}> 💰 Set Your Budget</h2>
 
-                    <p>
-                        Set a budget before recording expense.It could be daily,weekly,monthly or even yearly.
+                    <p style={S.text}>
+                       Create a monthly budget before recording your expenses.
+
+                      As you spend, the dashboard automatically calculates how much you've used and how much remains.
                     </p>
 
                     <button  style={S.button} onClick={nextStep}>Next</button>
@@ -110,14 +112,15 @@ const Tutorialmodel=({username,onClose})=>{
 
                 {step === 3 &&(
                     <>
-                    <h2>
-                        📝 Expenses
+                    <h2 style={S.title}>
+                       📝 Record Every Expense
 
                     </h2>
 
-                    <p>
-                        Record your expenses to keep track of your spending habits 
+                    <p style={S.text}>
+                       Add every expense you make—from food and transport to entertainment and bills.
 
+                       The more consistently you record your spending, the more useful your insights become.
                     </p>
 
                     <button style={S.button} onClick={nextStep}>Next</button>
@@ -126,15 +129,78 @@ const Tutorialmodel=({username,onClose})=>{
 
                 {step === 4 &&(
                     <>
-                    <h2>
-                        📊 Dashboard
+                    <h2 style={S.title}>
+                        📊 Understand Your Spending
                     </h2>
 
-                    <p>
-                        View summaries and monitor your financial progress. 
+                    <p  style={S.text}>
+                       Use the pie chart to see where your money goes.
+
+                    Use the spending trend chart to monitor your spending throughout the month and spot unusual spending patterns.
                     </p>
 
-                    <button  style={S.button}onClick={finishTutorial}>Finish</button>
+                    <button  style={S.button}onClick={nextStep}>Next</button>
+                    </>
+                )}
+
+                {step === 5 &&(
+                    <>
+                    <h2 style={S.title}>
+                        📈 Monitor Your Progress
+                    </h2>
+
+
+                    <p style={S.text}>
+                        Switch between This Month and All Time to compare your spending.
+
+                        Keep an eye on your total spending, remaining budget, recent transactions, and category summaries.
+                    </p>
+
+                    <button style={S.button} onClick={nextStep}>Next</button>
+                    </>
+                )}
+
+                { step === 6 && (
+                    <>
+                    <h2 style={S.title}>
+                        🎉 You're All Set!
+
+                    </h2>
+
+                    <p style={S.text}>
+                        You're ready to take control of your finances.
+
+                        Start recording your expenses and watch your financial insights grow over time.
+
+                    </p>
+
+                    <div style={{
+                        marginTop:"20px",
+                        padding:"15px",
+                        background:"#1f2535",
+                        borderRadius:"10px",
+                        textAlign:"left"
+                    }}>
+                        <strong>💡 Tip</strong>
+                        <p style={{marginTop:"8px", color:"#9ca3af"}}>
+
+                        </p>
+
+                    </div>
+
+                    <p 
+                    style={{
+                        marginTop:"20px",
+                        fontSize:"13px",
+                        color:"#6b7280"
+                    }}>
+                         🚧 This is Version 1.0.
+
+                         Thank you for trying Finance Tracker.
+                         Your feedback and suggestions will help shape future updates.
+                    </p>
+
+                    <button style={S.button} onClick={finishTutorial}>Go to Dashborad</button>
                     </>
                 )}
 
@@ -144,7 +210,7 @@ const Tutorialmodel=({username,onClose})=>{
                 gap:"8px",
                 marginTop:"20px",
                 }}>
-                    {[1,2,3,4].map((dot)=>(
+                    {[1,2,3,4,5,6].map((dot)=>(
                         <div 
                         key={dot}
                         style={{
