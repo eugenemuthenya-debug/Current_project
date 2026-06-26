@@ -114,6 +114,7 @@ const S = {
     border: "1px solid #1f2535",
     borderRadius: "12px",
     padding: "16px 18px",
+    transition:"transform .25s ease, box-shadow .25s ease"
   },
   metricLabel: {
     fontSize: "11px",

@@ -15,25 +15,26 @@ const S ={
         width:"90%",
         maxWidth:"550px",
         background:"#161b27",
-        border:"1px solid #1f2535",
-        borderRadius:"16px",
-        padding:"2rem",
+        border:"1px solid #2b3244",
+        borderRadius:"18px",
+        padding:"2.5rem",
         color:"#e2e8f0",
         textAlign:"center",
-        boxShadow:"0 20px 50px rgba(0,0,0,0.4)",
+        boxShadow:"0 25px 60px rgba(0,0,0,0.4)",
     },
 
     title:{
-        fontSize:"24px",
-        fontWeight:"600",
-        marginBottom:"1rem",
+        fontSize:"30px",
+        fontWeight:"700",
+        marginBottom:"15px",
+        color:"#ffffff",
     },
 
     text:{
-        fontSize:"15px",
-        color:"#9ca3af",
-        lineHeight:"1.6",
-        minHeight:"70px",
+        fontSize:"16px",
+        color:"#c4cbd7",
+        lineHeight:"1.8",
+        minHeight:"90px",
     },
 
     buttons:{
@@ -47,9 +48,11 @@ const S ={
         border:"none",
         borderRadius:"8px",
         cursor:"pointer",
-        background:"#3b82f6",
+        background:"#2563eb",
         color:"white",
         fontWeight:"500",
+        fontSize:"15px",
+
     },
 
     secondaryButton:{
@@ -84,7 +87,11 @@ const Tutorialmodel=({username,onClose})=>{
         <div style={S.overlay}>
             <div style={S.modal}>
                 {step === 1 &&(
-                    <>
+                    <div
+                     style={{
+                    animation: "fadeIn .35s ease"
+                    }}
+                    >
                     <h2 style={S.title}>👋 Welocme {username ? `,${username}`:""} ! to your financial Tracker</h2>
 
                     <p style={S.text}>
@@ -93,11 +100,14 @@ const Tutorialmodel=({username,onClose})=>{
                     </p>
 
                     <button  style={S.button} onClick={nextStep}>Start Tour</button>
-                    </>
+                    </div>
                 )}
 
                 {step === 2 &&(
-                    <>
+                    <div
+                     style={{
+                     animation: "fadeIn .35s ease"
+                     }}>
                     <h2 style={S.title}> 💰 Set Your Budget</h2>
 
                     <p style={S.text}>
@@ -107,11 +117,14 @@ const Tutorialmodel=({username,onClose})=>{
                     </p>
 
                     <button  style={S.button} onClick={nextStep}>Next</button>
-                    </>
+                    </div>
                 )}
 
                 {step === 3 &&(
-                    <>
+                    <div
+                      style={{
+                      animation: "fadeIn .35s ease"
+                      }}>
                     <h2 style={S.title}>
                        📝 Record Every Expense
 
@@ -124,11 +137,14 @@ const Tutorialmodel=({username,onClose})=>{
                     </p>
 
                     <button style={S.button} onClick={nextStep}>Next</button>
-                    </>
+                    </div>
                 )}
 
                 {step === 4 &&(
-                    <>
+                    <div
+                      style={{
+                      animation: "fadeIn .35s ease"
+                      }}>
                     <h2 style={S.title}>
                         📊 Understand Your Spending
                     </h2>
@@ -140,11 +156,14 @@ const Tutorialmodel=({username,onClose})=>{
                     </p>
 
                     <button  style={S.button}onClick={nextStep}>Next</button>
-                    </>
+                    </div>
                 )}
 
                 {step === 5 &&(
-                    <>
+                    <div
+                     style={{
+                     animation: "fadeIn .35s ease"
+                     }}>
                     <h2 style={S.title}>
                         📈 Monitor Your Progress
                     </h2>
@@ -157,20 +176,24 @@ const Tutorialmodel=({username,onClose})=>{
                     </p>
 
                     <button style={S.button} onClick={nextStep}>Next</button>
-                    </>
+                    </div>
                 )}
 
                 { step === 6 && (
-                    <>
+                    <div
+                    
+                     style={{
+                     animation: "fadeIn .35s ease"
+                     }}>
                     <h2 style={S.title}>
                         🎉 You're All Set!
 
                     </h2>
 
                     <p style={S.text}>
-                        You're ready to take control of your finances.
+                       You're ready to take control of your finances!
 
-                        Start recording your expenses and watch your financial insights grow over time.
+                        Start recording your expenses today and watch your financial insights grow over time.
 
                     </p>
 
@@ -183,6 +206,8 @@ const Tutorialmodel=({username,onClose})=>{
                     }}>
                         <strong>💡 Tip</strong>
                         <p style={{marginTop:"8px", color:"#9ca3af"}}>
+                            Record your expenses regularly—even the small ones.
+                            Small daily habits lead to better financial decisions.
 
                         </p>
 
@@ -200,15 +225,15 @@ const Tutorialmodel=({username,onClose})=>{
                          Your feedback and suggestions will help shape future updates.
                     </p>
 
-                    <button style={S.button} onClick={finishTutorial}>Go to Dashborad</button>
-                    </>
+                    <button style={{...S.button ,background:"#22c55e",marginTop:"20px"}}  onClick={finishTutorial}>Go to Dashboard</button>
+                    </div>
                 )}
 
                 <div style={{
                 display:"flex",
                 justifyContent:"center",
                 gap:"8px",
-                marginTop:"20px",
+                marginTop:"30px",
                 }}>
                     {[1,2,3,4,5,6].map((dot)=>(
                         <div 
@@ -221,12 +246,32 @@ const Tutorialmodel=({username,onClose})=>{
                             step=== dot
                             ? "#3b82f6"
                             : "#374151", 
+                            transition: "all .3s ease",
+                            transform: step === dot ? "scale(1.2)" : "scale(1)",
                         }}/>
                     ))}
                     <div/>
 
             </div>
             </div>
+
+           
+           <style>
+            {`
+            @keyframes fadeIn{
+                from{
+                    opacity:0;
+                    transform:translateY(8px);
+                }
+
+                to{
+                    opacity:1;
+                    transform:translateY(0);
+                }
+            }
+        `}
+
+           </style>
 
             
 
