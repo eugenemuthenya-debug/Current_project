@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap/dist/js/bootstrap.js';
 import './App.css';
-import{ BrowserRouter as Router, Routes, Route, Navigate, replace } from 'react-router-dom';
+import{ BrowserRouter as Router, Routes, Route,  } from 'react-router-dom';
 import Signup from './components/Signup';
 import Signin from './components/Signin';
 import Addexpense from './components/Addexpense';
@@ -18,8 +18,8 @@ function App() {
     <Router>
 
       <Routes>
-        <Route path="/" element={<Navigate to="/signin" replace />} />
-        <Route path='/signup' element={<Signup/>}/>
+        {/* <Route path="/" element={<Navigate to="/signup" replace />} /> */}
+        <Route path='/' element={<Signup/>}/>
         <Route path='/signin' element={<Signin/>}/>
         
 
