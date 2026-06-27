@@ -245,7 +245,7 @@ def resendVerification():
            otp=otp,
            username=user["username"]
        )
-       return jsonify({"message":"A new verification code has been sent "}),200
+       return jsonify({"message":"A new verification code has been sent. If you don't see the     verification email within a minute, please check your Spam/Junk folder "}),200
  finally:
      connection.close()
 
