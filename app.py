@@ -9,6 +9,8 @@ from flask import Flask, request, jsonify
 # create access token:creates a token when user logs in and can be used in various components and has our user id as well
 # get jwt identity: extracts user id from the token
 # timedelta:sets token expiry
+import sib_api_v3_sdk 
+from sib_api_v3_sdk.rest import ApiException
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 # managing tokens
@@ -55,6 +57,12 @@ app.config["JWT_SECRET_KEY"]=os.environ.get("JWT_SECRET_KEY")
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=15)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
 resend.api_key=os.environ.get("RESEND_API_KEY")
+configuration=sib_api_v3_sdk.Configuration()
+configuration.api_key["api-key"]=os.getenv("BREVO_API_KEY")
+
+api_instance=sib_api_v3_sdk.TransactionalEmailsApi(
+    sib_api_v3_sdk.ApiClient(configuration)
+)
 
 
 jwt     = JWTManager(app)
@@ -249,23 +257,41 @@ def resendVerification():
 
 # -------our gmail message using resend-------------
 def send_verification_email(email,otp,username):
-    resend.Emails.send({
-        "from":"onboarding@resend.dev",
-        "to":[email],
-        "subject":"Verify Your Email",
-        "text":f"""
-          Hello {username},
+    send_smtp_email=sib_api_v3_sdk.SendSmtpEmail(
+        sender={
+            "name": "Pesa Wazi",
+            "email": "pesawazi@gmail.com"
+        },
 
-          Your verification code is :
+        to=[
+            {
+                "email": email,
+                "name": username
+            }
+        ],
 
-          {otp}
+        subject="Verify Your Email",
 
-          This code expires in 5 minutes,
+        text_content=f"""
+        Hello {username},
 
-          Pesa Wazi Team
+        Your verification code is:
 
-         """
-    })
+        {otp}
+
+       This code expires in 5 minutes.
+
+        Pesa Wazi Team
+       """
+     )
+
+    try:
+        api_instance.send_transac_email(send_smtp_email)
+
+    except ApiException as e:
+        print("Brevo Error:", e)
+        raise
+    
     
 
 # --------test email------------
