@@ -287,6 +287,8 @@ const Dashboard = () => {
           "/get_spendings",
           //  { headers: { Authorization: `Bearer ${accessToken}` } }
         );
+        
+
 
         //  console.log("RAW DATA:", response.data)
         //  console.log(accessToken)

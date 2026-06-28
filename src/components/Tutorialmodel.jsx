@@ -72,6 +72,7 @@ const Tutorialmodel=({username,onClose})=>{
     // this stores and shows render the current tutorial page tht the new user is on
     const [step,setStep]=useState(1)
     
+    
     // when user cliks next,render knws which page to deploy next
     const nextStep=()=>{
         setStep(step+1)

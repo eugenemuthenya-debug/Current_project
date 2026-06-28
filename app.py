@@ -58,7 +58,7 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=15)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
 resend.api_key=os.environ.get("RESEND_API_KEY")
 configuration=sib_api_v3_sdk.Configuration()
-configuration.api_key["api-key"]=os.getenv("BREVO_API_KEY")
+configuration.api_key["api-key"]=os.environ.get("BREVO_API_KEY")
 
 api_instance=sib_api_v3_sdk.TransactionalEmailsApi(
     sib_api_v3_sdk.ApiClient(configuration)
@@ -112,7 +112,7 @@ def signup():
 
     # we use get method to avoid key error if any of the fields are missing
     # and we also strip whitespace from the inputs
-    username = data.get("username", "").strip().lower()
+    username = data.get("username", "").strip()
     password = data.get("password", "").strip()
     email    = data.get("email",    "").strip().lower()
     phone    = data.get("phone",    "").strip()
