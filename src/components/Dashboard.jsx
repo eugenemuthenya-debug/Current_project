@@ -352,6 +352,7 @@ const Dashboard = () => {
     month:"long",
     year:"numeric"
   })
+  const percentUsed=latestlimit > 0 ? (totalSpent/latestlimit)*100:0
 
   const catTotals = {};
   filtered.forEach(({ spending, amount }) => {
@@ -430,6 +431,40 @@ const Dashboard = () => {
           </div>
         </div>
 
+        {latestlimit > 0 && percentUsed >=80 && percentUsed < 100 && (
+          <div 
+          style={{
+            background :"#3d2d00",
+            color:"#facc15",
+            padding:"14px",
+            borderRadius:"10px",
+            marginBottom:"16px",
+            border:"1px solid #ca8a04 ",
+            fontWeight:"500"
+          }}>
+            ⚠️ You have used {Math.round(percentUsed)}% of your monthly budget.
+           Spend carefully!
+          </div>
+        )}
+
+        {latestlimit > 0 && percentUsed >= 100 && (
+          <div
+          style={{
+            background:"#3b0d0d",
+            color:"#f87171",
+            padding:"14px",
+            borderRadius:"10px",
+            marginBottom:"16px",
+            border:"1px solid #dc2626",
+            fontWeight:"600",
+          }}>  
+          🚨 Budget exceeded! You've spent KSh{" "}
+          {totalSpent.toLocaleString()} out of KSh{" "}
+          {latestlimit.toLocaleString()}.
+
+          </div>
+        )}
+
         {/* metric cards */}
         <div style={S.metricsGrid}
         onMouseEnter={(e) => {
@@ -458,6 +493,11 @@ const Dashboard = () => {
               value: fmt(Math.max(0, remaining)),
               sub: "available",
               color: remaining >= 0 ? "#4ade80" : "#f87171",
+              border:percentUsed >=100
+              ? "#dc2626"
+              : percentUsed >= 80
+              ? "#facc15"
+              : "#1f2535",
             },
             {
               label: "Categories",
@@ -465,8 +505,9 @@ const Dashboard = () => {
               sub: "spending areas",
               color: "#e2e8f0",
             },
-          ].map(({ label, value, sub, color }) => (
-            <div key={label} style={S.metricCard}
+          ].map(({ label, value, sub, color,border }) => (
+            <div key={label} style={{...S.metricCard,
+              border:`1px solid ${border || "#1f2535" }`}}
             onMouseEnter={(e) => {
             e.currentTarget.style.transform = "translateY(-4px)";
             e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
