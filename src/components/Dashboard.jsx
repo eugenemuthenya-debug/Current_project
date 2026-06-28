@@ -65,17 +65,19 @@ function BudgetBar({ label, spent, limit }) {
 }
 
 // styles-->gotten from git hub repo of the the project,we will use it to style our dashboard
+const isMobile=window.innerWidth <=768
 const S = {
   page: {
     fontFamily: "'DM Sans', sans-serif",
     background: "#0f1117",
     minHeight: "100vh",
     color: "#e8e8e8",
-    padding: "2rem",
+    padding: "1rem",
   },
   topbar: {
     display: "flex",
-    alignItems: "flex-start",
+    flexDirecton: isMobile ? "column": "row",
+    alignItems: isMobile ? "stretch":"flex-start",
     justifyContent: "space-between",
     marginBottom: "1.75rem",
     flexWrap: "wrap",
@@ -88,8 +90,11 @@ const S = {
     marginBottom: "3px",
   },
   subtitle: { fontSize: "13px", color: "#6b7280" },
-  toggleWrap: { display: "flex", gap: "6px" },
+  toggleWrap: { display: "flex", gap: "6px", width:isMobile ? "100%":"auto"},
+
   btnBase: {
+    flex: isMobile ? 1 : "unset",
+    textAlign: "center",
     fontSize: "12px",
     padding: "6px 14px",
     borderRadius: "8px",
@@ -123,11 +128,11 @@ const S = {
     letterSpacing: ".06em",
     marginBottom: "8px",
   },
-  metricValue: { fontSize: "22px", fontWeight: 600 },
+  metricValue: { fontSize: isMobile ? "18px":"22px", fontWeight: 600 },
   metricSub: { fontSize: "11px", color: "#6b7280", marginTop: "4px" },
   grid2: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
     gap: "20px",
     marginBottom: "10px",
   },
@@ -135,7 +140,7 @@ const S = {
     background: "#161b27",
     border: "1px solid #1f2535",
     borderRadius: "12px",
-    padding: "1.25rem",
+    padding: isMobile ? "1rem":"1.25rem",
   },
   cardTitle: {
     fontSize: "11px",
@@ -173,7 +178,8 @@ const S = {
   },
   txnRow: {
     display: "flex",
-    alignItems: "center",
+    flexDirecton: isMobile ? "column":"row",
+    alignItems: isMobile ? "flex-start":"center",
     justifyContent: "space-between",
     padding: "9px 0",
     borderBottom: "1px solid #1e2535",
@@ -425,7 +431,15 @@ const Dashboard = () => {
         </div>
 
         {/* metric cards */}
-        <div style={S.metricsGrid}>
+        <div style={S.metricsGrid}
+        onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-4px)";
+        e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
+        }}
+        onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "translateY(0)";
+        e.currentTarget.style.boxShadow = "none";
+        }}>
           {[
             {
               label: "Total spent",
@@ -452,7 +466,15 @@ const Dashboard = () => {
               color: "#e2e8f0",
             },
           ].map(({ label, value, sub, color }) => (
-            <div key={label} style={S.metricCard}>
+            <div key={label} style={S.metricCard}
+            onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "translateY(-4px)";
+            e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
+            }}
+            onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "translateY(0)";
+           e.currentTarget.style.boxShadow = "none";
+           }}>
               <div style={S.metricLabel}>{label}</div>
               <div style={{ ...S.metricValue, color }}>{value}</div>
               <div style={S.metricSub}>{sub}</div>
@@ -479,7 +501,15 @@ const Dashboard = () => {
 
 
         {/* recent transactions */}
-        <div style={S.card}>
+        <div style={S.card}
+        onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-4px)";
+        e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
+       }}
+        onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "translateY(0)";
+        e.currentTarget.style.boxShadow = "none";
+         }}>
           <div style={S.cardTitle}>Recent transactions</div>
           {recent.length === 0 ? (
             <p style={{ color: "#6b7280", fontSize: "13px" }}>
@@ -510,13 +540,29 @@ const Dashboard = () => {
 
         {/* charts row */}
         <div style={S.grid2}>
-          <div style={S.card}>
+          <div style={S.card}
+          onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "translateY(-4px)";
+          e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
+         }}
+         onMouseLeave={(e) => {
+         e.currentTarget.style.transform = "translateY(0)";
+         e.currentTarget.style.boxShadow = "none";
+          }}>
             <div style={S.cardTitle}>Spending by category</div>
             {catList.map(([cat, amt]) => (
               <SpendingBar key={cat} cat={cat} amount={amt} max={maxCat} />
             ))}
           </div>
-          <div style={S.card}>
+          <div style={S.card}
+          onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "translateY(-4px)";
+          e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
+        }}
+          onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "translateY(0)";
+          e.currentTarget.style.boxShadow = "none";
+        }}>
             <div style={S.cardTitle}>Budget progress</div>
             <BudgetBar
               label="Total budget"
