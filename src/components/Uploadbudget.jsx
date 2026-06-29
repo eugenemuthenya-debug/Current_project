@@ -91,11 +91,11 @@ const Uploadbudget = () => {
 
   const budgetEndDate = existingBudget ? getBudgetEndDate(existingBudget.month) : null
 
-  // color based on urgency
-  const daysColor = budgetEndDate === null ? "#6b7280"
-    : budgetEndDate <= 3  ? "#f87171"   // red — almost over
-    : budgetEndDate <= 7  ? "#f59e0b"   // amber — ending soon
-    : "#4ade80"                     // green — plenty of time
+  // // color based on urgency
+  // const daysColor = budgetEndDate === null ? "#6b7280"
+  //   : budgetEndDate <= 3  ? "#f87171"   // red — almost over
+  //   : budgetEndDate <= 7  ? "#f59e0b"   // amber — ending soon
+  //   : "#4ade80"                     // green — plenty of time
 
   // ── Your original submit, with update support added ─────────────────────────
   const submit = async (e) => {
