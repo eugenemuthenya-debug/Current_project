@@ -29,7 +29,7 @@ function App() {
           </ProtectedRoute>
         }/>
 
-        <Route path='/uploadbudget' element={
+        <Route path='/addbudget' element={
           <ProtectedRoute>
             <Uploadbudget/>
           </ProtectedRoute>
