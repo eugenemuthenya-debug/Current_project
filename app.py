@@ -517,10 +517,10 @@ def get_spendings():
             u.phone,
             e.amount,
             e.date,
-            c.spending,
+            c.spending
         FROM expense_table e
         JOIN user_table u
-         ON e.user_id = u.user_id
+        ON e.user_id = u.user_id
         JOIN category_table c 
         ON e.category_id = c.category_id
         WHERE u.user_id = %s
