@@ -518,13 +518,11 @@ def get_spendings():
             e.amount,
             e.date,
             c.spending,
-            b.amount_limit,
-            b.month
         FROM expense_table e
-        JOIN user_table u ON e.user_id = u.user_id
-        JOIN category_table c ON e.category_id = c.category_id
-        LEFT JOIN budget_table b ON b.user_id = u.user_id 
-            AND DATE_FORMAT(b.month,'%%Y-%%m') = DATE_FORMAT(e.date,'%%Y-%%m')
+        JOIN user_table u
+         ON e.user_id = u.user_id
+        JOIN category_table c 
+        ON e.category_id = c.category_id
         WHERE u.user_id = %s
         ORDER BY e.date DESC
         '''
@@ -539,6 +537,39 @@ def get_spendings():
         print("Get spendings error:", str(e))
         return jsonify({"error": "Something went wrong. Please try again."}), 500
 
+    finally:
+        connection.close()
+
+
+
+# ----------get budget------------
+@app.route("/api/get_budget",methods=["GET"])
+@jwt_required()
+def get_budget():
+    user_id=get_jwt_identity()
+
+    connection,cursor=get_db(dict_cursor=True)
+
+    try:
+        sql="""SELECT
+         amount_limit,month
+         FROM budget_table
+         WHERE user_id=%s
+         ORDER BY month DESC,budget_id DESC
+         LIMIT 1
+         """
+        cursor.execute(sql,(user_id))
+        budget=cursor.fetchone()
+
+        if not budget:
+            return jsonify({"message":"No budget found"}),404
+        
+        return jsonify(budget),200
+    
+    except Exception as e:
+        print("Get budget error:",str(e))
+        return jsonify({"error":"something went wrong"}),500
+    
     finally:
         connection.close()
 

@@ -35,22 +35,22 @@ const Uploadbudget = () => {
   useEffect(() => {
     const fetchBudget = async () => {
       try {
-        const response = await api.get("/get_spendings",
+        const response = await api.get("/get_budget",
           { headers: { Authorization: `Bearer ${accessToken}` } }
         )
-        const data = response.data
-        if (data && data.length > 0) {
-          // get the most recent budget entry
-          const latest = data[0]
-          console.log(data)
-          if (latest.amount_limit && latest.month) {
+        // const data = response.data
+        // if (data && data.length > 0) {
+        //   // get the most recent budget entry
+          const latest = response.data
+          console.log("our data is",latest)
+          if (latest) {
             setExistingBudget({
-              amount_limit: parseFloat(latest.amount_limit) || 0,
+              amount_limit: Number(latest.amount_limit) || 0,
               month: latest.month,
             })
             setIsUpdate(true) // there's already a budget — default to update mode
           }
-        }
+        
       } catch (e) {
         // silently fail — user may not have data yet
         console.log("No existing budget found")

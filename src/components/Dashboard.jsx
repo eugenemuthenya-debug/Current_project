@@ -269,6 +269,8 @@ const Dashboard = () => {
   const [showTutorial, setShowTutorial] = useState(false);
   const [loading, setLoading] = useState("");
   const [error, setError] = useState("");
+  const [latestLimit,setLatestLimit]=useState(0)
+  const [budgetMonth,setBudgetMonth]=useState("")
 
   // where we store our data from flask api as a list cos our data comes as a list of objects
   const [spentData, setSpentData] = useState([]);
@@ -304,7 +306,7 @@ const Dashboard = () => {
           response.data.map((item) => ({
             ...item,
             amount: parseFloat(item.amount) || 0,
-            amount_limit: parseFloat(item.amount_limit) || 0,
+            // amount_limit: parseFloat(item.amount_limit) || 0,
           })),
         );
       } catch (error) {
@@ -315,11 +317,25 @@ const Dashboard = () => {
         // console.log("Full error:", error.response?.data)
       }
     };
+
+    const get_budget=async()=>{
+      try{
+        const response=await api.get("/get_budget")
+
+        setLatestLimit(Number(response.data.amount_limit)||0)
+        setBudgetMonth(response.data.month)
+      } catch(error){
+        console.log("No budget found")
+        setLatestLimit(0)
+        setBudgetMonth("")
+      }
+    }
     // call the function
 
     // error handle
 
     getData();
+    get_budget()
   }, []);
 
   
@@ -330,14 +346,15 @@ const Dashboard = () => {
   const filtered = (() => {
     if (view === "all") return spentData;
     // incase the user wants to view everyhting...then the entire spent info will be rendered
-    const now = new Date()
+    if(!budgetMonth)return spentData
+    const budgetDate = new Date(budgetMonth)
     
     return spentData.filter((item)=>{
       const expenseDate=new Date(item.date)
          
       return(
-        expenseDate.getMonth() === now.getMonth() &&
-        expenseDate.getFullYear() === now.getFullYear()
+        expenseDate.getMonth() === budgetDate.getMonth() &&
+        expenseDate.getFullYear() === budgetDate.getFullYear()
       )
     })
   })();
@@ -346,13 +363,17 @@ const Dashboard = () => {
 
   // derived values
   const totalSpent = filtered.reduce((s, d) => s + d.amount, 0);
-  const latestlimit = filtered[0]?.amount_limit || 0;
-  const remaining = latestlimit - totalSpent;
-  const currentMonth= new Date().toLocaleString("default",{
+  // const latestlimit = filtered[0]?.amount_limit || 0;
+  const remaining = latestLimit - totalSpent;
+  
+  const currentMonth= budgetMonth
+  ? new Date(budgetMonth).toLocaleString("default",{
     month:"long",
-    year:"numeric"
+    year:"numeric",
   })
-  const percentUsed=latestlimit > 0 ? (totalSpent/latestlimit)*100:0
+  :"No Budget"
+
+  const percentUsed=latestLimit > 0 ? (totalSpent/latestLimit)*100:0
 
   const catTotals = {};
   filtered.forEach(({ spending, amount }) => {
@@ -431,7 +452,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {latestlimit > 0 && percentUsed >=80 && percentUsed < 100 && (
+        {latestLimit > 0 && percentUsed >=80 && percentUsed < 100 && (
           <div 
           style={{
             background :"#3d2d00",
@@ -447,7 +468,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        {latestlimit > 0 && percentUsed >= 100 && (
+        {latestLimit > 0 && percentUsed >= 100 && (
           <div
           style={{
             background:"#3b0d0d",
@@ -460,7 +481,7 @@ const Dashboard = () => {
           }}>  
           🚨 Budget exceeded! You've spent KSh{" "}
           {totalSpent.toLocaleString()} out of KSh{" "}
-          {latestlimit.toLocaleString()}.
+          {latestLimit.toLocaleString()}.
 
           </div>
         )}
@@ -484,7 +505,7 @@ const Dashboard = () => {
             },
             {
               label: "Budget limit",
-              value: fmt(latestlimit),
+              value: fmt(latestLimit),
               sub: "this month",
               color: "#e2e8f0",
             },
@@ -608,14 +629,14 @@ const Dashboard = () => {
             <BudgetBar
               label="Total budget"
               spent={totalSpent}
-              limit={latestlimit}
+              limit={latestLimit}
             />
             {catList.slice(0, 5).map(([cat, amt]) => (
               <BudgetBar
                 key={cat}
                 label={cat}
                 spent={amt}
-                limit={latestlimit}
+                limit={latestLimit}
               />
             ))}
           </div>
