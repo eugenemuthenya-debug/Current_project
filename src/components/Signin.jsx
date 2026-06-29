@@ -208,7 +208,7 @@ const Signin = () => {
 
           <p style={S.footer}>
             Don't have an account?{" "}
-            <Link to="/signup" className="signin-link">Sign up</Link>
+            <Link to="/" className="signin-link">Sign up</Link>
           </p>
 
         </div>
