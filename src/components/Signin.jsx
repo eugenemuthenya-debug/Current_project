@@ -43,7 +43,7 @@ const Signin = () => {
         localStorage.setItem("access_token", response.data.access_token)
         localStorage.setItem("refresh_token",response.data.refresh_token)
         localStorage.setItem("user", JSON.stringify(response.data.user))
-        navigate("/dashboard")
+        setTimeout(() => navigate("/dashboard"), 2000);
       }
       // console.log(response.data)
     } catch (error) {
