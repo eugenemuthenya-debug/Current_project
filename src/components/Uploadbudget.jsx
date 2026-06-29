@@ -59,27 +59,42 @@ const Uploadbudget = () => {
   }, [accessToken])
 
   // ── Compute days remaining until budget month ends ──────────────────────────
-  const getDaysRemaining = (monthStr) => {
-    if (!monthStr) return null
-    // monthStr from Flask is "YYYY-MM-DD" (first of the month)
-    const budgetDate  = new Date(monthStr)
-    const year        = budgetDate.getFullYear()
-    const month       = budgetDate.getMonth()
-    // last day of that month
-    const lastDay     = new Date(year, month + 1, 0)
-    const today       = new Date()
-    today.setHours(0, 0, 0, 0)
-    const diffMs      = lastDay - today
-    const diffDays    = Math.ceil(diffMs / (1000 * 60 * 60 * 24))
-    return diffDays
+  // const getDaysRemaining = (monthStr) => {
+  //   if (!monthStr) return null
+  //   // monthStr from Flask is "YYYY-MM-DD" (first of the month)
+  //   const budgetDate  = new Date(monthStr)
+  //   const year        = budgetDate.getFullYear()
+  //   const month       = budgetDate.getMonth()
+  //   // last day of that month
+  //   const lastDay     = new Date(year, month + 1, 0)
+  //   const today       = new Date()
+  //   today.setHours(0, 0, 0, 0)
+  //   const diffMs      = lastDay - today
+  //   const diffDays    = Math.ceil(diffMs / (1000 * 60 * 60 * 24))
+  //   return diffDays
+  // }
+  const getBudgetEndDate=(monthStr)=>{
+    if (!monthStr)return "";
+
+    const budgetDate=new Date (monthStr)
+    const year=budgetDate.getFullYear()
+    const month=budgetDate.getMonth()
+
+    const lastDay=new Date(year,month + 1, 0)
+
+    return lastDay.toLocaleDateString("en-GB",{
+      day:"numeric",
+      month:"long",
+      year:"numeric"
+    })
   }
 
-  const daysLeft = existingBudget ? getDaysRemaining(existingBudget.month) : null
+  const budgetEndDate = existingBudget ? getBudgetEndDate(existingBudget.month) : null
 
   // color based on urgency
-  const daysColor = daysLeft === null ? "#6b7280"
-    : daysLeft <= 3  ? "#f87171"   // red — almost over
-    : daysLeft <= 7  ? "#f59e0b"   // amber — ending soon
+  const daysColor = budgetEndDate === null ? "#6b7280"
+    : budgetEndDate <= 3  ? "#f87171"   // red — almost over
+    : budgetEndDate <= 7  ? "#f59e0b"   // amber — ending soon
     : "#4ade80"                     // green — plenty of time
 
   // ── Your original submit, with update support added ─────────────────────────
@@ -182,37 +197,24 @@ const Uploadbudget = () => {
                   <p style={S.summaryValue}>{fmt(existingBudget.amount_limit)}</p>
                 </div>
                 <div style={{ textAlign: "right" }}>
-                  <p style={S.summaryLabel}>Period</p>
+                  <p style={S.summaryLabel}>Budget Month</p>
                   <p style={S.summaryValue}>{fmtDate(existingBudget.month)}</p>
                 </div>
               </div>
 
+              <hr style={{
+                border:"none",
+                borderTop:"1px solid #2a2d36",
+                margin:"16px 0"
+              }}/>
+
               {/* Days remaining bar */}
               <div style={S.daysRow}>
-                <span style={{ ...S.daysLabel, color: daysColor }}>
-                  {daysLeft === null        ? "—"
-                   : daysLeft <= 0         ? "Budget period has ended"
-                   : daysLeft === 1        ? "1 day remaining"
-                   : `${daysLeft} days remaining`}
-                </span>
-                {daysLeft > 0 && (
-                  <div style={S.daysBarWrap}>
-                    <div style={{
-                      ...S.daysBar,
-                      // show how much of the month is left (approx 30 days)
-                      width: `${Math.min(100, Math.round((daysLeft / 30) * 100))}%`,
-                      background: daysColor,
-                    }} />
-                  </div>
-                )}
-              </div>
-
-              {/* Expired notice */}
-              {daysLeft !== null && daysLeft <= 0 && (
-                <p style={S.expiredNote}>
-                  ⚠ Your budget period has ended. Set a new one below.
-                </p>
-              )}
+             <span style={S.daysLabel}>
+              📅 Budget ends: <strong>{budgetEndDate || "—"}</strong>
+             </span>
+            </div>
+              
             </div>
           )}
 
