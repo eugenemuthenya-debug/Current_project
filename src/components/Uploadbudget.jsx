@@ -135,6 +135,7 @@ const Uploadbudget = () => {
           border-radius: 10px; color: #e8e8e8;
           font-size: 14px; font-family: 'DM Sans', sans-serif;
           outline: none; transition: border .2s;
+          color-scheme:dark;
         }
         .bud-input::placeholder { color: #4b5563; }
         .bud-input:focus { border-color: #3b4060; }
