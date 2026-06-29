@@ -68,7 +68,7 @@ const Navbar = () => {
               isActive ? "nav-link-item active"
               :"nav-link-item"}>Add Expense</NavLink>
 
-              <NavLink to="/uploadbudget" className="nav-link-item">Add Budget</NavLink>
+              <NavLink to="/addbudget" className="nav-link-item">Add Budget</NavLink>
               
               <NavLink to="/signin" onClick={logout} className="nav-link-item logout">Log out</NavLink>
             </>
@@ -100,7 +100,7 @@ const Navbar = () => {
               <span style={N.mobileWelcome}>👋 {user.username}</span>
               <Link to="/dashboard"    className="nav-link-item" style={N.mobileLink} onClick={() => setMenuOpen(false)}>Home</Link>
               <Link to="/addexpense"   className="nav-link-item" style={N.mobileLink} onClick={() => setMenuOpen(false)}>Add Expense</Link>
-              <Link to="/uploadbudget" className="nav-link-item" style={N.mobileLink} onClick={() => setMenuOpen(false)}>Upload Budget</Link>
+              <Link to="/addbudget" className="nav-link-item" style={N.mobileLink} onClick={() => setMenuOpen(false)}>Upload Budget</Link>
               <Link to="/signin" onClick={() => { logout(); setMenuOpen(false) }} className="nav-link-item logout" style={N.mobileLink}>Log out</Link>
             </>
           ) : (
