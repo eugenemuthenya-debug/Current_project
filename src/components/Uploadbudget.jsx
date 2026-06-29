@@ -42,6 +42,7 @@ const Uploadbudget = () => {
         if (data && data.length > 0) {
           // get the most recent budget entry
           const latest = data[0]
+          console.log(data)
           if (latest.amount_limit && latest.month) {
             setExistingBudget({
               amount_limit: parseFloat(latest.amount_limit) || 0,
