@@ -229,7 +229,7 @@ def resendVerification():
        if user["is_verified"]: 
            return jsonify({"error":"Account already verified"}) ,400  
        otp=str(random.randint(100000,999999))
-       expiry=datetime.now() + timedelta(minutes=5)
+       expiry=datetime.now() + timedelta(minutes=3)
        
        cursor.execute(
            """"
@@ -275,13 +275,13 @@ def send_verification_email(email,otp,username):
         subject="Verify Your Email",
 
         text_content=f"""
-        Hello {username},
+        Greetings from, {username} Team,
 
         Your verification code is:
 
         {otp}
 
-       This code expires in 5 minutes.
+       This code expires in 3 minutes.
 
         Pesa Wazi Team
        """
