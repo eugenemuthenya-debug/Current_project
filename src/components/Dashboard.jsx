@@ -455,6 +455,7 @@ const Dashboard = () => {
 
   // username from first record,if available
   const username = spentData[0]?.username || "";
+  console.log("your dashborad username:",username)
 
   // UI
 
@@ -465,6 +466,7 @@ const Dashboard = () => {
           username={username}
           onClose={() => setShowTutorial(false)}
         />
+        
       )}
       <Navbar />
       <div style={S.page}>

@@ -42,7 +42,7 @@ const Uploadbudget = () => {
         // if (data && data.length > 0) {
         //   // get the most recent budget entry
         const latest = response.data;
-        console.log("our data is", latest);
+        // console.log("our data is", latest);
         if (latest) {
           setExistingBudget({
             amount_limit: Number(latest.amount_limit) || 0,
