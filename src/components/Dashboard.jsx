@@ -40,29 +40,29 @@ function SpendingBar({ cat, amount, max }) {
   );
 }
 
-function BudgetBar({ label, spent, limit }) {
-  const pct = limit > 0 ? Math.min(100, Math.round((spent / limit) * 100)) : 0;
-  const barColor = pct > 85 ? "#ef4444" : pct > 60 ? "#f59e0b" : "#22c55e";
-  return (
-    <div style={S.budgetRow}>
-      <div style={S.budgetTop}>
-        <span style={{ color: "#c9d0dc" }}>{label}</span>
-        <span style={{ color: "#6b7280" }}>{pct}%</span>
-      </div>
-      <div style={S.budgetBarWrap}>
-        <div
-          style={{
-            height: "100%",
-            borderRadius: "4px",
-            width: `${pct}%`,
-            background: barColor,
-            transition: "width .5s ease",
-          }}
-        />
-      </div>
-    </div>
-  );
-}
+// function BudgetBar({ label, spent, limit }) {
+//   const pct = limit > 0 ? Math.min(100, Math.round((spent / limit) * 100)) : 0;
+//   const barColor = pct > 85 ? "#ef4444" : pct > 60 ? "#f59e0b" : "#22c55e";
+//   return (
+//     <div style={S.budgetRow}>
+//       <div style={S.budgetTop}>
+//         <span style={{ color: "#c9d0dc" }}>{label}</span>
+//         <span style={{ color: "#6b7280" }}>{pct}%</span>
+//       </div>
+//       <div style={S.budgetBarWrap}>
+//         <div
+//           style={{
+//             height: "100%",
+//             borderRadius: "4px",
+//             width: `${pct}%`,
+//             background: barColor,
+//             transition: "width .5s ease",
+//           }}
+//         />
+//       </div>
+//     </div>
+//   );
+// }
 
 // styles-->gotten from git hub repo of the the project,we will use it to style our dashboard
 const isMobile = window.innerWidth <= 768;
