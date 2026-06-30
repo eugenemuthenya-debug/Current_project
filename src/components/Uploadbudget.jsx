@@ -142,7 +142,7 @@ const Uploadbudget = () => {
   const fmtDate = (d) => {
     if (!d) return "";
     const date = new Date(d);
-    return date.toLocaleDateString("en-KE", { day:"numeric",year: "numeric", month: "long" });
+    return date.toLocaleDateString("en-GB", { day:"numeric", month: "short",year: "numeric", });
   };
 
   return (
