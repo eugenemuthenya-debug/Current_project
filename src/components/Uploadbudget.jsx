@@ -1,63 +1,62 @@
-import React, { useEffect, useState } from 'react'
-import Navbar from './Navbar'
-import api from '../api/axiosInstance'
+import React, { useEffect, useState } from "react";
+import Navbar from "./Navbar";
+import api from "../api/axiosInstance";
 
 const Uploadbudget = () => {
-
   // ──  original state ──────────────────────────────────────────
-  const [user, SetUser] = useState({})
+  const [user, SetUser] = useState({});
   // for our everchanging endpoint
-  
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user")
+    const storedUser = localStorage.getItem("user");
     if (storedUser && storedUser !== "undefined") {
       try {
-        SetUser(JSON.parse(storedUser))
+        SetUser(JSON.parse(storedUser));
       } catch (e) {
-        console.error("Invalid user in localstorage")
-        localStorage.removeItem("user")
+        console.error("Invalid user in localstorage");
+        localStorage.removeItem("user");
       }
     }
-  }, [])
+  }, []);
 
-  const [amount_limit, setLimit] = useState("")
-  const [month,        setMonth] = useState("")
-  const [loading,      setLoading] = useState("")
-  const [success,      setSuccess] = useState("")
-  const [error,        setError]   = useState("")
-  const accessToken = localStorage.getItem("access_token")
+  const [amount_limit, setLimit] = useState("");
+  const [start_date, setStartDate] = useState("");
+  const [end_date, setEndDate] = useState("");
+
+  const [loading, setLoading] = useState("");
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
+  const accessToken = localStorage.getItem("access_token");
 
   // ──  fetch existing budget on load ──────────────────────────────────────
-  const [existingBudget, setExistingBudget] = useState(null) // holds current budget from API
-  const [isUpdate,       setIsUpdate]       = useState(false) // true = updating, false = new
+  const [existingBudget, setExistingBudget] = useState(null); // holds current budget from API
+  const [isUpdate, setIsUpdate] = useState(false); // true = updating, false = new
 
   useEffect(() => {
     const fetchBudget = async () => {
       try {
-        const response = await api.get("/get_budget",
-          { headers: { Authorization: `Bearer ${accessToken}` } }
-        )
+        const response = await api.get("/get_budget", {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
         // const data = response.data
         // if (data && data.length > 0) {
         //   // get the most recent budget entry
-          const latest = response.data
-          console.log("our data is",latest)
-          if (latest) {
-            setExistingBudget({
-              amount_limit: Number(latest.amount_limit) || 0,
-              month: latest.month,
-            })
-            setIsUpdate(true) // there's already a budget — default to update mode
-          }
-        
+        const latest = response.data;
+        console.log("our data is", latest);
+        if (latest) {
+          setExistingBudget({
+            amount_limit: Number(latest.amount_limit) || 0,
+            month: latest.month,
+          });
+          setIsUpdate(true); // there's already a budget — default to update mode
+        }
       } catch (e) {
         // silently fail — user may not have data yet
-        console.log("No existing budget found")
+        console.log("No existing budget found");
       }
-    }
-    if (accessToken) fetchBudget()
-  }, [accessToken])
+    };
+    if (accessToken) fetchBudget();
+  }, [accessToken]);
 
   // ── Compute days remaining until budget month ends ──────────────────────────
   // const getDaysRemaining = (monthStr) => {
@@ -74,23 +73,25 @@ const Uploadbudget = () => {
   //   const diffDays    = Math.ceil(diffMs / (1000 * 60 * 60 * 24))
   //   return diffDays
   // }
-  const getBudgetEndDate=(monthStr)=>{
-    if (!monthStr)return "";
+  const getBudgetEndDate = (monthStr) => {
+    if (!monthStr) return "";
 
-    const budgetDate=new Date (monthStr)
-    const year=budgetDate.getFullYear()
-    const month=budgetDate.getMonth()
+    const budgetDate = new Date(monthStr);
+    const year = budgetDate.getFullYear();
+    const month = budgetDate.getMonth();
 
-    const lastDay=new Date(year,month + 1, 0)
+    const lastDay = new Date(year, month + 1, 0);
 
-    return lastDay.toLocaleDateString("en-GB",{
-      day:"numeric",
-      month:"long",
-      year:"numeric"
-    })
-  }
+    return lastDay.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  };
 
-  const budgetEndDate = existingBudget ? getBudgetEndDate(existingBudget.month) : null
+  const budgetEndDate = existingBudget
+    ? getBudgetEndDate(existingBudget.month)
+    : null;
 
   // // color based on urgency
   // const daysColor = budgetEndDate === null ? "#6b7280"
@@ -100,45 +101,49 @@ const Uploadbudget = () => {
 
   // ── Your original submit, with update support added ─────────────────────────
   const submit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (Number(amount_limit) <= 10) {
-      setError("Amount must be greater than 10")
-      return
+      setError("Amount must be greater than 10");
+      return;
     }
-    setError(""); setSuccess("")
-    setLoading(isUpdate ? "Updating your budget..." : "Adding your budget...")
+    setError("");
+    setSuccess("");
+    setLoading(isUpdate ? "Updating your budget..." : "Adding your budget...");
 
     try {
-      const response = await api.post("/upload_budget",{ amount_limit, month },
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      )
-      setLoading("")
-      setSuccess(response.data.message)
+      const response = await api.post(
+        "/upload_budget",
+        { amount_limit, start_date,end_date },
+        { headers: { Authorization: `Bearer ${accessToken}` } },
+      );
+      setLoading("");
+      setSuccess(response.data.message);
 
       // update the displayed existing budget immediately
       setExistingBudget({
         amount_limit: parseFloat(amount_limit),
-        month: month,
-      })
-      setIsUpdate(true)
+        start_date: start_date,
+        end_date:end_date
+      });
+      setIsUpdate(true);
 
-      setMonth("")
-      setLimit("")
-
+      setStartDate("")
+      setEndDate("")
+      setLimit("");
     } catch (error) {
-      setLoading("")
-      setError(error.response?.data?.message || error.message)
+      setLoading("");
+      setError(error.response?.data?.message || error.message);
       // console.log("Full error:", error.response?.data)
     }
-  }
+  };
 
   // ── Helpers ──────────────────────────────────────────────────────────────────
-  const fmt     = (n) => "KSh " + Number(n).toLocaleString()
+  const fmt = (n) => "KSh " + Number(n).toLocaleString();
   const fmtDate = (d) => {
-    if (!d) return ""
-    const date = new Date(d)
-    return date.toLocaleDateString("en-KE", { year: "numeric", month: "long" })
-  }
+    if (!d) return "";
+    const date = new Date(d);
+    return date.toLocaleDateString("en-KE", { year: "numeric", month: "long" });
+  };
 
   return (
     <div style={S.page}>
@@ -179,10 +184,11 @@ const Uploadbudget = () => {
 
       <div style={S.center}>
         <div style={S.card} className="bud-card">
-
           {/* Greeting */}
           <div style={S.greeting}>
-            <span style={S.avatar}>{user?.username?.[0]?.toUpperCase() || "G"}</span>
+            <span style={S.avatar}>
+              {user?.username?.[0]?.toUpperCase() || "G"}
+            </span>
             <div>
               <p style={S.greetName}>Hi, {user?.username || "Guest"} 👋</p>
               <p style={S.greetSub}>Manage your monthly budget</p>
@@ -195,27 +201,32 @@ const Uploadbudget = () => {
               <div style={S.summaryRow}>
                 <div>
                   <p style={S.summaryLabel}>Current budget</p>
-                  <p style={S.summaryValue}>{fmt(existingBudget.amount_limit)}</p>
+                  <p style={S.summaryValue}>
+                    {fmt(existingBudget.amount_limit)}
+                  </p>
                 </div>
                 <div style={{ textAlign: "right" }}>
-                  <p style={S.summaryLabel}>Budget Month</p>
-                  <p style={S.summaryValue}>{fmtDate(existingBudget.month)}</p>
+                  <p style={S.summaryLabel}>Budget Period</p>
+                  <p style={S.summaryValue}>{fmtDate(existingBudget.start_date)}</p>
+                  -
+                  <p style={S.summaryValue}>{fmtDate(existingBudget.end_date)}</p>
                 </div>
               </div>
 
-              <hr style={{
-                border:"none",
-                borderTop:"1px solid #2a2d36",
-                margin:"16px 0"
-              }}/>
+              <hr
+                style={{
+                  border: "none",
+                  borderTop: "1px solid #2a2d36",
+                  margin: "16px 0",
+                }}
+              />
 
               {/* Days remaining bar */}
               <div style={S.daysRow}>
-             <span style={S.daysLabel}>
-              📅 Budget ends: <strong>{budgetEndDate || "—"}</strong>
-             </span>
-            </div>
-              
+                <span style={S.daysLabel}>
+                  📅 Budget ends: <strong>{budgetEndDate || "—"}</strong>
+                </span>
+              </div>
             </div>
           )}
 
@@ -231,15 +242,15 @@ const Uploadbudget = () => {
           {/* Status banners */}
           {loading && (
             <div style={S.infoBanner}>
-              <span style={S.spinner} />{loading}
+              <span style={S.spinner} />
+              {loading}
             </div>
           )}
-          {error   && <div style={S.errBanner}>⚠ {error}</div>}
+          {error && <div style={S.errBanner}>⚠ {error}</div>}
           {success && <div style={S.okBanner}>✓ {success}</div>}
 
           {/* Form */}
           <form onSubmit={submit} style={{ marginTop: "1.25rem" }}>
-
             <div style={S.field}>
               <label style={S.label}>Budget amount (KSh)</label>
               <input
@@ -252,16 +263,35 @@ const Uploadbudget = () => {
               />
             </div>
 
-            <div style={{ ...S.field, marginBottom: "1.5rem" }}>
-              <label style={S.label}>Month</label>
+            <div style={S.field}>
+              <label style={S.label}>Start Date</label>
+
               <input
                 type="date"
                 required
                 className="bud-input"
-                value={month}
-                onChange={(e) => setMonth(e.target.value)}
+                value={start_date}
+                onChange={(e) => setStartDate(e.target.value)}
               />
-              <p style={S.hint}>Pick any day in the month you're budgeting for</p>
+            </div>
+
+            <div
+              style={{
+                ...S.field,
+                marginBottom: "1.5rem",
+              }}
+            >
+              <label style={S.label}>End Date</label>
+
+              <input
+                type="date"
+                required
+                className="bud-input"
+                value={end_date}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+
+              <p style={S.hint}>Choose when this budget expires.</p>
             </div>
 
             <button
@@ -275,13 +305,12 @@ const Uploadbudget = () => {
                   ? "Update Budget"
                   : "Set Budget"}
             </button>
-
           </form>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const S = {
   page: {
@@ -291,70 +320,146 @@ const S = {
     color: "#e8e8e8",
   },
   center: {
-    display: "flex", justifyContent: "center",
+    display: "flex",
+    justifyContent: "center",
     padding: "2rem 1rem",
     minHeight: "calc(100vh - 56px)",
   },
   card: {
-    background: "#161b27", border: "1px solid #1f2535",
-    borderRadius: "16px", padding: "2rem",
-    width: "100%", maxWidth: "460px",
+    background: "#161b27",
+    border: "1px solid #1f2535",
+    borderRadius: "16px",
+    padding: "2rem",
+    width: "100%",
+    maxWidth: "460px",
     height: "fit-content",
   },
-  greeting: { display: "flex", alignItems: "center", gap: "12px", marginBottom: "1.25rem" },
+  greeting: {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    marginBottom: "1.25rem",
+  },
   avatar: {
-    width: "42px", height: "42px", borderRadius: "12px",
+    width: "42px",
+    height: "42px",
+    borderRadius: "12px",
     background: "linear-gradient(135deg, #185FA5, #6366f1)",
-    display: "flex", alignItems: "center", justifyContent: "center",
-    fontSize: "18px", fontWeight: 700, color: "#fff", flexShrink: 0,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "18px",
+    fontWeight: 700,
+    color: "#fff",
+    flexShrink: 0,
   },
   greetName: { fontSize: "16px", fontWeight: 600, color: "#ffffff", margin: 0 },
-  greetSub:  { fontSize: "12px", color: "#6b7280", margin: "2px 0 0" },
+  greetSub: { fontSize: "12px", color: "#6b7280", margin: "2px 0 0" },
 
   // current budget summary
   summaryCard: {
-    background: "#0f1117", border: "1px solid #1f2535",
-    borderRadius: "12px", padding: "14px 16px", marginBottom: "1.25rem",
+    background: "#0f1117",
+    border: "1px solid #1f2535",
+    borderRadius: "12px",
+    padding: "14px 16px",
+    marginBottom: "1.25rem",
   },
-  summaryRow:  { display: "flex", justifyContent: "space-between", marginBottom: "12px" },
-  summaryLabel:{ fontSize: "11px", color: "#6b7280", textTransform: "uppercase", letterSpacing: ".05em", margin: "0 0 4px" },
-  summaryValue:{ fontSize: "16px", fontWeight: 600, color: "#e2e8f0", margin: 0 },
-  daysRow:     { display: "flex", alignItems: "center", gap: "10px" },
-  daysLabel:   { fontSize: "12px", fontWeight: 500, flexShrink: 0 },
-  daysBarWrap: { flex: 1, height: "5px", background: "#1e2333", borderRadius: "3px", overflow: "hidden" },
-  daysBar:     { height: "100%", borderRadius: "3px", transition: "width .5s ease" },
-  expiredNote: { fontSize: "12px", color: "#f87171", marginTop: "10px", marginBottom: 0 },
+  summaryRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginBottom: "12px",
+  },
+  summaryLabel: {
+    fontSize: "11px",
+    color: "#6b7280",
+    textTransform: "uppercase",
+    letterSpacing: ".05em",
+    margin: "0 0 4px",
+  },
+  summaryValue: {
+    fontSize: "16px",
+    fontWeight: 600,
+    color: "#e2e8f0",
+    margin: 0,
+  },
+  daysRow: { display: "flex", alignItems: "center", gap: "10px" },
+  daysLabel: { fontSize: "12px", fontWeight: 500, flexShrink: 0 },
+  daysBarWrap: {
+    flex: 1,
+    height: "5px",
+    background: "#1e2333",
+    borderRadius: "3px",
+    overflow: "hidden",
+  },
+  daysBar: {
+    height: "100%",
+    borderRadius: "3px",
+    transition: "width .5s ease",
+  },
+  expiredNote: {
+    fontSize: "12px",
+    color: "#f87171",
+    marginTop: "10px",
+    marginBottom: 0,
+  },
 
-  divider:   { height: "1px", background: "#1f2535", margin: "1.25rem 0" },
+  divider: { height: "1px", background: "#1f2535", margin: "1.25rem 0" },
   modeLabel: { fontSize: "13px", color: "#9ca3af", marginBottom: "0.5rem" },
 
   infoBanner: {
-    display: "flex", alignItems: "center", gap: "8px",
-    background: "#1e2130", border: "1px solid #2a2d36",
-    borderRadius: "8px", padding: "10px 14px",
-    fontSize: "13px", color: "#9ca3af",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    background: "#1e2130",
+    border: "1px solid #2a2d36",
+    borderRadius: "8px",
+    padding: "10px 14px",
+    fontSize: "13px",
+    color: "#9ca3af",
   },
   spinner: {
-    display: "inline-block", width: "13px", height: "13px",
-    border: "2px solid #3b4060", borderTopColor: "#6366f1",
-    borderRadius: "50%", animation: "spin 0.8s linear infinite", flexShrink: 0,
+    display: "inline-block",
+    width: "13px",
+    height: "13px",
+    border: "2px solid #3b4060",
+    borderTopColor: "#6366f1",
+    borderRadius: "50%",
+    animation: "spin 0.8s linear infinite",
+    flexShrink: 0,
   },
   errBanner: {
-    background: "#1f1217", border: "1px solid #5b2020",
-    borderRadius: "8px", padding: "10px 14px",
-    fontSize: "13px", color: "#f87171", marginTop: "0.75rem",
+    background: "#1f1217",
+    border: "1px solid #5b2020",
+    borderRadius: "8px",
+    padding: "10px 14px",
+    fontSize: "13px",
+    color: "#f87171",
+    marginTop: "0.75rem",
   },
   okBanner: {
-    background: "#0f1f14", border: "1px solid #1f4d2a",
-    borderRadius: "8px", padding: "10px 14px",
-    fontSize: "13px", color: "#4ade80", marginTop: "0.75rem",
+    background: "#0f1f14",
+    border: "1px solid #1f4d2a",
+    borderRadius: "8px",
+    padding: "10px 14px",
+    fontSize: "13px",
+    color: "#4ade80",
+    marginTop: "0.75rem",
   },
   field: { marginBottom: "1rem" },
   label: {
-    display: "block", fontSize: "12px", fontWeight: 500,
-    color: "#9ca3af", marginBottom: "6px", letterSpacing: ".02em",
+    display: "block",
+    fontSize: "12px",
+    fontWeight: 500,
+    color: "#9ca3af",
+    marginBottom: "6px",
+    letterSpacing: ".02em",
   },
-  hint: { fontSize: "11px", color: "#4b5563", marginTop: "5px", marginBottom: 0 },
-}
+  hint: {
+    fontSize: "11px",
+    color: "#4b5563",
+    marginTop: "5px",
+    marginBottom: 0,
+  },
+};
 
-export default Uploadbudget
+export default Uploadbudget;

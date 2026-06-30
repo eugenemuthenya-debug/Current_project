@@ -508,6 +508,7 @@ def add_expenses():
 @jwt_required()  # Protect route with JWT
 def get_spendings():
     user_id = get_jwt_identity()  # Get user from token
+    selected_month=request.args.get("month")
 
     connection, cursor = get_db(dict_cursor=True)
     try:
@@ -524,12 +525,13 @@ def get_spendings():
         JOIN category_table c 
         ON e.category_id = c.category_id
         WHERE u.user_id = %s
+        AND DATE_FORMAT(e.date,'%%Y-%%m')=%s
         ORDER BY e.date DESC
         '''
         # LEFT JOIN on budget means expenses still show even if no budget
         # was set for that month
         # DATE_FORMAT extracts just year and month so they match correctly
-        cursor.execute(sql, (user_id,))
+        cursor.execute(sql, (user_id,selected_month))
         spent = cursor.fetchall()
         return jsonify(spent), 200
 
@@ -547,6 +549,7 @@ def get_spendings():
 @jwt_required()
 def get_budget():
     user_id=get_jwt_identity()
+    selected_month=request.args.get("month")
 
     connection,cursor=get_db(dict_cursor=True)
 
@@ -555,10 +558,10 @@ def get_budget():
          amount_limit,month
          FROM budget_table
          WHERE user_id=%s
-         ORDER BY month DESC,budget_id DESC
+         AND DATE_FORMAT(month,'%%Y-%%m') = %s
          LIMIT 1
          """
-        cursor.execute(sql,(user_id))
+        cursor.execute(sql,(user_id,selected_month))
         budget=cursor.fetchone()
 
         if not budget:
@@ -583,29 +586,42 @@ def upload_budget():
 
     data         = request.get_json()
     amount_limit = data.get("amount_limit")
-    month        = data.get("month")
+    # month        = data.get("month")
+    start_date   =data.get("start_date")
+    end_date     =data.get("end_date")
 
-    if not amount_limit or not month:
-        return jsonify({"error": "amount_limit and month are required"}), 400
+    # month = datetime.strptime(month, "%Y-%m-%d").date()
+    # month = month.replace(day=1)
+  
+    if not amount_limit or not start_date or not end_date:
+        return jsonify({"error": "Amount, start date and end date  are required"}), 400
+    
+    start = datetime.strptime(start_date, "%Y-%m-%d")
+    end = datetime.strptime(end_date, "%Y-%m-%d")
+
+    if end < start:
+     return jsonify({
+        "error":"End date cannot be before the start date."
+    }),400
 
     connection, cursor = get_db(dict_cursor=True)
     try:
         # check first if there is already a budget for this user and month
         # we cant have a duplicate entry
-        sql = "SELECT budget_id FROM budget_table WHERE user_id=%s AND month=%s"
-        cursor.execute(sql, (user_id, month))
+        sql = "SELECT budget_id FROM budget_table WHERE user_id=%s AND start_date <=%s AND end_date>=%s"
+        cursor.execute(sql, (user_id, start_date,end_date))
         existing = cursor.fetchone()
 
         if existing:
             # update it — upsert pattern (update if exists, insert if not)
-            sql = "UPDATE budget_table SET amount_limit=%s WHERE user_id=%s AND month=%s"
-            cursor.execute(sql, (amount_limit, user_id, month))
-            connection.commit()
-            return jsonify({"message": "Budget update successful"}), 200
+            # sql = "UPDATE budget_table SET amount_limit=%s WHERE user_id=%s AND start_date=%s AND end_date=%s"
+            # cursor.execute(sql, (amount_limit,user_id,end_date,start_date ))
+            # connection.commit()
+            return jsonify({"error": "This budget overlaps withan existing one"}), 200
         else:
             # create a new one
-            sql = "INSERT INTO budget_table (amount_limit, user_id, month) VALUES (%s, %s, %s)"
-            cursor.execute(sql, (amount_limit, user_id, month))
+            sql = "INSERT INTO budget_table (amount_limit, user_id, start_date,end_date) VALUES (%s, %s, %s,%s)"
+            cursor.execute(sql, (amount_limit, user_id, start_date,end_date))
             connection.commit()
             return jsonify({"message": "Budget uploaded successfully"}), 201
 

@@ -261,6 +261,32 @@ const S = {
     color: "#17f00b",
     marginTop: "10px",
   },
+
+  monthSelector: {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  gap: "20px",
+  marginBottom: "20px",
+},
+
+monthTitle: {
+  fontSize: "18px",
+  fontWeight: 600,
+  color: "#ffffff",
+  minWidth: "150px",
+  textAlign: "center",
+},
+
+monthButton: {
+  background: "#1e2130",
+  color: "#fff",
+  border: "1px solid #2d3348",
+  borderRadius: "8px",
+  padding: "8px 14px",
+  cursor: "pointer",
+  fontSize: "16px",
+},
 };
 
 // our main function
@@ -269,8 +295,33 @@ const Dashboard = () => {
   const [showTutorial, setShowTutorial] = useState(false);
   const [loading, setLoading] = useState("");
   const [error, setError] = useState("");
+
   const [latestLimit,setLatestLimit]=useState(0)
   const [budgetMonth,setBudgetMonth]=useState("")
+  const [selectedMonth,setSelectedMonth]=useState(
+    new Date().toISOString().slice(0,7)
+  )
+
+  const goToPreviousMonth=()=>{
+    const current=new Date(selectedMonth+"-01")
+
+    current.setMonth(current.getMonth()-1)
+    setSelectedMonth(current.toISOString().slice(0,7))
+  }
+
+  const goToNextMonth=()=>{
+    const current=new Date(selectedMonth + "-01")
+    current.setMonth(current.getMonth()+1)
+    setSelectedMonth(current.toISOString().slice(0,7))
+  }
+
+  const displayMonth=new Date(selectedMonth + "-01").toLocaleDateString("en-KE",
+    {
+      month:"long",
+      year:"numeric",
+    }
+  )
+  // console.log("month",selectedMonth)
 
   // where we store our data from flask api as a list cos our data comes as a list of objects
   const [spentData, setSpentData] = useState([]);
@@ -292,7 +343,7 @@ const Dashboard = () => {
       setLoading("Please wait while we fetch your data...");
       try {
         const response = await api.get(
-          "/get_spendings",
+          `/get_spendings?month=${selectedMonth}`,
           //  { headers: { Authorization: `Bearer ${accessToken}` } }
         );
         
@@ -320,7 +371,8 @@ const Dashboard = () => {
 
     const get_budget=async()=>{
       try{
-        const response=await api.get("/get_budget")
+        const response=await api.get(`/get_budget?month=${selectedMonth}`)
+        console.log(response.data)
 
         setLatestLimit(Number(response.data.amount_limit)||0)
         setBudgetMonth(response.data.month)
@@ -336,7 +388,8 @@ const Dashboard = () => {
 
     getData();
     get_budget()
-  }, []);
+    
+  }, [selectedMonth]);
 
   
 
@@ -366,12 +419,11 @@ const Dashboard = () => {
   // const latestlimit = filtered[0]?.amount_limit || 0;
   const remaining = latestLimit - totalSpent;
   
-  const currentMonth= budgetMonth
-  ? new Date(budgetMonth).toLocaleString("default",{
+  const currentMonth= new Date(selectedMonth + "-01").toLocaleString("en-KE",{
     month:"long",
     year:"numeric",
   })
-  :"No Budget"
+  
 
   const percentUsed=latestLimit > 0 ? (totalSpent/latestLimit)*100:0
 
@@ -441,6 +493,28 @@ const Dashboard = () => {
                 </button>
               ))}
             </div>
+
+            <div style={S.monthSelector}>
+              <button
+              style={S.monthButton}
+              onClick={goToPreviousMonth}
+              >
+                ◀
+              </button>
+
+              <h3 style={S.monthTitle}>
+              {displayMonth}
+              </h3>
+
+              <button
+              style={S.monthButton}
+              onClick={goToNextMonth}
+              >
+              ▶
+              </button>
+            </div>
+
+
 
             <p style={S.periodText}>
               {view === "month"
