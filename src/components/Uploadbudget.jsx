@@ -46,7 +46,8 @@ const Uploadbudget = () => {
         if (latest) {
           setExistingBudget({
             amount_limit: Number(latest.amount_limit) || 0,
-            month: latest.month,
+            start_date: latest.start_date,
+            end_date:latest.end_date,
           });
           setIsUpdate(true); // there's already a budget — default to update mode
         }
@@ -73,25 +74,25 @@ const Uploadbudget = () => {
   //   const diffDays    = Math.ceil(diffMs / (1000 * 60 * 60 * 24))
   //   return diffDays
   // }
-  const getBudgetEndDate = (monthStr) => {
-    if (!monthStr) return "";
+  // const getBudgetEndDate = (monthStr) => {
+  //   if (!monthStr) return "";
 
-    const budgetDate = new Date(monthStr);
-    const year = budgetDate.getFullYear();
-    const month = budgetDate.getMonth();
+  //   const budgetDate = new Date(monthStr);
+  //   const year = budgetDate.getFullYear();
+  //   const month = budgetDate.getMonth();
 
-    const lastDay = new Date(year, month + 1, 0);
+  //   const lastDay = new Date(year, month + 1, 0);
 
-    return lastDay.toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-  };
+  //   return lastDay.toLocaleDateString("en-GB", {
+  //     day: "numeric",
+  //     month: "long",
+  //     year: "numeric",
+  //   });
+  // };
 
-  const budgetEndDate = existingBudget
-    ? getBudgetEndDate(existingBudget.month)
-    : null;
+  // const budgetEndDate = existingBudget
+  //   ? getBudgetEndDate(existingBudget.month)
+  //   : null;
 
   // // color based on urgency
   // const daysColor = budgetEndDate === null ? "#6b7280"
@@ -196,47 +197,48 @@ const Uploadbudget = () => {
           </div>
 
           {/* ── Current budget summary card ── */}
-          {existingBudget && (
-            <div style={S.summaryCard}>
-              <div style={S.summaryRow}>
-                <div>
-                  <p style={S.summaryLabel}>Current budget</p>
-                  <p style={S.summaryValue}>
-                    {fmt(existingBudget.amount_limit)}
-                  </p>
-                </div>
-                <div style={{ textAlign: "right" }}>
-                  <p style={S.summaryLabel}>Budget Period</p>
-                  <div style={S.summaryValue}>{fmtDate(existingBudget.start_date)}</div>
-                   <div
-                    style={{
-                    color: "#6b7280",
-                    fontSize: "13px",
-                    margin: "4px 0",
-                   }}
-                  >
-                    ↓
-                  </div>
-                  <div style={S.summaryValue}>{fmtDate(existingBudget.end_date)}</div>
-                </div>
-              </div>
+{existingBudget && (
+  <div style={S.summaryCard}>
+    <div style={S.summaryRow}>
 
-              <hr
-                style={{
-                  border: "none",
-                  borderTop: "1px solid #2a2d36",
-                  margin: "16px 0",
-                }}
-              />
+      {/* Budget Amount */}
+      <div>
+        <p style={S.summaryLabel}>Current Budget</p>
+        <p style={S.summaryValue}>
+          {fmt(existingBudget.amount_limit)}
+        </p>
+      </div>
 
-              {/* Days remaining bar */}
-              <div style={S.daysRow}>
-                <span style={S.daysLabel}>
-                  📅 Budget ends: <strong>{budgetEndDate || "—"}</strong>
-                </span>
-              </div>
-            </div>
-          )}
+      {/* Budget Period */}
+      <div style={{ textAlign: "right" }}>
+        <p style={S.summaryLabel}>Budget Period</p>
+
+        <div style={S.periodContainer}>
+          <span>{fmtDate(existingBudget.start_date)}</span>
+
+          <span style={S.arrow}>↓</span>
+
+          <span>{fmtDate(existingBudget.end_date)}</span>
+        </div>
+      </div>
+
+    </div>
+
+    <hr
+      style={{
+        border: "none",
+        borderTop: "1px solid #2a2d36",
+        margin: "18px 0",
+      }}
+    />
+
+    <div style={S.daysRow}>
+      <span style={S.daysLabel}>
+        ⏳ Ends on <strong>{fmtDate(existingBudget.end_date)}</strong>
+      </span>
+    </div>
+  </div>
+)}
 
           <div style={S.divider} />
 
@@ -468,6 +470,19 @@ const S = {
     marginTop: "5px",
     marginBottom: 0,
   },
+
+  periodContainer: {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-end",
+  gap: "6px",
+},
+
+ arrow: {
+  color: "#6b7280",
+  fontSize: "15px",
+  fontWeight: "bold",
+},
 };
 
 export default Uploadbudget;

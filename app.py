@@ -9,6 +9,7 @@ from flask import Flask, request, jsonify
 # create access token:creates a token when user logs in and can be used in various components and has our user id as well
 # get jwt identity: extracts user id from the token
 # timedelta:sets token expiry
+
 import sib_api_v3_sdk 
 from sib_api_v3_sdk.rest import ApiException
 from flask_cors import CORS
@@ -29,7 +30,8 @@ import re
 # re-->regular expression
 import os
 import resend
-from datetime import timedelta , datetime
+from datetime import timedelta , datetime 
+from calendar import monthrange
 # to prevent brute force attacks,we can set a limit on how many times user can attempt to login within a certain time frame
 
 
@@ -509,6 +511,7 @@ def add_expenses():
 def get_spendings():
     user_id = get_jwt_identity()  # Get user from token
     selected_month=request.args.get("month")
+    
 
     connection, cursor = get_db(dict_cursor=True)
     try:
@@ -550,18 +553,23 @@ def get_spendings():
 def get_budget():
     user_id=get_jwt_identity()
     selected_month=request.args.get("month")
+    month_start=datetime.strptime(selected_month,"%Y-%m")
+    last_day=monthrange(month_start.year,month_start.month)[1]
+    month_end=month_start.replace(day=last_day)
+
 
     connection,cursor=get_db(dict_cursor=True)
 
     try:
         sql="""SELECT
-         amount_limit,month
+         amount_limit,start_date,end_date
          FROM budget_table
          WHERE user_id=%s
-         AND DATE_FORMAT(month,'%%Y-%%m') = %s
+         AND start_date <= %s
+         AND end_date >= %s
          LIMIT 1
          """
-        cursor.execute(sql,(user_id,selected_month))
+        cursor.execute(sql,(user_id,month_end,month_start))
         budget=cursor.fetchone()
 
         if not budget:

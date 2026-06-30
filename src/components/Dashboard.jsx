@@ -65,7 +65,7 @@ function BudgetBar({ label, spent, limit }) {
 }
 
 // styles-->gotten from git hub repo of the the project,we will use it to style our dashboard
-const isMobile=window.innerWidth <=768
+const isMobile = window.innerWidth <= 768;
 const S = {
   page: {
     fontFamily: "'DM Sans', sans-serif",
@@ -76,8 +76,8 @@ const S = {
   },
   topbar: {
     display: "flex",
-    flexDirecton: isMobile ? "column": "row",
-    alignItems: isMobile ? "stretch":"flex-start",
+    flexDirecton: isMobile ? "column" : "row",
+    alignItems: isMobile ? "stretch" : "flex-start",
     justifyContent: "space-between",
     marginBottom: "1.75rem",
     flexWrap: "wrap",
@@ -90,7 +90,11 @@ const S = {
     marginBottom: "3px",
   },
   subtitle: { fontSize: "13px", color: "#6b7280" },
-  toggleWrap: { display: "flex", gap: "6px", width:isMobile ? "100%":"auto"},
+  toggleWrap: {
+    display: "flex",
+    gap: "6px",
+    width: isMobile ? "100%" : "auto",
+  },
 
   btnBase: {
     flex: isMobile ? 1 : "unset",
@@ -119,7 +123,7 @@ const S = {
     border: "1px solid #1f2535",
     borderRadius: "12px",
     padding: "16px 18px",
-    transition:"transform .25s ease, box-shadow .25s ease"
+    transition: "transform .25s ease, box-shadow .25s ease",
   },
   metricLabel: {
     fontSize: "11px",
@@ -128,7 +132,7 @@ const S = {
     letterSpacing: ".06em",
     marginBottom: "8px",
   },
-  metricValue: { fontSize: isMobile ? "18px":"22px", fontWeight: 600 },
+  metricValue: { fontSize: isMobile ? "18px" : "22px", fontWeight: 600 },
   metricSub: { fontSize: "11px", color: "#6b7280", marginTop: "4px" },
   grid2: {
     display: "grid",
@@ -140,7 +144,7 @@ const S = {
     background: "#161b27",
     border: "1px solid #1f2535",
     borderRadius: "12px",
-    padding: isMobile ? "1rem":"1.25rem",
+    padding: isMobile ? "1rem" : "1.25rem",
   },
   cardTitle: {
     fontSize: "11px",
@@ -178,8 +182,8 @@ const S = {
   },
   txnRow: {
     display: "flex",
-    flexDirecton: isMobile ? "column":"row",
-    alignItems: isMobile ? "flex-start":"center",
+    flexDirecton: isMobile ? "column" : "row",
+    alignItems: isMobile ? "flex-start" : "center",
     justifyContent: "space-between",
     padding: "9px 0",
     borderBottom: "1px solid #1e2535",
@@ -256,37 +260,37 @@ const S = {
     animation: "spin 0.8s linear infinite",
     flexShrink: 0,
   },
-  periodText:{
+  periodText: {
     fontSize: "13px",
     color: "#17f00b",
     marginTop: "10px",
   },
 
   monthSelector: {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  gap: "20px",
-  marginBottom: "20px",
-},
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "20px",
+    marginBottom: "20px",
+  },
 
-monthTitle: {
-  fontSize: "18px",
-  fontWeight: 600,
-  color: "#ffffff",
-  minWidth: "150px",
-  textAlign: "center",
-},
+  monthTitle: {
+    fontSize: "18px",
+    fontWeight: 600,
+    color: "#ffffff",
+    minWidth: "150px",
+    textAlign: "center",
+  },
 
-monthButton: {
-  background: "#1e2130",
-  color: "#fff",
-  border: "1px solid #2d3348",
-  borderRadius: "8px",
-  padding: "8px 14px",
-  cursor: "pointer",
-  fontSize: "16px",
-},
+  monthButton: {
+    background: "#1e2130",
+    color: "#fff",
+    border: "1px solid #2d3348",
+    borderRadius: "8px",
+    padding: "8px 14px",
+    cursor: "pointer",
+    fontSize: "16px",
+  },
 };
 
 // our main function
@@ -296,31 +300,32 @@ const Dashboard = () => {
   const [loading, setLoading] = useState("");
   const [error, setError] = useState("");
 
-  const [latestLimit,setLatestLimit]=useState(0)
-  const [budgetMonth,setBudgetMonth]=useState("")
-  const [selectedMonth,setSelectedMonth]=useState(
-    new Date().toISOString().slice(0,7)
-  )
+  const [latestLimit, setLatestLimit] = useState(0);
+  const [budget, setBudget] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState(
+    new Date().toISOString().slice(0, 7),
+  );
 
-  const goToPreviousMonth=()=>{
-    const current=new Date(selectedMonth+"-01")
+  const goToPreviousMonth = () => {
+    const current = new Date(selectedMonth + "-01");
 
-    current.setMonth(current.getMonth()-1)
-    setSelectedMonth(current.toISOString().slice(0,7))
-  }
+    current.setMonth(current.getMonth() - 1);
+    setSelectedMonth(current.toISOString().slice(0, 7));
+  };
 
-  const goToNextMonth=()=>{
-    const current=new Date(selectedMonth + "-01")
-    current.setMonth(current.getMonth()+1)
-    setSelectedMonth(current.toISOString().slice(0,7))
-  }
+  const goToNextMonth = () => {
+    const current = new Date(selectedMonth + "-01");
+    current.setMonth(current.getMonth() + 1);
+    setSelectedMonth(current.toISOString().slice(0, 7));
+  };
 
-  const displayMonth=new Date(selectedMonth + "-01").toLocaleDateString("en-KE",
+  const displayMonth = new Date(selectedMonth + "-01").toLocaleDateString(
+    "en-KE",
     {
-      month:"long",
-      year:"numeric",
-    }
-  )
+      month: "long",
+      year: "numeric",
+    },
+  );
   // console.log("month",selectedMonth)
 
   // where we store our data from flask api as a list cos our data comes as a list of objects
@@ -346,8 +351,6 @@ const Dashboard = () => {
           `/get_spendings?month=${selectedMonth}`,
           //  { headers: { Authorization: `Bearer ${accessToken}` } }
         );
-        
-
 
         //  console.log("RAW DATA:", response.data)
         //  console.log(accessToken)
@@ -369,29 +372,27 @@ const Dashboard = () => {
       }
     };
 
-    const get_budget=async()=>{
-      try{
-        const response=await api.get(`/get_budget?month=${selectedMonth}`)
-        console.log(response.data)
+    const get_budget = async () => {
+      try {
+        const response = await api.get(`/get_budget?month=${selectedMonth}`);
 
-        setLatestLimit(Number(response.data.amount_limit)||0)
-        setBudgetMonth(response.data.month)
-      } catch(error){
-        console.log("No budget found")
-        setLatestLimit(0)
-        setBudgetMonth("")
+        const latest = response.data;
+
+        setLatestLimit(Number(latest.amount_limit) || 0);
+        setBudget(latest);
+      } catch (error) {
+        console.log("No budget found");
+        setLatestLimit(0);
+        setBudget(null);
       }
-    }
+    };
     // call the function
 
     // error handle
 
     getData();
-    get_budget()
-    
+    get_budget();
   }, [selectedMonth]);
-
-  
 
   // since we created our view state,we will be able to use to filter our data based on the view month selected by user
 
@@ -399,33 +400,30 @@ const Dashboard = () => {
   const filtered = (() => {
     if (view === "all") return spentData;
     // incase the user wants to view everyhting...then the entire spent info will be rendered
-    if(!budgetMonth)return spentData
-    const budgetDate = new Date(budgetMonth)
-    
-    return spentData.filter((item)=>{
-      const expenseDate=new Date(item.date)
-         
-      return(
-        expenseDate.getMonth() === budgetDate.getMonth() &&
-        expenseDate.getFullYear() === budgetDate.getFullYear()
-      )
-    })
+    if (!budget) return [];
+    const start = new Date(budget.start_date);
+    const end = new Date(budget.end_date);
+
+    return spentData.filter((item) => {
+      const expenseDate = new Date(item.date);
+
+      return expenseDate >= start && expenseDate <= end;
+    });
   })();
-  
+
   // mo-->months,d-->parameter that represents each item in the spentData list,filter-->used to create a new array with all elements that pass the test implemented by the provided function,startsWith-->used to check if the date starts with the current month and year
 
   // derived values
   const totalSpent = filtered.reduce((s, d) => s + d.amount, 0);
   // const latestlimit = filtered[0]?.amount_limit || 0;
   const remaining = latestLimit - totalSpent;
-  
-  const currentMonth= new Date(selectedMonth + "-01").toLocaleString("en-KE",{
-    month:"long",
-    year:"numeric",
-  })
-  
 
-  const percentUsed=latestLimit > 0 ? (totalSpent/latestLimit)*100:0
+  const currentMonth = new Date(selectedMonth + "-01").toLocaleString("en-KE", {
+    month: "long",
+    year: "numeric",
+  });
+
+  const percentUsed = latestLimit > 0 ? (totalSpent / latestLimit) * 100 : 0;
 
   const catTotals = {};
   filtered.forEach(({ spending, amount }) => {
@@ -437,27 +435,32 @@ const Dashboard = () => {
   const dailyTotals = {};
 
   filtered.forEach(({ date, amount }) => {
-    const day = new Date(date).getDate();
+    const day = new Date(date).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+    });
     dailyTotals[day] = (dailyTotals[day] || 0) + amount;
   });
   const trendData = Object.entries(dailyTotals)
-  .sort((a, b) => Number(a[0]) - Number(b[0]))
-  .map(([date, amount]) => ({
-    date,
-    amount,
-  }));
-  
-  
+    .sort((a, b) => Number(a[0]) - Number(b[0]))
+    .map(([date, amount]) => ({
+      date,
+      amount,
+    }));
 
   // username from first record,if available
   const username = spentData[0]?.username || "";
-  
 
   // UI
 
   return (
     <div>
-      {showTutorial && <Tutorialmodel  username={username} onClose={() => setShowTutorial(false)} />}
+      {showTutorial && (
+        <Tutorialmodel
+          username={username}
+          onClose={() => setShowTutorial(false)}
+        />
+      )}
       <Navbar />
       <div style={S.page}>
         {/* spinner/error banners */}
@@ -474,11 +477,7 @@ const Dashboard = () => {
         <div style={S.topbar}>
           <div>
             <h1 style={S.h1}>Finance Overview</h1>
-            {username && (
-              <p style={S.subtitle}>
-                Welcome back,{username}
-              </p>
-            )}
+            {username && <p style={S.subtitle}>Welcome back,{username}</p>}
 
             <div style={S.toggleWrap}>
               {["month", "all"].map((v) => (
@@ -495,81 +494,71 @@ const Dashboard = () => {
             </div>
 
             <div style={S.monthSelector}>
-              <button
-              style={S.monthButton}
-              onClick={goToPreviousMonth}
-              >
+              <button style={S.monthButton} onClick={goToPreviousMonth}>
                 ◀
               </button>
 
-              <h3 style={S.monthTitle}>
-              {displayMonth}
-              </h3>
+              <h3 style={S.monthTitle}>{displayMonth}</h3>
 
-              <button
-              style={S.monthButton}
-              onClick={goToNextMonth}
-              >
-              ▶
+              <button style={S.monthButton} onClick={goToNextMonth}>
+                ▶
               </button>
             </div>
 
-
-
             <p style={S.periodText}>
               {view === "month"
-              ? `Showing expenses for ${currentMonth}`
-               : `Showing all ${filtered.length} recorded transactions`}
+                ? `Showing expenses for ${currentMonth}`
+                : `Showing all ${filtered.length} recorded transactions`}
             </p>
-
-
           </div>
         </div>
 
-        {latestLimit > 0 && percentUsed >=80 && percentUsed < 100 && (
-          <div 
-          style={{
-            background :"#3d2d00",
-            color:"#facc15",
-            padding:"14px",
-            borderRadius:"10px",
-            marginBottom:"16px",
-            border:"1px solid #ca8a04 ",
-            fontWeight:"500"
-          }}>
-            ⚠️ You have used {Math.round(percentUsed)}% of your monthly budget.
-           Spend carefully!
+        {latestLimit > 0 && percentUsed >= 80 && percentUsed < 100 && (
+          <div
+            style={{
+              background: "#3d2d00",
+              color: "#facc15",
+              padding: "14px",
+              borderRadius: "10px",
+              marginBottom: "16px",
+              border: "1px solid #ca8a04 ",
+              fontWeight: "500",
+            }}
+          >
+            ⚠️ You have used {Math.round(percentUsed)}% of your current budget.
+            Spend carefully!
           </div>
         )}
 
         {latestLimit > 0 && percentUsed >= 100 && (
           <div
-          style={{
-            background:"#3b0d0d",
-            color:"#f87171",
-            padding:"14px",
-            borderRadius:"10px",
-            marginBottom:"16px",
-            border:"1px solid #dc2626",
-            fontWeight:"600",
-          }}>  
-          🚨 Budget exceeded! You've spent KSh{" "}
-          {totalSpent.toLocaleString()} out of KSh{" "}
-          {latestLimit.toLocaleString()}.
-
+            style={{
+              background: "#3b0d0d",
+              color: "#f87171",
+              padding: "14px",
+              borderRadius: "10px",
+              marginBottom: "16px",
+              border: "1px solid #dc2626",
+              fontWeight: "600",
+            }}
+          >
+            🚨 Current Budget exceeded! You've spent KSh {totalSpent.toLocaleString()}{" "}
+            out of KSh {latestLimit.toLocaleString()}.
           </div>
         )}
 
         {/* metric cards */}
-        <div style={S.metricsGrid}
-        onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-4px)";
-        e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
-        }}
-        onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "translateY(0)";
-        e.currentTarget.style.boxShadow = "none";
-        }}>
+        <div
+          style={S.metricsGrid}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "translateY(-4px)";
+            e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow = "none";
+          }}
+        >
           {[
             {
               label: "Total spent",
@@ -578,9 +567,20 @@ const Dashboard = () => {
               color: "#f87171",
             },
             {
-              label: "Budget limit",
+              label: "Current Budget",
               value: fmt(latestLimit),
-              sub: "this month",
+              sub: budget
+                ? `${new Date(budget.start_date).toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "short",
+                  })} → ${new Date(budget.end_date).toLocaleDateString(
+                    "en-GB",
+                    {
+                      day: "numeric",
+                      month: "short",
+                    },
+                  )}`
+                : "No active budget",
               color: "#e2e8f0",
             },
             {
@@ -588,11 +588,12 @@ const Dashboard = () => {
               value: fmt(Math.max(0, remaining)),
               sub: "available",
               color: remaining >= 0 ? "#4ade80" : "#f87171",
-              border:percentUsed >=100
-              ? "#dc2626"
-              : percentUsed >= 80
-              ? "#facc15"
-              : "#1f2535",
+              border:
+                percentUsed >= 100
+                  ? "#dc2626"
+                  : percentUsed >= 80
+                    ? "#facc15"
+                    : "#1f2535",
             },
             {
               label: "Categories",
@@ -600,17 +601,23 @@ const Dashboard = () => {
               sub: "spending areas",
               color: "#e2e8f0",
             },
-          ].map(({ label, value, sub, color,border }) => (
-            <div key={label} style={{...S.metricCard,
-              border:`1px solid ${border || "#1f2535" }`}}
-            onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-4px)";
-            e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
-            }}
-            onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-           e.currentTarget.style.boxShadow = "none";
-           }}>
+          ].map(({ label, value, sub, color, border }) => (
+            <div
+              key={label}
+              style={{
+                ...S.metricCard,
+                border: `1px solid ${border || "#1f2535"}`,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-4px)";
+                e.currentTarget.style.boxShadow =
+                  "0 10px 25px rgba(0,0,0,0.25)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "none";
+              }}
+            >
               <div style={S.metricLabel}>{label}</div>
               <div style={{ ...S.metricValue, color }}>{value}</div>
               <div style={S.metricSub}>{sub}</div>
@@ -618,8 +625,6 @@ const Dashboard = () => {
           ))}
         </div>
 
-
-        
         {/* our pie chart */}
         <div style={S.grid2}>
           <div style={S.card}>
@@ -627,25 +632,26 @@ const Dashboard = () => {
 
             <CategoryPieChart data={catList} />
           </div>
-         
+
           <div style={S.card}>
-          <div style={S.cardTitle}>Monthly Spending Trend</div>
+            <div style={S.cardTitle}>Monthly Spending Trend</div>
 
             <MonthlyTrend data={trendData} />
           </div>
         </div>
 
-
         {/* recent transactions */}
-        <div style={S.card}
-        onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-4px)";
-        e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
-       }}
-        onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "translateY(0)";
-        e.currentTarget.style.boxShadow = "none";
-         }}>
+        <div
+          style={S.card}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "translateY(-4px)";
+            e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow = "none";
+          }}
+        >
           <div style={S.cardTitle}>Recent transactions</div>
           {recent.length === 0 ? (
             <p style={{ color: "#6b7280", fontSize: "13px" }}>
@@ -676,46 +682,55 @@ const Dashboard = () => {
 
         {/* charts row */}
         <div style={S.grid2}>
-          <div style={S.card}
-          onMouseEnter={(e) => {
-          e.currentTarget.style.transform = "translateY(-4px)";
-          e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
-         }}
-         onMouseLeave={(e) => {
-         e.currentTarget.style.transform = "translateY(0)";
-         e.currentTarget.style.boxShadow = "none";
-          }}>
+          <div
+            style={S.card}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-4px)";
+              e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "none";
+            }}
+          >
             <div style={S.cardTitle}>Spending by category</div>
             {catList.map(([cat, amt]) => (
               <SpendingBar key={cat} cat={cat} amount={amt} max={maxCat} />
             ))}
           </div>
-          <div style={S.card}
-          onMouseEnter={(e) => {
-          e.currentTarget.style.transform = "translateY(-4px)";
-          e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
-        }}
-          onMouseLeave={(e) => {
-          e.currentTarget.style.transform = "translateY(0)";
-          e.currentTarget.style.boxShadow = "none";
-        }}>
-            <div style={S.cardTitle}>Budget progress</div>
-            <BudgetBar
-              label="Total budget"
-              spent={totalSpent}
-              limit={latestLimit}
-            />
-            {catList.slice(0, 5).map(([cat, amt]) => (
-              <BudgetBar
-                key={cat}
-                label={cat}
-                spent={amt}
-                limit={latestLimit}
-              />
-            ))}
+          <div
+            style={S.card}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-4px)";
+              e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "none";
+            }}
+          >
+            <div style={S.cardTitle}>Current Budget progress</div>
+            {budget && (
+              <div
+                style={{
+                  color: "#9ca3af",
+                  fontSize: "13px",
+                  marginBottom: "12px",
+                }}
+              >
+                {new Date(budget.start_date).toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "short",
+                })}
+                {" → "}
+                {new Date(budget.end_date).toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "short",
+                })}
+              </div>
+            )}
           </div>
         </div>
-
       </div>
     </div>
   );
