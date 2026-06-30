@@ -397,17 +397,22 @@ const Dashboard = () => {
   // since we created our view state,we will be able to use to filter our data based on the view month selected by user
 
   // 1.create a function called view
+  const startOfMonth=new Date(selectedMonth + "-01")
+  const endOfMonth=new Date(startOfMonth)
+  endOfMonth.setMonth(endOfMonth.getMonth() +1)
+  endOfMonth.setDate(0)
+
   const filtered = (() => {
     if (view === "all") return spentData;
     // incase the user wants to view everyhting...then the entire spent info will be rendered
-    if (!budget) return [];
-    const start = new Date(budget.start_date);
-    const end = new Date(budget.end_date);
+    // if (!budget) return [];
+    // const start = new Date(budget.start_date);
+    // const end = new Date(budget.end_date);
 
     return spentData.filter((item) => {
       const expenseDate = new Date(item.date);
 
-      return expenseDate >= start && expenseDate <= end;
+      return expenseDate >= startOfMonth && expenseDate <= endOfMonth;
     });
   })();
 
