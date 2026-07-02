@@ -196,6 +196,7 @@ const S = {
   },
   txnDate: { fontSize: "11px", color: "#6b7280" },
   txnAmt: { fontSize: "13px", fontWeight: 600, color: "#f87171" },
+  txnDescription:{color:"#9ca3af",fontSize:"13px",fontStyle:"italic",marginTop:"2px",},
   budgetRow: { marginBottom: "14px" },
   budgetTop: {
     display: "flex",
@@ -438,6 +439,7 @@ const Dashboard = () => {
   const maxCat = catList[0]?.[1] || 1;
   const recent = filtered.slice(0, 6);
   const dailyTotals = {};
+  // console.log("our full recent",recent)
 
   filtered.forEach(({ date, amount }) => {
     const day = new Date(date).toLocaleDateString("en-GB", {
@@ -678,6 +680,7 @@ const Dashboard = () => {
                 <div>
                   <div style={S.txnName}>{item.spending}</div>
                   {/* same format as your original: new Date().toLocaleDateString() */}
+                  <div style={S.txnDescription}>{item.description}</div>
                   <div style={S.txnDate}>
                     {new Date(item.date).toLocaleDateString()}
                   </div>
