@@ -39,13 +39,15 @@ const Signin = () => {
       const response = await api.post("/signin",{ email: email, password: password })
         
       setLoading("")
+      // when we use json.stringify()-we convert our data into a string from an object since localstorage accepts a string
+      // when we want to use it we convert it back to an object from local storage-we use json.parse()
       if (response.data.access_token) {
         localStorage.setItem("access_token", response.data.access_token)
         localStorage.setItem("refresh_token",response.data.refresh_token)
         localStorage.setItem("user", JSON.stringify(response.data.user))
         setTimeout(() => navigate("/dashboard"), 2000);
       }
-      // console.log(response.data)
+      console.log("our response",response)
     } catch (error) {
       setLoading("")
       if (error.response && error.response.data) {

@@ -454,8 +454,9 @@ const Dashboard = () => {
     }));
 
   // username from first record,if available
-  const username = spentData[0]?.username || "";
-  console.log("your dashborad username:",username)
+  const user = JSON.parse(localStorage.getItem("user"))
+  const username= user.username
+  // console.log("your dashborad username:",user)
 
   // UI
 
