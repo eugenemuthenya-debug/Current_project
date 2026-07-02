@@ -230,7 +230,7 @@ const Signup = () => {
 
             {/* Email */}
             <div style={S.field}>
-              <label style={S.label}>Email</label>
+              <label style={S.label}>Your Email</label>
               <input
                 type="email"
                 placeholder="you@gmail.com"
@@ -259,7 +259,7 @@ const Signup = () => {
 
             {/* Password */}
             <div style={S.field}>
-              <label style={S.label}>Password</label>
+              <label style={S.label}>Create new Password</label>
 
               <div style={{position: "relative"}}>
                 {/* to prevent the icon from shifting when screen size differs/changes */}

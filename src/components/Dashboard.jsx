@@ -680,7 +680,7 @@ const Dashboard = () => {
                 <div>
                   <div style={S.txnName}>{item.spending}</div>
                   {/* same format as your original: new Date().toLocaleDateString() */}
-                  <div style={S.txnDescription}>{item.description}</div>
+                  <div style={S.txnDescription}>{item.description ||"No description"}</div>
                   <div style={S.txnDate}>
                     {new Date(item.date).toLocaleDateString()}
                   </div>

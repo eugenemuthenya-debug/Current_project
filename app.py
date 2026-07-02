@@ -30,7 +30,7 @@ import re
 # re-->regular expression
 import os
 import resend
-from datetime import timedelta , datetime 
+from datetime import timedelta , datetime ,date
 from calendar import monthrange
 # to prevent brute force attacks,we can set a limit on how many times user can attempt to login within a certain time frame
 
@@ -553,10 +553,13 @@ def get_spendings():
 @jwt_required()
 def get_budget():
     user_id=get_jwt_identity()
-    selected_month=request.args.get("month")
-    month_start=datetime.strptime(selected_month,"%Y-%m")
-    last_day=monthrange(month_start.year,month_start.month)[1]
-    month_end=month_start.replace(day=last_day)
+
+
+    # selected_month=request.args.get("month")
+    # month_start=datetime.strptime(selected_month,"%Y-%m")
+    # last_day=monthrange(month_start.year,month_start.month)[1]
+    # month_end=month_start.replace(day=last_day)
+    today=date.today()
 
 
     connection,cursor=get_db(dict_cursor=True)
@@ -570,7 +573,8 @@ def get_budget():
          AND end_date >= %s
          LIMIT 1
          """
-        cursor.execute(sql,(user_id,month_end,month_start))
+        # cursor.execute(sql,(user_id,month_end,month_start))
+        cursor.execute(sql,(user_id,today,today))
         budget=cursor.fetchone()
 
         if not budget:

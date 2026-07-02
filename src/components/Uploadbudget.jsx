@@ -42,7 +42,7 @@ const Uploadbudget = () => {
         // if (data && data.length > 0) {
         //   // get the most recent budget entry
         const latest = response.data;
-        // console.log("our data is", latest);
+        console.log("our data is", latest);
         if (latest) {
           setExistingBudget({
             amount_limit: Number(latest.amount_limit) || 0,
@@ -100,7 +100,35 @@ const Uploadbudget = () => {
   //   : budgetEndDate <= 7  ? "#f59e0b"   // amber — ending soon
   //   : "#4ade80"                     // green — plenty of time
 
-  // ── Your original submit, with update support added ─────────────────────────
+  // computing our budget progress bar
+const getBudgetProgress=(start,end)=>{
+  if(!start || !end) return 0
+
+  const startDate=new Date(start)
+  const endDate=new Date(end)
+  const today=new Date()
+ 
+  // we rest all our times to midnight
+  startDate.setHours(0,0,0,0)
+  endDate.setHours(0,0,0,0)
+  today.setHours(0,0,0,0)
+   
+  // since js stores time in milliseconds,we convert it back to days through division
+  // Math.max(1,0)-->returns the maximum,largest number it was given 
+  // Math.min(0,1)-->returns the smalles number it was given
+  const totalDays=Math.max(1,(endDate-startDate)/(1000*60*60*24))
+  
+
+  const elapsedDays=
+  (today-startDate)/(1000*60*60*24)
+
+  const percent=
+  Math.min(100,Math.max(0,(elapsedDays/totalDays)*100))
+
+  return Math.round(percent)
+}
+ 
+ 
   const submit = async (e) => {
     e.preventDefault();
     if (Number(amount_limit) <= 10) {
@@ -145,6 +173,29 @@ const Uploadbudget = () => {
     const date = new Date(d);
     return date.toLocaleDateString("en-GB", { day:"numeric", month: "short",year: "numeric", });
   };
+
+  const budgetProgress=existingBudget?getBudgetProgress(
+    existingBudget.start_date,
+    existingBudget.end_date)
+    :0
+
+    const getDaysRemaining=(end)=>{
+      if (!end) return 0
+
+      const today=new Date()
+      const endDate=new Date(end)
+
+      today.setHours(0,0,0,0)
+      endDate.setHours(0,0,0,0)
+
+      return Math.max(0,
+        Math.ceil((endDate-today)/(1000*60*60*24))
+      )
+    }
+
+    const daysRemaining=existingBudget?getDaysRemaining(existingBudget.end_date)
+    :0
+  
 
   return (
     <div style={S.page}>
@@ -237,6 +288,22 @@ const Uploadbudget = () => {
         ⏳ Ends on <strong>{fmtDate(existingBudget.end_date)}</strong>
       </span>
     </div>
+
+    {/* progress bar */}
+   <div style={S.progressContainer}>
+
+     <div style={S.progressTrack}>
+      <div style={{...S.progressFill,width:`${budgetProgress}%`}}>
+      </div>
+
+      <p style={S.progressText}>
+        <span>{budgetProgress}%completed</span>
+        <span>{daysRemaining} days remaining</span>
+
+      </p>
+    </div>
+
+   </div>
   </div>
 )}
 
@@ -367,6 +434,31 @@ const S = {
   greetSub: { fontSize: "12px", color: "#6b7280", margin: "2px 0 0" },
 
   // current budget summary
+  progressContainer:{
+    marginTop:"18px"
+  },
+
+  progressTrack: {
+  width: "100%",
+  height: "10px",
+  background: "#2d3748",
+  borderRadius: "999px",
+  overflow: "hidden",
+  marginTop: "14px",
+},
+
+progressFill: {
+  height: "100%",
+  background: "linear-gradient(90deg, #22c55e, #3b82f6)",
+  borderRadius: "999px",
+  transition: "width 0.4s ease",
+},
+
+progressText: {
+  marginTop: "8px",
+  fontSize: "13px",
+  color: "#9ca3af",
+},
   summaryCard: {
     background: "#0f1117",
     border: "1px solid #1f2535",
