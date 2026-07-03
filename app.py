@@ -591,68 +591,71 @@ def get_budget():
 
 
 # ------------get_budget_summary----------
-# @app.route("/api/get_budget_summary", methods=["GET"])
-# @jwt_required()
-# def get_budget_summary():
+@app.route("/api/get_budget_summary", methods=["GET"])
+@jwt_required()
+def get_budget_summary():
 
-#     user_id=get_jwt_identity()
-#     selected_month=request.args.get("month")
-#     connection,cursor=get_db(dict_cursor=True)
-#     selected_date=datetime.strptime(selected_month + "-01","%Y-%m-%d").date()
-
-#     try:
-#         sql = """
-#         SELECT
-#         budget_id,
-#         amount_limit,
-#         start_date,
-#         end_date
-#         FROM budget_table
-#         WHERE user_id = %s
-#         AND %s BETWEEN start_date AND end_date
-#         LIMIT 1
-#         """
-
-#         cursor.execute(sql,(user_id,selected_date))
-#         budget=cursor.fetchone()
-
-#         if not budget:
-#             return jsonify({"message":"No active budget"}),404
-        
-#         sql = """
-#         SELECT COALESCE(SUM(amount), 0) AS total_spent
-#         FROM expense_table
-#         WHERE user_id = %s
-#         AND date BETWEEN %s AND %s
-#         """
-
-#         cursor.execute(
-#         sql,
-#     (
-#         user_id,
-#         budget["start_date"],
-#         budget["end_date"],
-#     ),
-#     )
-#         spent=cursor.fetchone()
-
-#         total_spent=float(spent["total_spent"])
-
-#         remaining=float(budget["amount_limit"])-total_spent
-
-#         return jsonify({
-#             "amount_limit": float(budget["amount_limit"]),
-#             "total_spent": total_spent,
-#             "remaining": remaining,
-#             "start_date": budget["start_date"],
-#             "end_date": budget["end_date"],
-#         }), 200
+    user_id=get_jwt_identity()
+    selected_month=request.args.get("month")
+    month_start=datetime.strptime(selected_month, "%Y-%m").date()
+    last_day=monthrange(month_start.year,month_start.month)[1]
+    month_end=month_start.replace(day=last_day)
+    connection,cursor=get_db(dict_cursor=True)
     
-#     except Exception as e:
-#         print("Budget summary error:",str(e))
-#         return jsonify({"error":"Something went wrong"}),500
-#     finally:
-#         connection.close()
+
+    try:
+        sql = """
+        SELECT
+        budget_id,
+        amount_limit,
+        start_date,
+        end_date
+        FROM budget_table
+        WHERE user_id = %s
+        AND  start_date <=%s AND end_date >=%s
+        LIMIT 1
+        """
+
+        cursor.execute(sql,(user_id,month_end,month_start))
+        budget=cursor.fetchone()
+
+        if not budget:
+            return jsonify({"message":"No active budget"}),404
+        
+        sql = """
+        SELECT COALESCE(SUM(amount), 0) AS total_spent
+        FROM expense_table
+        WHERE user_id = %s
+        AND date BETWEEN %s AND %s
+        """
+
+        cursor.execute(
+        sql,
+    (
+        user_id,
+        budget["start_date"],
+        budget["end_date"],
+    ),
+    )
+        spent=cursor.fetchone()
+
+        total_spent=float(spent["total_spent"])
+
+        remaining=float(budget["amount_limit"])-total_spent
+
+        return jsonify({
+            "amount_limit": float(budget["amount_limit"]),
+            "total_spent": total_spent,
+            "remaining": remaining,
+            "start_date": budget["start_date"],
+            "end_date": budget["end_date"],
+        }), 200
+    
+    except Exception as e:
+        print("Budget summary error:",str(e))
+        return jsonify({"error":"Something went wrong"}),500
+    finally:
+        connection.close()
 
 
 # -------Upload Budget--------[success — with update functionality]

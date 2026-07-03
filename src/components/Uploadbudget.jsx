@@ -42,7 +42,7 @@ const Uploadbudget = () => {
         // if (data && data.length > 0) {
         //   // get the most recent budget entry
         const latest = response.data;
-        console.log("our data is", latest);
+        // console.log("our data is", latest);
         if (latest) {
           setExistingBudget({
             amount_limit: Number(latest.amount_limit) || 0,
@@ -191,11 +191,17 @@ const getBudgetProgress=(start,end)=>{
       return Math.max(0,
         Math.ceil((endDate-today)/(1000*60*60*24))
       )
+      // Math.ceil()-->comes from ceiling
+      // Math.ceil()->it pushes a float[3.8] to the next whole number eg:3.8->4 or 3.6->4 or 3.1->3
+      // if the number is a whole number 3.0->3
+      // we also have Math.floor
     }
 
     const daysRemaining=existingBudget?getDaysRemaining(existingBudget.end_date)
     :0
-  
+  // console.log("your budget progress is",budgetProgress)
+  // // console.log("calcultions",existingBudget)
+  // console.log("your days remaining",daysRemaining)
 
   return (
     <div style={S.page}>
@@ -296,12 +302,21 @@ const getBudgetProgress=(start,end)=>{
       <div style={{...S.progressFill,width:`${budgetProgress}%`}}>
       </div>
 
-      <p style={S.progressText}>
-        <span>{budgetProgress}%completed</span>
-        <span>{daysRemaining} days remaining</span>
-
-      </p>
+      
     </div>
+
+    <div style={S.progressText}>
+        <div style={S.daysRow}>
+          Budget Percentage:
+          <strong style={{color:"#e8e8e8"}}>{budgetProgress}% completed</strong>
+        </div>
+        
+        <div style={S.daysRow}>
+          Days remaining:
+          <span style={{color:"#e8e8e8"}}>{daysRemaining} days remaining</span>
+
+        </div>
+      </div>
 
    </div>
   </div>
@@ -457,7 +472,7 @@ progressFill: {
 progressText: {
   marginTop: "8px",
   fontSize: "13px",
-  color: "#9ca3af",
+  color: "#626974",
 },
   summaryCard: {
     background: "#0f1117",

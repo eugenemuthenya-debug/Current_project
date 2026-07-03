@@ -306,6 +306,9 @@ const Dashboard = () => {
   const [selectedMonth, setSelectedMonth] = useState(
     new Date().toISOString().slice(0, 7),
   );
+  const [remaining,setRemaining]=useState()
+  const [budgetSpent,setBudgetSpent]=useState(0)
+  
 
   const goToPreviousMonth = () => {
     const current = new Date(selectedMonth + "-01");
@@ -373,14 +376,16 @@ const Dashboard = () => {
       }
     };
 
-    const get_budget = async () => {
+    const getBudgetSummary = async () => {
       try {
-        const response = await api.get(`/get_budget?month=${selectedMonth}`);
+        const response = await api.get(`/get_budget_summary?month=${selectedMonth}`);
 
-        const latest = response.data;
+        const summary = response.data;
 
-        setLatestLimit(Number(latest.amount_limit) || 0);
-        setBudget(latest);
+        setLatestLimit(Number(summary.amount_limit) || 0);
+        setBudget(summary);
+        setRemaining(Number(summary.remaining))
+        setBudgetSpent(summary.total_spent)
       } catch (error) {
         console.log("No budget found");
         setLatestLimit(0);
@@ -392,7 +397,7 @@ const Dashboard = () => {
     // error handle
 
     getData();
-    get_budget();
+    getBudgetSummary();
   }, [selectedMonth]);
 
   // since we created our view state,we will be able to use to filter our data based on the view month selected by user
@@ -420,16 +425,21 @@ const Dashboard = () => {
   // mo-->months,d-->parameter that represents each item in the spentData list,filter-->used to create a new array with all elements that pass the test implemented by the provided function,startsWith-->used to check if the date starts with the current month and year
 
   // derived values
-  const totalSpent = filtered.reduce((s, d) => s + d.amount, 0);
+  
+  
+  // const totalSpent = filtered.reduce((s, d) => s + d.amount, 0);
   // const latestlimit = filtered[0]?.amount_limit || 0;
-  const remaining = latestLimit - totalSpent;
+  // const remaining = latestLimit - totalSpent;
+
+  console.log("this is your remaining:",remaining)
 
   const currentMonth = new Date(selectedMonth + "-01").toLocaleString("en-KE", {
     month: "long",
     year: "numeric",
   });
-
-  const percentUsed = latestLimit > 0 ? (totalSpent / latestLimit) * 100 : 0;
+ 
+  
+  const percentUsed = latestLimit > 0 ? (budgetSpent / latestLimit) * 100 : 0;
 
   const catTotals = {};
   filtered.forEach(({ spending, amount }) => {
@@ -552,7 +562,7 @@ const Dashboard = () => {
               fontWeight: "600",
             }}
           >
-            🚨 Current Budget exceeded! You've spent KSh {totalSpent.toLocaleString()}{" "}
+            🚨 Current Budget exceeded! You've spent KSh {budgetSpent.toLocaleString()}{" "}
             out of KSh {latestLimit.toLocaleString()}.
           </div>
         )}
@@ -572,7 +582,7 @@ const Dashboard = () => {
           {[
             {
               label: "Total spent",
-              value: fmt(totalSpent),
+              value: fmt(budgetSpent),
               sub: `${filtered.length} transactions`,
               color: "#f87171",
             },
