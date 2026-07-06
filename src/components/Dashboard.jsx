@@ -214,7 +214,7 @@ const Dashboard = () => {
   // const latestlimit = filtered[0]?.amount_limit || 0;
   // const remaining = latestLimit - totalSpent;
 
-  console.log("this is your remaining:", remaining);
+  // console.log("this is your remaining:", remaining);
 
   const currentMonth = new Date(selectedMonth + "-01").toLocaleString("en-KE", {
     month: "long",

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import {  Link ,NavLink } from 'react-router-dom'
+import { APP_VERSION } from '../config/version'
 
 const Navbar = () => {
   // ── log out ──────────────────────────────────────────
@@ -50,7 +51,14 @@ const Navbar = () => {
         {/* Logo / brand */}
         <Link to="/dashboard" style={N.brand}>
           <span style={N.brandIcon}>₿</span>
-          <span>PESA WAZI</span>
+          <span>PESA WAZI </span>
+          <span style={{
+            fontSize:"13px",
+            fontWeight:"400",
+            color:" #9CA3AF",
+            marginLeft:"6px"
+
+          }}>{APP_VERSION}</span>
         </Link>
 
         {/* Desktop nav links */}
