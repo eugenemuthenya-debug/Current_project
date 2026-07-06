@@ -123,10 +123,17 @@ const Dashboard = () => {
       //fetching data
       setLoading("Please wait while we fetch your data...");
       try {
-        const response = await api.get(
-          `/get_spendings?month=${selectedMonth}`,
-          //  { headers: { Authorization: `Bearer ${accessToken}` } }
-        );
+        // const response = await api.get(
+        //   `/get_spendings?month=${selectedMonth}`,
+        //   //  { headers: { Authorization: `Bearer ${accessToken}` } }
+        // );
+        let response
+
+        if (view ==="month"){
+          response = await api.get(`/get_spendings?month=${selectedMonth}`)
+        } else{
+          response =await api.get("/get_spendings")
+        }
 
         //  console.log("RAW DATA:", response.data)
         //  console.log(accessToken)
@@ -175,7 +182,7 @@ const Dashboard = () => {
 
     getData();
     getBudgetSummary();
-  }, [selectedMonth]);
+  }, [selectedMonth,view]);
 
   // since we created our view state,we will be able to use to filter our data based on the view month selected by user
 
@@ -287,7 +294,7 @@ const Dashboard = () => {
               ))}
             </div>
 
-            <div style={S.monthSelector}>
+            {/* <div style={S.monthSelector}>
               <button style={S.monthButton} onClick={goToPreviousMonth}>
                 ◀
               </button>
@@ -297,7 +304,23 @@ const Dashboard = () => {
               <button style={S.monthButton} onClick={goToNextMonth}>
                 ▶
               </button>
-            </div>
+            </div> */}
+{/* We wrapped our selectoe in a view block and it is set ,if the user clicks (this month)-->the selector is displayed,(All time)-->the selector disappers */}
+            {
+              view ==="month" &&(
+                <div style={S.monthSelector}>
+                  <button style={S.monthButton} onClick={goToPreviousMonth}>
+                    ◀
+                  </button>
+
+                  <h3 style={S.monthTitle}>{displayMonth}</h3>
+                  <button style={S.monthButton} onClick={goToNextMonth}>
+                    ▶
+                  </button>
+
+                </div>
+              )
+            }
 
             <p style={S.periodText}>
               {view === "month"

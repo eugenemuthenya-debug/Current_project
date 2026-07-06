@@ -509,33 +509,58 @@ def add_expenses():
 @app.route("/api/get_spendings", methods=["GET"])
 @jwt_required()  # Protect route with JWT
 def get_spendings():
+
     user_id = get_jwt_identity()  # Get user from token
+    # this checks whether the url,has a parameter called month and if it does store=selected_montj
     selected_month=request.args.get("month")
+    
     
 
     connection, cursor = get_db(dict_cursor=True)
     try:
-        sql = '''
-        SELECT 
+        if selected_month:
+         sql = '''
+         SELECT 
             u.username,
             u.phone,
             e.amount,
             e.description,
             e.date,
             c.spending
+            FROM expense_table e
+            JOIN user_table u
+            ON e.user_id = u.user_id
+            JOIN category_table c 
+            ON e.category_id = c.category_id
+            WHERE u.user_id = %s
+            AND DATE_FORMAT(e.date,'%%Y-%%m')=%s
+            ORDER BY e.date DESC
+            '''
+            # LEFT JOIN on budget means expenses still show even if no budget
+            # was set for that month
+            # DATE_FORMAT extracts just year and month so they match correctly
+         cursor.execute(sql, (user_id,selected_month))
+
+        else : 
+            sql = '''
+        SELECT
+        u.username,
+        u.phone,
+        e.amount,
+        e.description,
+        e.date,
+        c.spending
         FROM expense_table e
         JOIN user_table u
         ON e.user_id = u.user_id
-        JOIN category_table c 
+        JOIN category_table c
         ON e.category_id = c.category_id
         WHERE u.user_id = %s
-        AND DATE_FORMAT(e.date,'%%Y-%%m')=%s
         ORDER BY e.date DESC
         '''
-        # LEFT JOIN on budget means expenses still show even if no budget
-        # was set for that month
-        # DATE_FORMAT extracts just year and month so they match correctly
-        cursor.execute(sql, (user_id,selected_month))
+
+        cursor.execute(sql, (user_id,))
+    
         spent = cursor.fetchall()
         return jsonify(spent), 200
 
@@ -596,10 +621,12 @@ def get_budget():
 def get_budget_summary():
 
     user_id=get_jwt_identity()
+
     selected_month=request.args.get("month")
     month_start=datetime.strptime(selected_month, "%Y-%m").date()
     last_day=monthrange(month_start.year,month_start.month)[1]
     month_end=month_start.replace(day=last_day)
+
     connection,cursor=get_db(dict_cursor=True)
     
 
