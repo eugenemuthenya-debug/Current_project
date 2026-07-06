@@ -514,8 +514,6 @@ def get_spendings():
     # this checks whether the url,has a parameter called month and if it does store=selected_montj
     selected_month=request.args.get("month")
     
-    
-
     connection, cursor = get_db(dict_cursor=True)
     try:
         if selected_month:
@@ -536,30 +534,30 @@ def get_spendings():
             AND DATE_FORMAT(e.date,'%%Y-%%m')=%s
             ORDER BY e.date DESC
             '''
+         cursor.execute(sql, (user_id,selected_month))
             # LEFT JOIN on budget means expenses still show even if no budget
             # was set for that month
             # DATE_FORMAT extracts just year and month so they match correctly
-         cursor.execute(sql, (user_id,selected_month))
+         
 
         else : 
             sql = '''
-        SELECT
-        u.username,
-        u.phone,
-        e.amount,
-        e.description,
-        e.date,
-        c.spending
-        FROM expense_table e
-        JOIN user_table u
-        ON e.user_id = u.user_id
-        JOIN category_table c
-        ON e.category_id = c.category_id
-        WHERE u.user_id = %s
-        ORDER BY e.date DESC
-        '''
-
-        cursor.execute(sql, (user_id,))
+         SELECT
+            u.username,
+            u.phone,
+            e.amount,
+            e.description,
+            e.date,
+            c.spending
+            FROM expense_table e
+            JOIN user_table u
+            ON e.user_id = u.user_id
+            JOIN category_table c
+            ON e.category_id = c.category_id
+            WHERE u.user_id = %s
+            ORDER BY e.date DESC
+            '''
+            cursor.execute(sql, (user_id,))
     
         spent = cursor.fetchall()
         return jsonify(spent), 200
