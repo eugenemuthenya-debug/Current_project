@@ -77,7 +77,7 @@ const Navbar = () => {
               :"nav-link-item"}>Add Expense</NavLink>
 
               <NavLink to="/addbudget" className="nav-link-item">Add Budget</NavLink>
-              <NavLink to="/" className={"nav-link-item"}>About us</NavLink>
+              <NavLink to="/" className={"nav-link-item"}>About PesaWazi</NavLink>
               
               <NavLink to="/signin" onClick={logout} className="nav-link-item logout">Log out</NavLink>
             </>
@@ -110,7 +110,7 @@ const Navbar = () => {
               <Link to="/dashboard"    className="nav-link-item" style={N.mobileLink} onClick={() => setMenuOpen(false)}>Home</Link>
               <Link to="/addexpense"   className="nav-link-item" style={N.mobileLink} onClick={() => setMenuOpen(false)}>Add Expense</Link>
               <Link to="/addbudget" className="nav-link-item" style={N.mobileLink} onClick={() => setMenuOpen(false)}>Add Budget</Link>
-              <Link to="/" className="nav-link-item" style={N.mobileLink} onClick={() => setMenuOpen(false)}>About Us</Link>
+              <Link to="/" className="nav-link-item" style={N.mobileLink} onClick={() => setMenuOpen(false)}>About PesaWazi</Link>
 
               <Link to="/signin" onClick={() => { logout(); setMenuOpen(false) }} className="nav-link-item logout" style={N.mobileLink}>Log out</Link>
             </>
