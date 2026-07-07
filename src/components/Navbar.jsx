@@ -77,6 +77,7 @@ const Navbar = () => {
               :"nav-link-item"}>Add Expense</NavLink>
 
               <NavLink to="/addbudget" className="nav-link-item">Add Budget</NavLink>
+              <NavLink to="/" className={"nav-link-item"}>About us</NavLink>
               
               <NavLink to="/signin" onClick={logout} className="nav-link-item logout">Log out</NavLink>
             </>
