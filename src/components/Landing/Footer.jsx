@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <footer style={S.footer}>
+    <footer className="Footer-section" style={S.footer}>
       <h2 style={S.logo}> Pesa Wazi</h2>
       <p style={S.tagline}>Budget smarter. Spend Wiser. Live Better.</p>
 

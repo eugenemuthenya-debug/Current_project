@@ -1,6 +1,6 @@
 const Privacy = () => {
   return (
-    <section style={S.section} id="privacy">
+    <section className="Privacy-section" style={S.section} id="privacy">
       <h2 style={S.heading}>Your Privacy is top priority</h2>
 
       <p style={S.subtitle}>
@@ -89,7 +89,7 @@ const Privacy = () => {
 const S = {
   section: {
     background: "#111827",
-    padding: "80px",
+    padding: "80px 40px",
     textAlign: "center",
     color: "white",
   },

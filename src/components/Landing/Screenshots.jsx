@@ -8,7 +8,7 @@ const Screenshots = () => {
     {
       title: "Sign in",
       Description: "Log in if you already have a free acount",
-      image: "/images/signin.png",
+      image: "/images/Signin.png",
     },
     {
       title: "Email Verification",
@@ -33,7 +33,7 @@ const Screenshots = () => {
     },
   ];
   return (
-    <section style={S.section} id="screenshots">
+    <section className="Screenshot-section" style={S.section} id="screenshots">
       <h2 style={S.heading}>See Pesa Wazi in Action</h2>
 
       <p style={S.subtitle}>A quick tour of the tools you'll use .</p>
@@ -85,7 +85,7 @@ const Screenshots = () => {
 const S = {
   section: {
     background: "#1f2937",
-    padding: "80px",
+    padding: "80px 40px",
     color: "white",
     textAlign: "center",
   },
@@ -104,7 +104,7 @@ const S = {
   },
   previewContainer: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
     gap: "35px",
   },
 

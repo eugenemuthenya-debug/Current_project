@@ -6,6 +6,7 @@ import LandingNavbar from "../components/Landing/Navbar"
 import Privacy from "../components/Landing/Privacy"
 import Screenshots from "../components/Landing/Screenshots"
 import Version from "../components/Landing/Version"
+// import "./styles/responsice.css"
 
 const LandingPage= ()=>{
     return(

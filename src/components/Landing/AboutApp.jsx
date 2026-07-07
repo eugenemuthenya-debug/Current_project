@@ -1,6 +1,6 @@
 const AboutApp = () => {
   return (
-    <section style={S.section} id="about">
+    <section  className="About-section" style={S.section} id="about">
       <h2 style={S.heading}>What is Pesa Wazi?</h2>
 
       <p style={S.text}>
@@ -78,7 +78,7 @@ const AboutApp = () => {
 
 const S = {
   section: {
-    padding: "80px",
+    padding: "80px 40px",
     background: "#1F2937",
     textAlign: "center",
   },

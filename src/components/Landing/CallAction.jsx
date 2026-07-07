@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 const Action=()=>{
     const navigate=useNavigate()
     return(
-        <section style={S.section}>
+        <section className="Action-section" style={S.section}>
             <h2 style={S.heading}>
                 Ready to Take Control of Your Finances?
             </h2>

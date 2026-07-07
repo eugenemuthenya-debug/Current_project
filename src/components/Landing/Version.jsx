@@ -1,10 +1,10 @@
 const Version = () => {
   return(
-    <section style={S.section}>
+    <section className="Version-section" style={S.section}>
     <h2 style={S.heading}>🚀 Current release</h2>
 
     <div style={S.card}>
-      <div style={S.versionBadge}>Version 1.0.1</div>
+      <div style={S.versionBadge}>Version v1.0.1</div>
       <h3>Codename:Optimized</h3>
 
       <p style={S.description}>
@@ -25,7 +25,7 @@ const Version = () => {
 
 const S = {
   section: {
-    padding: "90px",
+    padding: "90px 40px",
     background: "#111827",
     color: "white",
     textAlign: "center",

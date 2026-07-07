@@ -1,0 +1,31 @@
+@media (max-width: 768px){
+    .Hero-section{
+        padding: 40px 20px !important;
+    }
+
+    .About-section,
+    .Privacy-section,
+    .Screenshot-section,
+    .Version-section,
+    .Action-section,
+    .Footer-section{
+        padding: 60px 20px !important;
+    }
+    .Hero-left{
+        width: 100% !important;
+    }
+    .Hero-left{
+        width: 100% !important;
+        margin-top: 40px;
+    }
+    html,
+    body{
+        overflow-x: hidden;
+    }
+    img{
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+
+}

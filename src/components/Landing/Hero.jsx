@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 const Hero= ()=>{
     const navigate=useNavigate()
     return(
-        <section style={S.hero}>
+        <section className="Hero-section" style={S.hero}>
             
 
-            <div style={S.left}>
+            <div className="Hero-left" style={S.left}>
                 <h1 style={S.title}>Know where every shilling goes</h1>
 
                 <p style={S.subtitle}>
@@ -20,7 +20,7 @@ const Hero= ()=>{
 
             </div>
 
-            <div style={S.right}>
+            <div className="Hero-right" style={S.right}>
                 <div style={S.placeholder}>
                     Dashboard Screenshot
                 </div>
@@ -46,17 +46,19 @@ const S = {
     justifyContent: "space-between",
     alignItems: "center",
     minHeight: "80vh",
-    padding: "40px 80px",
+    padding: "40px 20px",
     background: "#111827",
     color: "white",
   },
 
   left: {
-    width: "50%",
+    flex:1,
+    minwidth: "320px",
   },
 
   right: {
-    width: "45%",
+    fkex:1,
+    minwidth: "320px",
     display: "flex",
     justifyContent: "center",
   },
@@ -100,7 +102,8 @@ const S = {
   },
 
   placeholder: {
-    width: "380px",
+    width:"100%",
+    maxwidth: "380px",
     height: "260px",
     background: "#1f2937",
     border: "2px dashed #4b5563",
