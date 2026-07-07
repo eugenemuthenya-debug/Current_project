@@ -9,6 +9,7 @@ import Uploadbudget from './components/Uploadbudget';
 import Dashboard from './components/Dashboard';
 import Verifyemail from './components/Verifyemail';
 import ProtectedRoute from './components/protectedRoute';
+import LandingPage from './Pages/Landingpage';
 
 
 
@@ -19,7 +20,8 @@ function App() {
 
       <Routes>
         {/* <Route path="/" element={<Navigate to="/signup" replace />} /> */}
-        <Route path='/' element={<Signup/>}/>
+        <Route path='/' element={<LandingPage/>}/>
+        <Route path='/signup' element={<Signup/>}/>
         <Route path='/signin' element={<Signin/>}/>
         
 

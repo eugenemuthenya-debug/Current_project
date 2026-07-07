@@ -25,10 +25,13 @@ Version 1.0.1(current version) codename=Optimized
 -Added warnings when the budget limit is exceeded(vis)
 -cross-month budget claculations
 -included version of the website on navbar
+-included a landing page
 
 ###fixed
 -Dashboard polish
 -
+
+
 
 
 Version 1.1.0(upcoming update) codename=Growth

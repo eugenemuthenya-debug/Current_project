@@ -83,7 +83,7 @@ const Navbar = () => {
           ) : (
             <>
               <Link to="/signin"  className="nav-link-item">Sign in</Link>
-              <Link to="/"  className="nav-link-item cta">Sign up</Link>
+              <Link to="/signup"  className="nav-link-item cta">Sign up</Link>
             </>
           )}
         </div>
@@ -114,7 +114,7 @@ const Navbar = () => {
           ) : (
             <>
               <Link to="/signin"  className="nav-link-item" style={N.mobileLink} onClick={() => setMenuOpen(false)}>Sign in</Link>
-              <Link to="/"  className="nav-link-item cta" style={N.mobileLink} onClick={() => setMenuOpen(false)}>Sign up</Link>
+              <Link to="/signup"  className="nav-link-item cta" style={N.mobileLink} onClick={() => setMenuOpen(false)}>Sign up</Link>
             </>
           )}
         </div>
