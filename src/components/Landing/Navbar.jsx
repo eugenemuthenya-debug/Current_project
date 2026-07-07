@@ -41,7 +41,7 @@ const S={
   },
 
   signup: {
-    background: "#22c55e",
+    background: "#227cc5",
     color: "white",
     padding: "10px 18px",
     borderRadius: "8px",
