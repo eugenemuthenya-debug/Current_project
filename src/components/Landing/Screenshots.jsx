@@ -19,7 +19,7 @@ const Screenshots = () => {
     {
       title: "Add Budget",
       Description: "Set your daily, weekly or monthly budget",
-      image: "/images/Addbudget.png",
+      image: "/images/AddBudget.png",
     },
     {
       title: "Dashboard",
