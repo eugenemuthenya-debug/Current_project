@@ -5,15 +5,15 @@ const AboutApp = () => {
 
       <p style={S.text}>
         Pesa Wazi is your personal financial management application designed to
-        help you undersatnd where your money goes.It allows you to record daily
-        expense,create monthly budgets and monitor your spendings through simple
+        help you understand where your money goes.It allows you to record daily
+        expense,create monthly budgets and monitor your spending through simple
         and easy-to-understand visual reports.
       </p>
 
       <p style={S.text}>
         Whether you are a student, employee, freelancer or small business
         owner,Pesa Wazi gives your a clear picture of your finances so you can
-        make better financ decisions with confidence.
+        make better financial decisions with confidence.
       </p>
 
       <div style={S.cardContainer}>
@@ -30,7 +30,7 @@ const AboutApp = () => {
             <div style={S.icon}>
             📊
         </div>
-        <h3>Understand your spendings</h3>
+        <h3>Understand your spending</h3>
         <p>
             View clear reports that show exactly where your money goes.
         </p>
@@ -58,7 +58,7 @@ const AboutApp = () => {
         e.currentTarget.style.boxShadow="0 12px 30px rgba(0,0,0,.35)"
       }}
       onMouseLeave={(e)=>{
-        e.currentTarget.style.transform="trnaslateY(0)"
+        e.currentTarget.style.transform="translateY(0)"
         e.currentTarget.style.boxShadow="none"
       }}>
         <div style={S.icon}>📈</div>
@@ -84,7 +84,7 @@ const S = {
   },
 
   heading: {
-    fontSize: "38px",
+    fontSize:"clamp(2.5rem,5vw,3.3rem)",
     marginBottom: "25px",
     color: "#ffffff",
   },
@@ -92,7 +92,7 @@ const S = {
   text: {
     maxWidth: "850px",
     margin: "0 auto 20px",
-    fontSize: "19px",
+    fontSize:"clamp(1rem,2vw,1.15rem)",
     lineHeight: 1.8,
     color: "#d1d5db",
   },
@@ -128,7 +128,7 @@ export default AboutApp;
 // Who is it for
 // What problem does it solve
 
-// when we use e.currentTaregt-->we want the whole card to be transfomred since in the card we have an icon,a heading and a paragraph
+// when we use e.currentTarget-->we want the whole card to be transformed since in the card we have an icon,a heading and a paragraph
 // when we use e.target-->it only animates the exact text it hovers over.So if the mouse is above h3,this is wht will be animated not the whole card same as to the paragraph and the icon.
 // transform-->move this element
 // translateY(-6px)-->move vertically
@@ -136,7 +136,7 @@ export default AboutApp;
 // (6px)=means down
 
 // boxShadow creates the shadow effect underneath the card when the mouse hover over it
-// boxShadow="0(horizotal offset=0) 12px(vertical offset)
+// boxShadow="0(horizontal offset=0) 12px(vertical offset)
 // 30px(blur) black/rgba(color) 0.35(opacity)"
 
 // is we use setState()=we would need to re render the component every time

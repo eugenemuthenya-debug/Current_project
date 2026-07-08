@@ -2,33 +2,33 @@ const Screenshots = () => {
   const previews = [
     {
       title: "Signup",
-      Description: "Create your free account",
+      Description: "Create your free account.",
       image: "/images/Register.png",
     },
     {
       title: "Sign in",
-      Description: "Log in if you already have a free acount",
+      Description: "Log in if you already have a free account.",
       image: "/images/Signin.png",
     },
     {
       title: "Email Verification",
       Description:
-        "During registration enter your exsisting email since a code will be sent to it",
+        "During registration enter a valid email because a  verification code will be sent to it.",
       image: "/images/VerifyEmail.png",
     },
     {
       title: "Add Budget",
-      Description: "Set your daily, weekly or monthly budget",
+      Description: "Set your daily, weekly or monthly budget.",
       image: "/images/AddBudget.png",
     },
     {
       title: "Dashboard",
-      Description: "View everything on your personal dashboard",
+      Description: "View everything on your personal dashboard.",
       image: "/images/Dashboard.png",
     },
     {
       title: "Visual Reports",
-      Description: "Your expenses as avisal report",
+      Description: "Your expenses as a visual report.",
       image: "/images/VisualReports.png",
     },
   ];

@@ -23,7 +23,7 @@ const Privacy = () => {
           <h3>Secure Accounts</h3>
 
           <p>
-            Your account is protected uisng encrypted passwords and secure email
+            Your account is protected using encrypted passwords and secure email
             authentication. This means only existing emails are used during sign
             up
           </p>
@@ -69,13 +69,13 @@ const Privacy = () => {
 
         <div style={S.noticeBox}>
           <h3 style={S.noticeHeading}>
-            🛡 Your Financial Data Stays Under Your Contorl
+            🛡 Your Financial Data Stays Under Your Control
           </h3>
 
           <p style={S.noticeText}>
             Pesa Wazi does not connect to Mpesa,your bank account,debit card or
             mobile wallet. Every expense you see inside the application is
-            entered manually by you.This means no automatic withdrawls,no hidden
+            entered manually by you.This means no automatic withdraw,no hidden
             transactions and no access to your financial accounts. An android
             application is currently on the way and for smoother transition,a
             valid phone number is required.Thank you

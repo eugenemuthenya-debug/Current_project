@@ -53,12 +53,12 @@ const S = {
 
   left: {
     flex:1,
-    minwidth: "320px",
+    minWidth: "320px",
   },
 
   right: {
-    fkex:1,
-    minwidth: "320px",
+    flex:1,
+    minWidth: "320px",
     display: "flex",
     justifyContent: "center",
   },
@@ -117,4 +117,4 @@ const S = {
 export default Hero
 
 // Hero-->is the first page the user sees when they visit most websites/landing page
-// Section-->tells browser its an importantsection of the page
+// Section-->tells browser its an important section of the page

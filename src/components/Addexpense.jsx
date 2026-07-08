@@ -11,7 +11,7 @@ const Addexpense = () => {
 
   // ──  state ──────────────────────────────────────────
   const [user, setUser] = useState({});
-  // for our everchanging endpoint
+  // for our ever changing endpoint
   // const baseUrl="https://financial-backend-ps2l.onrender.com"
 
   useEffect(() => {
