@@ -64,13 +64,13 @@ const S = {
   },
 
   title: {
-    fontSize: "52px",
+    fontSize:"clamp(2rem,4vw,2.4rem)",
     marginBottom: "20px",
     lineHeight: 1.2,
   },
 
   subtitle: {
-    fontSize: "20px",
+    fontSize:"clamp(1rem,2vw,1.15rem)",
     color: "#cbd5e1",
     lineHeight: 1.7,
     marginBottom: "30px",

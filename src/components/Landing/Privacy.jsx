@@ -95,7 +95,7 @@ const S = {
   },
 
   heading: {
-    fontSize: "38px",
+    fontSize:"clamp(2rem,4vw,2.4rem)",
     marginBottom: "15px",
   },
 
@@ -104,7 +104,7 @@ const S = {
     maxWidth: "700px",
     margin: "0 auto 50px",
     lineHeight: 1.7,
-    fontSize: "18px",
+   fontSize:"clamp(1rem,2vw,1.15rem)",
   },
 
   grid: {
@@ -156,7 +156,7 @@ const S = {
 
   noticeText: {
     lineHeight: 1.8,
-
+    fontSize:"clamp(1rem,2vw,1.15rem)",
     color: "#d1d5db",
   },
 };

@@ -32,7 +32,7 @@ const S = {
   },
 
   heading: {
-    fontSize: "38px",
+    fontSize:"clamp(2.5rem,5vw,3.3rem)",
     marginBottom: "45px",
   },
 

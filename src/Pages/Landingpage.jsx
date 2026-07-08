@@ -6,7 +6,7 @@ import LandingNavbar from "../components/Landing/Navbar"
 import Privacy from "../components/Landing/Privacy"
 import Screenshots from "../components/Landing/Screenshots"
 import Version from "../components/Landing/Version"
-// import "./styles/responsice.css"
+// import "./styles/responsive.css"
 
 const LandingPage= ()=>{
     return(
@@ -24,5 +24,5 @@ const LandingPage= ()=>{
 }
 
 export default LandingPage
-// This is where we render everything so tht incase we wanna make changes,it easy to go to the individual pages and make our changes there
+// This is where we render everything so tht in case we wanna make changes,it easy to go to the individual pages and make our changes there
 // We also wan to make it possible for all of it to be in one scrollable page,so if its adding clickable buttons ,it will be asy to navigate on one page 

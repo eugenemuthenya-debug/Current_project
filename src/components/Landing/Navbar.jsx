@@ -25,7 +25,7 @@ const S={
 
   logo: {
     color: "white",
-    fontSize: "22px",
+   fontSize:"clamp(2rem,4vw,2.4rem)",
     fontWeight: "bold",
   },
 

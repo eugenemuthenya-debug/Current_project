@@ -40,7 +40,7 @@ textAlign:"center",
 },
 
 heading:{
-fontSize:"42px",
+fontSize:"clamp(2.5rem,5vw,3.3rem)",
 color:"white",
 marginBottom:"20px",
 },
@@ -48,7 +48,7 @@ marginBottom:"20px",
 text:{
 maxWidth:"700px",
 margin:"0 auto",
-fontSize:"20px",
+fontSize:"clamp(1rem,2vw,1.15rem)",
 lineHeight:1.8,
 color:"#ecfdf5",
 },
@@ -56,7 +56,7 @@ color:"#ecfdf5",
 button:{
 marginTop:"45px",
 padding:"18px 40px",
-fontSize:"18px",
+fontSize:"clamp(0.95rem,1.8vw,1.1rem)",
 fontWeight:"bold",
 background:"white",
 color:"#16a34a",
@@ -69,7 +69,7 @@ transition:"0.3s",
 smallText:{
 marginTop:"25px",
 color:"#dcfce7",
-fontSize:"15px",
+fontSize:"clamp(1rem,2vw,1.15rem)",
 }
 
 }

@@ -91,7 +91,7 @@ const S = {
   },
 
   heading: {
-    fontSize: "38px",
+    fontSize:"clamp(2.5rem,5vw,3.3rem)",
     marginBottom: "20px",
   },
 
@@ -100,7 +100,7 @@ const S = {
     margin: "0 auto 60px",
     color: "#d1d5db",
     lineHeight: 1.7,
-    fontSize: "18px",
+    fontSize:"clamp(2rem,4vw,2.4rem)",
   },
   previewContainer: {
     display: "grid",
@@ -147,7 +147,7 @@ const S = {
   browserTitle: {
     marginLeft: "15px",
     color: "#d1d5db",
-    fontSize: "14px",
+    fontSize:"clamp(2rem,4vw,2.4rem)",
   },
 };
 
