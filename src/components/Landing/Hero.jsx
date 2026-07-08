@@ -53,12 +53,12 @@ const S = {
 
   left: {
     flex:1,
-    minWidth: "320px",
+    minwidth: "320px",
   },
 
   right: {
     flex:1,
-    minWidth: "320px",
+    minwidth: "320px",
     display: "flex",
     justifyContent: "center",
   },
