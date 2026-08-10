@@ -1,7 +1,7 @@
 import { PieChart,Pie,Cell,Tooltip,Legend,ResponsiveContainer } from "recharts";
 // Piechart-->this is our entire graph with the data
 // Pie-->This are the individuals pieces of data in the piechart
-// Legend-->labels tht describe the data types either below or besides the grph
+// Legend-->labels tht describe the data types either below or besides the graph
 // Responsive container-->chart becomes fluid and adapts to different screen sizes
 // Cell-->
 // Tooltip-->
@@ -14,7 +14,7 @@ const CategoryPieChart=({data}) =>{
         "#a78bfa",
         "#14b8a6"
     ]
-    // this converts our array data to something redable to rechart
+    // this converts our array data to something readable to rechart
     const chartData=data.map(([category,amount])=>
     ({
         name:category,

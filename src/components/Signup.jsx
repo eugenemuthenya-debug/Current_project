@@ -14,7 +14,7 @@ const Signup = () => {
 
   // navigate function-->directs you to signin after creating your account
   const navigate = useNavigate();
-  // incase we change our endpoint
+  // in case we change our endpoint
   // const baseUrl = "https://financial-backend-ps2l.onrender.com/api";
 
   // messages for interactivity to remain with user
@@ -41,8 +41,8 @@ const Signup = () => {
   const pwdChecks = checkPassword(password);
 
   // 3. count how many checks pass (0-5)
-  // Object.values → array of true/false → filter keeps only true,from the list of true/flase values from the object → count them
-  // our object comes as key calue pair(length,true)when we use object.values(we only want the values=true/flase).
+  // Object.values → array of true/false → filter keeps only true,from the list of true/false values from the object → count them
+  // our object comes as key value pair(length,true)when we use object.values(we only want the values=true/false).
   const pwdStrength = Object.values(pwdChecks).filter(Boolean).length;
 
   // 4. label and color based on score
@@ -93,7 +93,7 @@ const Signup = () => {
     // 3. only then start loading
     setLoading("Wait as you get registered...");
 
-    // try...catch --> incase there is an error, the app doesn't crash
+    // try...catch --> in case there is an error, the app doesn't crash
     try {
       // axios --> library that helps make HTTP requests to our API
       // await --> waits for response before continuing
@@ -276,7 +276,7 @@ const Signup = () => {
                 />
 
                 {/* eye icon/show password icon */}
-                {/* cursor:"pointer"-->chnages the cursor to a pointer when hovering over the show password icon  */}
+                {/* cursor:"pointer"-->changes the cursor to a pointer when hovering over the show password icon  */}
 
                 {/* <span
                   className="input-group-text"

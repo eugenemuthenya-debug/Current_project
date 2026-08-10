@@ -5,7 +5,7 @@ import api from "../api/axiosInstance";
 const Uploadbudget = () => {
   // ──  original state ──────────────────────────────────────────
   const [user, SetUser] = useState({});
-  // for our everchanging endpoint
+  // for our ever changing endpoint
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -115,7 +115,7 @@ const getBudgetProgress=(start,end)=>{
    
   // since js stores time in milliseconds,we convert it back to days through division
   // Math.max(1,0)-->returns the maximum,largest number it was given 
-  // Math.min(0,1)-->returns the smalles number it was given
+  // Math.min(0,1)-->returns the smallest number it was given
   const totalDays=Math.max(1,(endDate-startDate)/(1000*60*60*24))
   
 
@@ -200,7 +200,7 @@ const getBudgetProgress=(start,end)=>{
     const daysRemaining=existingBudget?getDaysRemaining(existingBudget.end_date)
     :0
   // console.log("your budget progress is",budgetProgress)
-  // // console.log("calcultions",existingBudget)
+  // // console.log("calculations",existingBudget)
   // console.log("your days remaining",daysRemaining)
 
   return (

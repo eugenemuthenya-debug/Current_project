@@ -1,10 +1,12 @@
+import { APP_VERSION } from "../../config/version";
+
 const Version = () => {
   return(
     <section className="Version-section" style={S.section}>
     <h2 style={S.heading}>🚀 Current release</h2>
 
     <div style={S.card}>
-      <div style={S.versionBadge}>Version v1.0.1</div>
+     
       <h3>Codename:Optimized</h3>
 
       <p style={S.description}>
@@ -17,6 +19,17 @@ const Version = () => {
         <li>✅ Monthly reports</li>
         <li>✅ Interactive dashboard</li>
       </ul>
+
+       <div style={S.versionBadge}> Latest Version {APP_VERSION}</div>
+       <ul style={S.list}>
+         <li>🆕 Transaction search</li>
+         <li>📊 All Time spending analytics</li>
+         <li>📆 Monthly spending history</li>
+         <li>⭐ Improved financial insights</li>
+
+       </ul>
+
+
     </div>
 
   </section>

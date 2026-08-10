@@ -1,9 +1,9 @@
 from flask import Flask, request, jsonify
 # flask:webserver
-# requsts:read data from react
+# requests:read data from react
 # jsonify:send data to react as a json(common language in coding)
-# cors:allows react on different ports/doamins to talk to flask
-# bcyrpt:hashes passwords for security
+# cors:allows react on different ports/domains to talk to flask
+# bycrypt:hashes passwords for security
 # jwt manager:manages authentication of tokens(validating)
 # jwt required locks routes so that only those logged in can access it
 # create access token:creates a token when user logs in and can be used in various components and has our user id as well
@@ -27,14 +27,15 @@ import pymysql
 # for generating otp
 import random
 import re
+import traceback
 # re-->regular expression
 import os
 import resend
 from datetime import timedelta , datetime ,date
 from calendar import monthrange
 # to prevent brute force attacks,we can set a limit on how many times user can attempt to login within a certain time frame
-
-
+# from dotenv import load_dotenv
+# load_dotenv()
 # we first need to install flask-limiter via pip install flask-limiter
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -54,7 +55,7 @@ limiter = Limiter(
 
 
 
-# incase it is stolen it won't last forever
+# in case it is stolen it won't last forever
 app.config["JWT_SECRET_KEY"]=os.environ.get("JWT_SECRET_KEY")
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=15)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
@@ -70,8 +71,8 @@ api_instance=sib_api_v3_sdk.TransactionalEmailsApi(
 jwt     = JWTManager(app)
 bcrypt  = Bcrypt(app)
 
-# # we can configure our db and set all requrements necessary for the connection and store it under a variable
-# # it is inform of key value pair (dictionry)
+# # we can configure our db and set all requirements necessary for the connection and store it under a variable
+# # it is inform of key value pair (dictionary)
 # DB_CONFIG ={
 #     "host":"localhost",
 #     "user":"root",
@@ -89,9 +90,18 @@ DB_CONFIG = {
     "database": os.environ.get("DB_NAME")
 }
 
+# DB_CONFIG = {
+#     "host": os.getenv("DB_HOST"),
+#     "user": os.getenv("DB_USER"),
+#     "password": os.getenv("DB_PASSWORD"),
+#     "database": os.getenv("DB_NAME") 
+# }
+
+# print("DB_HOST:", os.getenv("DB_HOST"))
+
 # dict cursor=false:makes the result come bck as key value pair instead of a list 
-# 1.we definr our get db cred function and we can re use it in every route tht requires it
-# dict_cursor=flase-->default meaning if we call it and pass nothing it will be automatically false
+# 1.we define our get db cred function and we can re use it in every route tht requires it
+# dict_cursor=false-->default meaning if we call it and pass nothing it will be automatically false
 def get_db(dict_cursor=False):
     """Helper to get a DB connection."""
     # conn=creates our actual db connection
@@ -128,7 +138,7 @@ def signup():
     if not re.match(email_pattern,email):
         return jsonify({"error":"Invalid email address"}),400
       
-    #  to ensure only allowed doamins are accepted
+    #  to ensure only allowed domains are accepted
     
     allowed_domains=["gmail.com", "yahoo.com", "outlook.com"]
     domain=email.split("@")[1]
@@ -152,13 +162,13 @@ def signup():
     
     # Hash password before storing
     # bcrypt scrambles the password so we never store the real one
-    # wiht .decode(utf-8):we deciode the encryted pass
+    # with .decode(utf-8):we decide the encrypted pass
     hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
 
     # our container holding our otp
     # this generates a random otp btw the range given and it needs to be a string
     otp=str(random.randint(100000,999999))
-    # datetime.now-->genertates the current date and time and the otp is given 5 minutes to be alive
+    # datetime.now-->generates the current date and time and the otp is given 5 minutes to be alive
     expiry=datetime.now() + timedelta(minutes=5)
     connection, cursor = get_db()
     try:
@@ -188,7 +198,7 @@ def signup():
             return({"message":"Verification code sent to your email.",
                     "email":email}),201
         except Exception as e:
-            print("Resnd error",repr(e))
+            print("Resend error",repr(e))
             return({"error":"Account created but verification email could not be sent"}),500
 
         
@@ -511,7 +521,7 @@ def add_expenses():
 def get_spendings():
 
     user_id = get_jwt_identity()  # Get user from token
-    # this checks whether the url,has a parameter called month and if it does store=selected_montj
+    # this checks whether the url,has a parameter called month and if it does store=selected_month
     selected_month=request.args.get("month")
     
     connection, cursor = get_db(dict_cursor=True)
@@ -586,12 +596,22 @@ def get_budget():
 
 
     connection,cursor=get_db(dict_cursor=True)
+    # automatic budget expiry
+    expire_sql="""
+     UPDATE budget_table
+     SET status = 'EXPIRED'
+     WHERE user_id = %s
+     AND status = 'ACTIVE'
+     AND end_date < %s """
+    cursor.execute(expire_sql,(user_id,today))
+    connection.commit()
 
     try:
         sql="""SELECT
-         amount_limit,start_date,end_date
+         amount_limit,start_date,end_date,status
          FROM budget_table
          WHERE user_id=%s
+         AND status = 'ACTIVE'
          AND start_date <= %s
          AND end_date >= %s
          LIMIT 1
@@ -683,6 +703,122 @@ def get_budget_summary():
         connection.close()
 
 
+
+# ------------All time summary --------------------------
+@app.route("/api/get_all_time_summary", methods=["GET"])
+@jwt_required()
+def get_all_time_summary():
+    # connect to the database and we will need a dictionary so dict_cursor=true
+
+    user_id=get_jwt_identity()
+
+    connection,cursor= get_db(dict_cursor=True)
+    try:
+        # COALESCE means if we can't get what we need or there is no data return 0
+        # 1.total spent
+        sql='''
+        SELECT COALESCE(SUM(amount),0) AS all_time_spent
+        FROM expense_table
+        WHERE user_id = %s'''
+        cursor.execute(sql,(user_id,))
+        spent= cursor.fetchone()
+
+        # we will store the data in the spent variable
+        # now we assign it to an actual variable that we will render
+        
+        total_spent=float(spent["all_time_spent"])
+
+
+        # 2. total transactions
+        sql = '''
+        SELECT COUNT(expense_id) AS transaction_count
+        FROM expense_table
+        WHERE user_id = %s '''
+
+        cursor.execute(sql,(user_id,))
+        transactions=cursor.fetchone()
+
+        transaction_count = transactions["transaction_count"]
+
+        # 3.largest expense
+        # to get the largest expense, we sort all expenses in descending order and get the on at the top
+        sql= '''
+        SELECT amount,description,date 
+        FROM expense_table 
+        WHERE user_id = %s
+        ORDER BY amount DESC, date DESC
+        LIMIT 1'''
+        cursor.execute(sql,(user_id,))
+        largest_expense = cursor.fetchone()
+
+        # 4. average expense
+        if transaction_count == 0:
+            average_expense = 0
+        else:
+            average_expense = total_spent/transaction_count
+
+        # 5.Most frequent category
+        sql = '''
+        SELECT c.spending, COUNT(*) AS count
+        FROM expense_table e
+        JOIN category_table c
+        ON e.category_id = c.category_id
+        WHERE e.user_id = %s
+        GROUP BY c.spending
+        ORDER BY count DESC
+        LIMIT 1'''
+        cursor.execute(sql,(user_id))
+        frequent_cat = cursor.fetchone()
+
+        return jsonify({
+            "total_spent":total_spent,
+            "total_transactions":transaction_count,
+            "largest_expense":largest_expense,
+            "average_expense":average_expense,
+            "frequent_category":frequent_cat
+        }),200
+
+    except Exception as e:
+        # traceback.print_exc()
+        # return jsonify({"error":str({e})}),500
+        return jsonify({"error":"Something isn't right"}),500
+    finally:
+        connection.close()
+        cursor.close()
+
+
+# ---------get monthly spending history---------------
+@app.route("/api/get_monthly_spending", methods=["GET"])
+@jwt_required()
+def get_monthly_spending():
+    user_id = get_jwt_identity()
+
+    connection,cursor = get_db(dict_cursor=True)
+
+    try:
+        sql='''
+        SELECT DATE_FORMAT(date, '%%b %%Y') AS month,
+        COALESCE(SUM(amount),0) AS total_spent
+        FROM expense_table
+        WHERE user_id = %s
+        GROUP BY DATE_FORMAT(date,'%%b %%Y' )
+        ORDER BY YEAR(date), MONTH(date)
+        '''
+        cursor.execute(sql,(user_id,))
+        spent = cursor.fetchall()
+        return jsonify(spent),200
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({"error":str({e})}),500
+        # return jsonify({"error":"Something went wrong .Please try again"}),500
+    finally:
+        connection.close()
+        cursor.close()
+
+
+    
+
+
 # -------Upload Budget--------[success — with update functionality]
 @app.route("/api/upload_budget", methods=["POST"])
 @jwt_required()  # Protect route with JWT
@@ -723,11 +859,11 @@ def upload_budget():
             # sql = "UPDATE budget_table SET amount_limit=%s WHERE user_id=%s AND start_date=%s AND end_date=%s"
             # cursor.execute(sql, (amount_limit,user_id,end_date,start_date ))
             # connection.commit()
-            return jsonify({"error": "This budget overlaps withan existing one"}), 200
+            return jsonify({"error": "This budget overlaps with an existing one"}), 200
         else:
             # create a new one
-            sql = "INSERT INTO budget_table (amount_limit, user_id, start_date,end_date) VALUES (%s, %s, %s,%s)"
-            cursor.execute(sql, (amount_limit, user_id, start_date,end_date))
+            sql = "INSERT INTO budget_table (amount_limit, user_id, start_date,end_date,status) VALUES (%s, %s, %s,%s,%s)"
+            cursor.execute(sql, (amount_limit, user_id, start_date,end_date,"ACTIVE"))
             connection.commit()
             return jsonify({"message": "Budget uploaded successfully"}), 201
 
@@ -793,5 +929,5 @@ def upload_budget():
 #     finally:
 #         connection.close()
 
-# if __name__ == "__main__":
-#     app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)

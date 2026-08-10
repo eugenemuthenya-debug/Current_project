@@ -19,11 +19,11 @@ const Signin = () => {
 
   
   // const baseUrl="https://financial-backend-ps2l.onrender.com/api"
-  // incase we need to change our base url from time to time we can create a const for it and join with our endpoint
+  // in case we need to change our base url from time to time we can create a const for it and join with our endpoint
 
   // the user to be able to toggle a button so they can view their password
   // 1.create a const for showing the password
-  // 2.install and use bootstrao icons using npm i bootstrap-icons
+  // 2.install and use bootstrap icons using npm i bootstrap-icons
   // 3.import it in index.js (import "bootstrap-icons/font/bootstrap-icons.css")
   
   

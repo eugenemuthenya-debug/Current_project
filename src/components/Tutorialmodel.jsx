@@ -73,7 +73,7 @@ const Tutorialmodel=({username,onClose})=>{
     const [step,setStep]=useState(1)
     // console.log("your username:",username)
     
-    // when user cliks next,render knws which page to deploy next
+    // when user clicks next,render knows which page to deploy next
     const nextStep=()=>{
         setStep(step+1)
     }
@@ -93,7 +93,7 @@ const Tutorialmodel=({username,onClose})=>{
                     animation: "fadeIn .35s ease"
                     }}
                     >
-                    <h2 style={S.title}>👋 Welocme {username ? `,${username}`:""} ! to your financial Tracker</h2>
+                    <h2 style={S.title}>👋 Welcome {username ? `,${username}`:""} ! to your financial Tracker</h2>
 
                     <p style={S.text}>
                         This application helps you manage your budget, track your expenses,
@@ -281,5 +281,5 @@ const Tutorialmodel=({username,onClose})=>{
     )
 }
 // this is a blueprint we are giving react to call after something has happened
-// we do not give it closing brackets () since we don't want it to be rendered immediately,but after smthng else
+// we do not give it closing brackets () since we don't want it to be rendered immediately,but after something else
 export default Tutorialmodel

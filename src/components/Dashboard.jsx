@@ -5,6 +5,7 @@ import Tutorialmodel from "./Tutorialmodel";
 import CategoryPieChart from "./CategoryPiechart";
 import MonthlyTrend from "./MonthlyTrendChart";
 
+
 const CAT_COLORS = {
   Rent: "#185FA5",
   Groceries: "#3B6D11",
@@ -16,9 +17,9 @@ const CAT_COLORS = {
   Other: "#5F5E5A",
 };
 const getCatColor = (cat) => CAT_COLORS[cat] || "#888780";
-const fmt = (n) => "KSh " + Number(n).toLocaleString();
+const fmt = (n) => "KSh " + Number(n ?? 0).toLocaleString();
 
-// other small components we will reqire in our dashboard also gotten from a repo on github
+// other small components we will require in our dashboard also gotten from a repo on github
 function SpendingBar({ cat, amount, max }) {
   const pct = Math.round((amount / max) * 100);
   return (
@@ -107,6 +108,21 @@ const Dashboard = () => {
   // where we store our data from flask api as a list cos our data comes as a list of objects
   const [spentData, setSpentData] = useState([]);
   const [view, setView] = useState("month");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [budgetStatus,setbudgetStatus] = useState("ACTIVE");
+  const [allTimeSummary,setAllTimeSummary] = useState(null)
+  const [monthlyHistory,setMonthlyHistory] = useState([])
+
+  // banner: this detects change in state
+  // true-->shows our update banner
+  // false-->hides our update banner
+  // we set it to local storage so tht it doesn't show every time the page refreshes.
+  // the return is used to check if we have stored that this update was seen before preventing to re render
+  const [updateBanner,setUpdateBanner] = useState(()=>{
+    return localStorage.getItem("pesaWaziUpdateV1_1") !== "seen"
+  })
+  // view stored month.
+  // searchTerm stores every letter as the user types when using search tab.
 
   // our get function to fetch data from flask and display it on the dashboard
 
@@ -127,12 +143,12 @@ const Dashboard = () => {
         //   `/get_spendings?month=${selectedMonth}`,
         //   //  { headers: { Authorization: `Bearer ${accessToken}` } }
         // );
-        let response
+        let response;
 
-        if (view ==="month"){
-          response = await api.get(`/get_spendings?month=${selectedMonth}`)
-        } else{
-          response =await api.get("/get_spendings")
+        if (view === "month") {
+          response = await api.get(`/get_spendings?month=${selectedMonth}`);
+        } else {
+          response = await api.get("/get_spendings");
         }
 
         //  console.log("RAW DATA:", response.data)
@@ -165,10 +181,12 @@ const Dashboard = () => {
 
         setLatestLimit(Number(summary.amount_limit) || 0);
         setBudget(summary);
+        setbudgetStatus("ACTIVE")
         setRemaining(Number(summary.remaining));
         setBudgetSpent(summary.total_spent);
       } catch (error) {
         console.log("No budget found");
+        setbudgetStatus("EXPIRED")
         setLatestLimit(0);
         setBudget(null);
 
@@ -176,13 +194,43 @@ const Dashboard = () => {
         setRemaining(0);
       }
     };
+
+    // get all time summary
+    const getAllTimeSummary = async ()=>{
+      try{
+        const response = await api.get('/get_all_time_summary')
+        setAllTimeSummary(response.data)
+      } catch (error){
+        console.log("No all time data")
+        setAllTimeSummary(null)
+      }
+    } 
+
+    const getMonthlyHistory = async ()=>{
+      try{
+        const response = await api.get("/get_monthly_spending")
+        
+        setMonthlyHistory(response.data)
+
+      } catch(error){
+        console.error("Failed to load monthly history", error)
+        setMonthlyHistory([])
+
+      }
+    }
     // call the function
 
     // error handle
+    // we introduce the if else statement for uniformity and prevent unnecessary calling of endpoints.
 
-    getData();
-    getBudgetSummary();
-  }, [selectedMonth,view]);
+    if (view === "month"){
+      getData();
+      getBudgetSummary();
+    } else {
+      getAllTimeSummary()
+      getMonthlyHistory()
+    }
+  }, [selectedMonth, view]);
 
   // since we created our view state,we will be able to use to filter our data based on the view month selected by user
 
@@ -194,7 +242,7 @@ const Dashboard = () => {
 
   const filtered = (() => {
     if (view === "all") return spentData;
-    // incase the user wants to view everyhting...then the entire spent info will be rendered
+    // in case the user wants to view everything...then the entire spent info will be rendered
     // if (!budget) return [];
     // const start = new Date(budget.start_date);
     // const end = new Date(budget.end_date);
@@ -205,16 +253,108 @@ const Dashboard = () => {
       return expenseDate >= startOfMonth && expenseDate <= endOfMonth;
     });
   })();
+  const searchData = filtered.filter((item) => {
+    const search = searchTerm.toLocaleLowerCase();
+
+    const searchableText = `
+    ${item.description || ""}
+    ${item.spending || ""}
+    ${item.amount || ""}
+    ${new Date(item.date).toLocaleDateString("en-KE", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    })}`.toLowerCase();
+
+    return searchableText.includes(search);
+  });
+
+  // console.log("Your data is:", searchData);
+  // toLowerCase=despite the data stored in capslock in our database,we convert it when it is coming as lowercase to match our searchTerm.
+  // the item,checks if what we type in the search filter has any relations to what is in the data we get and keeps it.
+  // we either store description or categories since the user can search any of them.If they do search using either of them we include them in the filter.
 
   // mo-->months,d-->parameter that represents each item in the spentData list,filter-->used to create a new array with all elements that pass the test implemented by the provided function,startsWith-->used to check if the date starts with the current month and year
 
   // derived values
 
-  const totalSpent = filtered.reduce((s, d) => s + d.amount, 0);
+  const totalSpent = searchData.reduce((s, d) => s + d.amount, 0);
+  // s and d are just parameters, s=sum of latest sum of expenses. d=item.amount(new expense added by user.)
+  // console.log("S is:",searchData)
   // const latestlimit = filtered[0]?.amount_limit || 0;
   // const remaining = latestLimit - totalSpent;
 
   // console.log("this is your remaining:", remaining);
+
+  // Largest expense
+  const largestExpense =
+    searchData.length > 0
+      ? searchData.reduce((largest, current) => {
+          return current.amount > largest.amount ? current : largest;
+        }, searchData[0])
+      : null;
+
+  //Average expense
+  const averageExpense =
+    searchData.length > 0 ? totalSpent / searchData.length : 0;
+
+   //Frequent expense
+    const frequentCat ={};
+    searchData.forEach(({spending})=>{
+      frequentCat[spending]=
+      (frequentCat[spending] || 0) + 1
+    })
+    let mostFrequent=null;
+    Object.entries(frequentCat).forEach(([category,count])=>{
+      if(!mostFrequent) {
+        mostFrequent = {
+          category,count
+        };
+      }
+      else if (count > mostFrequent.count) {
+        mostFrequent = {
+          category,count
+        };
+      }
+    });
+
+    // Highest spending Day
+    const dailySpending={}
+    searchData.forEach(({date,amount})=>{
+      const day = new Date(date).toISOString().split("T")[0]
+      // since our database stores date in full we have to convert it into (2026-07-22)
+      dailySpending[day]=(dailySpending[day] || 0) + amount
+    })
+    let highestDay=null;
+     Object.entries(dailySpending).forEach(([day,total])=>{
+      if(!highestDay){
+        highestDay={
+          day,total
+        }
+      }else if(total > highestDay.total){
+        highestDay={
+          day,total
+        }
+      }
+     })
+    // Object.entries(highestDay).forEach(([day,total])=>{
+    //   if(!highestDay) {
+    //     highestDay={
+    //       day,total
+    //     }
+    //   }
+    //   else if(total > highestDay.total){
+    //     highestDay={
+    //       day,total
+    //     }
+    //   }
+    // })
+    
+
+    // console.log("Your totals are:",highestDay)
+  // largest=stores the largest transaction so far.It starts with the first one.
+  // current=new expenses added are thrown into the loop and compared,if the current is larger than the largest,then replace largest.
+  //
 
   const currentMonth = new Date(selectedMonth + "-01").toLocaleString("en-KE", {
     month: "long",
@@ -224,16 +364,17 @@ const Dashboard = () => {
   const percentUsed = latestLimit > 0 ? (budgetSpent / latestLimit) * 100 : 0;
 
   const catTotals = {};
-  filtered.forEach(({ spending, amount }) => {
+  searchData.forEach(({ spending, amount }) => {
     catTotals[spending] = (catTotals[spending] || 0) + amount;
   });
+  
   const catList = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
   const maxCat = catList[0]?.[1] || 1;
-  const recent = filtered.slice(0, 6);
+  const recent = searchData.slice(0, 6);
   const dailyTotals = {};
   // console.log("our full recent",recent)
 
-  filtered.forEach(({ date, amount }) => {
+  searchData.forEach(({ date, amount }) => {
     const day = new Date(date).toLocaleDateString("en-GB", {
       day: "numeric",
       month: "short",
@@ -250,7 +391,7 @@ const Dashboard = () => {
   // username from first record,if available
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const username = user.username || "";
-  // console.log("your dashborad username:",user)
+  // console.log("your dashboard username:",user)
 
   // UI
 
@@ -278,7 +419,8 @@ const Dashboard = () => {
         <div style={S.topbar}>
           <div>
             <h1 style={S.h1}>Finance Overview</h1>
-            {username && <p style={S.subtitle}>Welcome back,{username}</p>}
+            {/* <h2>Your Average expense {averageExpense.toLocaleString("en-KE",{maximumFractionDigits:0,})}</h2> */}
+            {username && <p style={S.subtitle}>Welcome back,{username} </p>}
 
             <div style={S.toggleWrap}>
               {["month", "all"].map((v) => (
@@ -305,32 +447,41 @@ const Dashboard = () => {
                 ▶
               </button>
             </div> */}
-{/* We wrapped our selectoe in a view block and it is set ,if the user clicks (this month)-->the selector is displayed,(All time)-->the selector disappers */}
-            {
-              view ==="month" &&(
-                <div style={S.monthSelector}>
-                  <button style={S.monthButton} onClick={goToPreviousMonth}>
-                    ◀
-                  </button>
+            {/* We wrapped our selector in a view block and it is set ,if the user clicks (this month)-->the selector is displayed,(All time)-->the selector disappears */}
+            {view === "month"  && (
+              <div style={S.monthSelector}>
+                <button style={S.monthButton} onClick={goToPreviousMonth}>
+                  ◀
+                </button>
 
-                  <h3 style={S.monthTitle}>{displayMonth}</h3>
-                  <button style={S.monthButton} onClick={goToNextMonth}>
-                    ▶
-                  </button>
-
-                </div>
-              )
-            }
+                <h3 style={S.monthTitle}>{displayMonth}</h3>
+                <button style={S.monthButton} onClick={goToNextMonth}>
+                  ▶
+                </button>
+              </div>
+            ) }
+            <input
+              type="text"
+              placeholder="🔍 Search transactions..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={S.searchInput}
+            />
 
             <p style={S.periodText}>
               {view === "month"
                 ? `Showing expenses for ${currentMonth}`
-                : `Showing all ${filtered.length} recorded transactions`}
+                : `Showing all ${searchData.length} recorded transactions`}
             </p>
           </div>
         </div>
 
-        {latestLimit > 0 && percentUsed >= 80 && percentUsed < 100 && (
+        {/* <div>
+          <h2>{largestExpense.amount}</h2>
+        </div> */}
+        {view === 'month' ?(
+          <>
+          {latestLimit > 0 && percentUsed >= 80 && percentUsed < 100 && (
           <div
             style={{
               background: "#3d2d00",
@@ -362,6 +513,34 @@ const Dashboard = () => {
             🚨 Current Budget exceeded! You've spent KSh{" "}
             {budgetSpent.toLocaleString()} out of KSh{" "}
             {latestLimit.toLocaleString()}.
+          </div>
+        )}
+
+        {/* our update banner */}
+        {updateBanner &&(
+          <div style={S.updateBanner}>
+            <div>
+              <div style={S.updateTitle}>
+               🎉 What's new in Pesa Wazi
+              </div>
+
+              <div style={S.updateText}>
+                We've changed the look of the All Time page,and made it easier to understand and manage your finances.
+                 <br/>
+                 <br/>
+                 • 🔍 Search your transactions
+                 <br/>
+                 • 📊 All time spending analytics
+                 <br/>
+                 • 📆 Monthly spending history
+              </div>
+            </div>
+
+            <button style={S.updateButton} onClick={()=>{
+              localStorage.setItem("pesaWaziUpdateV1_1", "seen")
+              setUpdateBanner(false)}}>Got it</button>
+              {/* so when user clicks the button, it is saved in localstorage that this update was seen for this version. Hide the banner as well */}
+
           </div>
         )}
 
@@ -575,7 +754,128 @@ const Dashboard = () => {
               ></div>
             </div>
           </div>
+        </div></>
+        
+        //All time dashboard 
+        ):(
+          <>
+          <div style={S.sectionTitle}>
+            Lifetime Financial Overview</div>
+
+            <p>A summary of your spending since you started using Pesa Wazi.</p>
+          {/* metric cards */}
+        <div
+          style={S.metricsGrid}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "translateY(-4px)";
+            e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow = "none";
+          }}
+        >
+          {[
+            {
+              label: "lifetime spending",
+              value: allTimeSummary
+              ? fmt(allTimeSummary.total_spent)
+              :"--",
+              sub: "Since you joined Pesa Wazi",
+              color: "#60a5fa",
+            },
+            // total transactions
+            {
+              label: "Total Transaction",
+              value: allTimeSummary
+              ? allTimeSummary.total_transactions
+              :"--",
+              // sub:`${allTimeSummary.transaction_count}transactions`,
+              color: "#e2e8f0",
+            },
+            // largest expense
+            {
+              label: "Biggest Expense",
+              value: allTimeSummary ? fmt(allTimeSummary.largest_expense.amount) : "--",
+              // sub: allTimeSummary. ? allTimeSummary.largest_expense.description : "",
+              color: "#f59e0b" 
+            },
+
+            // Average expense
+            {
+              label: "Average Expense",
+              value: allTimeSummary  ? fmt(allTimeSummary.average_expense) :"--",
+              sub: "",
+              color: "#68b741",               
+            },
+
+            // Frequent category
+            {
+              label: "Favourite category",
+              value: allTimeSummary ? allTimeSummary.frequent_category.spending :"--",
+              sub: allTimeSummary
+              ?`Used in ${allTimeSummary.frequent_category.frequent_cat}transactions`:"",
+              color: "#e2e8f0",
+            },
+          ].map(({ label, value, sub, color, border }) => (
+            <div
+              key={label}
+              style={{
+                ...S.metricCard,
+                border: `1px solid ${border || "#1f2535"}`,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-4px)";
+                e.currentTarget.style.boxShadow =
+                  "0 10px 25px rgba(0,0,0,0.25)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "none";
+              }}
+            >
+              <div style={S.metricLabel}>{label}</div>
+              <div style={{ ...S.metricValue, color }}>{value}</div>
+              <div style={S.metricSub}>{sub}</div>
+            </div>
+          ))}
         </div>
+
+        {/* Table of spending */}
+        <h3 style={S.sectiontitle}> Monthly Spending History</h3>
+
+        <table style={S.table}>
+          <thead style={S.tableHead}>
+            <tr>
+              <th style={S.tableHeaderCell}>Month</th>
+              <th style={S.tableHeaderCell}>Total Spent</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {monthlyHistory.map((item)=>(
+              <tr key={item.month}
+               onMouseEnter={(e) =>
+                (e.currentTarget.style.background = "#1e293b")
+            }
+            onMouseLeave={(e) =>
+                (e.currentTarget.style.background = "transparent")
+            }>
+                <td style={S.tableCell}>{item.month}</td>
+                <td style={S.tableCell}>{fmt(item.total_spent)}</td>
+              </tr>
+            ))}
+          </tbody>
+
+        </table>
+      
+
+          
+            </>
+        )}
+
+
+          
       </div>
     </div>
   );
@@ -584,6 +884,138 @@ const Dashboard = () => {
 export default Dashboard;
 
 const S = {
+  updateBanner: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: "20px",
+    padding: "18px 20px",
+    marginBottom: "25px",
+    borderRadius: "14px",
+    background: "#111827",
+    border: "1px solid #1f2937"
+  },
+  updateTitle:{
+    color: "#2dd12d",
+    fontSize: "17px",
+    fontWeight: "600",
+    marginBottom: "6px"
+  },
+  updateText:{
+    color: "#94a3b8",
+    fontSize: "14px",
+    lineHeight: "1.5",
+  },
+  updateButton:{
+    padding: "9px 16px",
+    borderRadius: "8px",
+    border: "none",
+    background: "#2563eb",
+    color: "#ffffff",
+    fontSize: "14px",
+    fontWeight: "600",
+    cursor: "pointer",
+    whitespace: "nowrap",
+  },
+
+  tableContainer :{
+    marginTop: "30px",
+    background:"#0f172a",
+    borderRadius: "16px",
+    padding: "20px",
+    border: "1px solid #1f2937",
+    overflow: "auto",
+  },
+
+  table:{
+    width: "100%",
+    borderCollapse:"collapse",
+    color: "#e5e7eb",
+  },
+  tableHeaderCell:{
+    padding : "14px",
+    textAlign: "left"
+  },
+  tableCell:{
+    padding: "14px",
+    fontSize: "14px",
+    color: "#d1d5db",
+  },
+  sectiontitle:{
+    marginTop: "35px",
+    marginBottom: "15px",
+    color : "#f8fafc",
+    fontSize: "22px",
+    fontWeight: "600",
+  },
+  tableHead:{
+    background: "#111827",
+  },
+  noBudgetProgress:{
+    height: "18px",
+    borderRadius: "999px",
+    background: "#374151",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    color: "#9ca3af",
+    fontSize: "13px",
+    fontWeight: "600"
+
+  },
+  insightDate: {
+    marginTop: "10px",
+    color: "#9ca3af",
+    fontSize: "14px",
+  },
+  insightsSection: {
+    marginTop: "50px",
+  },
+
+  sectionTitle: {
+    color: "white",
+    marginBottom: "20px",
+    fontSize: "30px",
+  },
+
+  insightsGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))",
+    gap: "22px",
+  },
+
+  insightCard: {
+    background: "#1f2937",
+    borderRadius: "16px",
+    padding: "24px",
+    border: "1px solid #374151",
+    cursor: "pointer",
+    transition: "0.25s ease",
+    boxShadow: "0 4px 15px rgba(0,0,0,0.15)",
+  },
+
+  insightLabel: {
+    color: "#9ca3af",
+    marginBottom: "12px",
+    fontSize: "14px",
+    textTransform: "uppercase",
+    letterSpacing: "1px",
+  },
+
+  insightValue: {
+    color: "#22c55e",
+    fontSize: "30px",
+    margin: 0,
+    fontWeight: "bold",
+    marginBottom: "10px",
+  },
+
+  insightSub: {
+    color: "white",
+    marginTop: "10px",
+    fontWeight: "bold",
+  },
+
   page: {
     fontFamily: "'DM Sans', sans-serif",
     background: "#0f1117",
@@ -593,7 +1025,7 @@ const S = {
   },
   topbar: {
     display: "flex",
-    flexDirecton: isMobile ? "column" : "row",
+    flexDirection: isMobile ? "column" : "row",
     alignItems: isMobile ? "stretch" : "flex-start",
     justifyContent: "space-between",
     marginBottom: "1.75rem",
@@ -699,7 +1131,7 @@ const S = {
   },
   txnRow: {
     display: "flex",
-    flexDirecton: isMobile ? "column" : "row",
+    flexDirection: isMobile ? "column" : "row",
     alignItems: isMobile ? "flex-start" : "center",
     justifyContent: "space-between",
     padding: "9px 0",
@@ -826,5 +1258,17 @@ const S = {
     height: "100%",
     borderRadius: "999px",
     transition: "width 0.5s ease",
+  },
+  searchInput: {
+    width: "100%",
+    maxWidth: "420px",
+    padding: "12px 16px",
+    marginTop: "20px",
+    borderRadius: "20px",
+    border: "1px solid  #374151 ",
+    background: "#111827",
+    color: "#fff",
+    fontSize: "16px",
+    outline: "none",
   },
 };
