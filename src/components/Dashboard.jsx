@@ -287,16 +287,16 @@ const Dashboard = () => {
   // console.log("this is your remaining:", remaining);
 
   // Largest expense
-  const largestExpense =
-    searchData.length > 0
-      ? searchData.reduce((largest, current) => {
-          return current.amount > largest.amount ? current : largest;
-        }, searchData[0])
-      : null;
+  // const largestExpense =
+  //   searchData.length > 0
+  //     ? searchData.reduce((largest, current) => {
+  //         return current.amount > largest.amount ? current : largest;
+  //       }, searchData[0])
+  //     : null;
 
   //Average expense
-  const averageExpense =
-    searchData.length > 0 ? totalSpent / searchData.length : 0;
+  // const averageExpense =
+  //   searchData.length > 0 ? totalSpent / searchData.length : 0;
 
    //Frequent expense
     const frequentCat ={};
@@ -584,7 +584,7 @@ const Dashboard = () => {
             {
               label: "Budget Spent",
               value: budget ? fmt(budgetSpent) : "--",
-              sub: budget ? "Current budget period" : "No active budget",
+              sub: budget ? "Current budget period" : budgetStatus,
               color: budget ? "#f59e0b" : "#6b7280",
             },
             {
