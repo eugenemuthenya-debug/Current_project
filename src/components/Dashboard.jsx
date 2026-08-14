@@ -150,10 +150,10 @@ const Dashboard = () => {
          console.log("🔥 BUDGET ERROR:", error.response?.data || error.message)
 
         console.log("No budget found");
+        console.log("clearing budget cards")
         setbudgetStatus("EXPIRED")
         setLatestLimit(0);
-        setBudget(null);
-
+        setBudget(null);        
         setBudgetSpent(0);
         setRemaining(0);
       }

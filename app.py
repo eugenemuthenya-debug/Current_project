@@ -657,6 +657,7 @@ def get_budget_summary():
         end_date
         FROM budget_table
         WHERE user_id = %s
+        AND status = 'ACTIVE'
         AND  start_date <=%s AND end_date >=%s
         LIMIT 1
         """
