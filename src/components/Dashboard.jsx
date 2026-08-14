@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import api from "../api/axiosInstance";
 import Tutorialmodel from "./Tutorialmodel";
 import CategoryPieChart from "./CategoryPiechart";
 import MonthlyTrend from "./MonthlyTrendChart";
+import { useLocation } from "react-router-dom";
 
 
 const CAT_COLORS = {
@@ -74,6 +75,7 @@ const Dashboard = () => {
   const [showTutorial, setShowTutorial] = useState(false);
   const [loading, setLoading] = useState("");
   const [error, setError] = useState("");
+  const location = useLocation()
 
   const [latestLimit, setLatestLimit] = useState(0);
   const [budget, setBudget] = useState(null);
@@ -125,6 +127,44 @@ const Dashboard = () => {
   // searchTerm stores every letter as the user types when using search tab.
 
   // our get function to fetch data from flask and display it on the dashboard
+  // useCallback->keep this function the same until one of the dependencies changes.
+  // our dependency array counts on selected month due to month selector. When the selector changes from one month to another then the function is called again.
+
+   const getBudgetSummary = useCallback( async () => {
+    console.log("getBudgetSummary CALLED")
+      try {
+        const response = await api.get(
+          `/get_budget_summary?month=${selectedMonth}`,
+        );
+
+        console.log("BUDGET RESPONSE:",response.data)
+
+        const summary = response.data;
+
+        setLatestLimit(Number(summary.amount_limit) || 0);
+        setBudget(summary);
+        setbudgetStatus("ACTIVE")
+        setRemaining(Number(summary.remaining));
+        setBudgetSpent(Number(summary.total_spent) || 0);
+      } catch (error) {
+         console.log("🔥 BUDGET ERROR:", error.response?.data || error.message)
+
+        console.log("No budget found");
+        setbudgetStatus("EXPIRED")
+        setLatestLimit(0);
+        setBudget(null);
+
+        setBudgetSpent(0);
+        setRemaining(0);
+      }
+    },[selectedMonth])
+
+    // our use effect to be called after an expense has been added from add expense
+    useEffect(()=>{
+      if (location.state?.expenseAdded){
+        getBudgetSummary()
+      }
+    },[location.state,getBudgetSummary])
 
   // useEffect-->
   useEffect(() => {
@@ -171,29 +211,7 @@ const Dashboard = () => {
       }
     };
 
-    const getBudgetSummary = async () => {
-      try {
-        const response = await api.get(
-          `/get_budget_summary?month=${selectedMonth}`,
-        );
-
-        const summary = response.data;
-
-        setLatestLimit(Number(summary.amount_limit) || 0);
-        setBudget(summary);
-        setbudgetStatus("ACTIVE")
-        setRemaining(Number(summary.remaining));
-        setBudgetSpent(summary.total_spent);
-      } catch (error) {
-        console.log("No budget found");
-        setbudgetStatus("EXPIRED")
-        setLatestLimit(0);
-        setBudget(null);
-
-        setBudgetSpent(0);
-        setRemaining(0);
-      }
-    };
+   
 
     // get all time summary
     const getAllTimeSummary = async ()=>{
@@ -225,7 +243,7 @@ const Dashboard = () => {
 
     if (view === "month"){
       getData();
-      getBudgetSummary();
+      // getBudgetSummary();
     } else {
       getAllTimeSummary()
       getMonthlyHistory()

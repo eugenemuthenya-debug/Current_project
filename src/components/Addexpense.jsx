@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import api from '../api/axiosInstance';
+import { useNavigate } from 'react-router-dom';
 
 // Common spending categories for the quick-pick chips
 // this are predefined,they will be used later
@@ -32,6 +33,7 @@ const Addexpense = () => {
   const [error,       setError]       = useState("");
   const [loading,     setLoading]     = useState("");
   const [success,     setSuccess]     = useState("");
+  const navigate = useNavigate() 
   // const accessToken = localStorage.getItem("access_token");
 
   // ──  submit ─────────────────────────────────────────
@@ -50,6 +52,10 @@ const Addexpense = () => {
       setLoading("");
       setSuccess(response.data.message);
       setDescription(""); setAmount(""); setSpending("");
+      // after successful adding of expense we navigate to the dashboard with a true state
+      navigate("/dashboard",{
+        state:{expenseAdded:true},
+      })
     } catch (error) {
       setLoading("");
       setSuccess("");

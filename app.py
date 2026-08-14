@@ -697,8 +697,10 @@ def get_budget_summary():
         }), 200
     
     except Exception as e:
+        traceback.print_exc()
         print("Budget summary error:",str(e))
-        return jsonify({"error":"Something went wrong"}),500
+        return jsonify({"error":str(e)}),500
+        # return jsonify({"error":"Something went wrong"}),500
     finally:
         connection.close()
 
