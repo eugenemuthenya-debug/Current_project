@@ -718,6 +718,7 @@ def get_all_time_summary():
     connection,cursor= get_db(dict_cursor=True)
     try:
         # COALESCE means if we can't get what we need or there is no data return 0
+        
         # 1.total spent
         sql='''
         SELECT COALESCE(SUM(amount),0) AS all_time_spent
@@ -732,7 +733,7 @@ def get_all_time_summary():
         total_spent=float(spent["all_time_spent"])
 
 
-        # 2. total transactions
+        # 2. total number of transactions
         sql = '''
         SELECT COUNT(expense_id) AS transaction_count
         FROM expense_table

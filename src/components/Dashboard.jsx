@@ -6,7 +6,6 @@ import CategoryPieChart from "./CategoryPiechart";
 import MonthlyTrend from "./MonthlyTrendChart";
 import { useLocation } from "react-router-dom";
 
-
 const CAT_COLORS = {
   Rent: "#185FA5",
   Groceries: "#3B6D11",
@@ -75,7 +74,7 @@ const Dashboard = () => {
   const [showTutorial, setShowTutorial] = useState(false);
   const [loading, setLoading] = useState("");
   const [error, setError] = useState("");
-  const location = useLocation()
+  const location = useLocation();
 
   const [latestLimit, setLatestLimit] = useState(0);
   const [budget, setBudget] = useState(null);
@@ -111,18 +110,18 @@ const Dashboard = () => {
   const [spentData, setSpentData] = useState([]);
   const [view, setView] = useState("month");
   const [searchTerm, setSearchTerm] = useState("");
-  const [budgetStatus,setbudgetStatus] = useState("ACTIVE");
-  const [allTimeSummary,setAllTimeSummary] = useState(null)
-  const [monthlyHistory,setMonthlyHistory] = useState([])
+  const [budgetStatus, setbudgetStatus] = useState("NO_BUDGET");
+  const [allTimeSummary, setAllTimeSummary] = useState(null);
+  const [monthlyHistory, setMonthlyHistory] = useState([]);
 
   // banner: this detects change in state
   // true-->shows our update banner
   // false-->hides our update banner
   // we set it to local storage so tht it doesn't show every time the page refreshes.
   // the return is used to check if we have stored that this update was seen before preventing to re render
-  const [updateBanner,setUpdateBanner] = useState(()=>{
-    return localStorage.getItem("pesaWaziUpdateV1_1") !== "seen"
-  })
+  const [updateBanner, setUpdateBanner] = useState(() => {
+    return localStorage.getItem("pesaWaziUpdateV1_1") !== "seen";
+  });
   // view stored month.
   // searchTerm stores every letter as the user types when using search tab.
 
@@ -130,41 +129,41 @@ const Dashboard = () => {
   // useCallback->keep this function the same until one of the dependencies changes.
   // our dependency array counts on selected month due to month selector. When the selector changes from one month to another then the function is called again.
 
-   const getBudgetSummary = useCallback( async () => {
-    console.log("getBudgetSummary CALLED")
-      try {
-        const response = await api.get(
-          `/get_budget_summary?month=${selectedMonth}`,
-        );
+  const getBudgetSummary = useCallback(async () => {
+    // console.log("getBudgetSummary CALLED")
+    try {
+      const response = await api.get(
+        `/get_budget_summary?month=${selectedMonth}`,
+      );
 
-        console.log("BUDGET RESPONSE:",response.data)
+      console.log("BUDGET RESPONSE:",response.data)
 
-        const summary = response.data;
+      const summary = response.data;
 
-        setLatestLimit(Number(summary.amount_limit) || 0);
-        setBudget(summary);
-        setbudgetStatus("ACTIVE")
-        setRemaining(Number(summary.remaining));
-        setBudgetSpent(Number(summary.total_spent) || 0);
-      } catch (error) {
-         console.log("🔥 BUDGET ERROR:", error.response?.data || error.message)
+      setLatestLimit(Number(summary.amount_limit) || 0);
+      setBudget(summary);
+      setbudgetStatus("ACTIVE");
+      setRemaining(Number(summary.remaining));
+      setBudgetSpent(Number(summary.total_spent) || 0);
+    } catch (error) {
+      console.log("🔥 BUDGET ERROR:", error.response?.data || error.message);
 
-        console.log("No budget found");
-        console.log("clearing budget cards")
-        setbudgetStatus("EXPIRED")
-        setLatestLimit(0);
-        setBudget(null);        
-        setBudgetSpent(0);
-        setRemaining(0);
-      }
-    },[selectedMonth])
+      console.log("No budget found");
+      // console.log("clearing budget cards")
+      setbudgetStatus("NO_BUDGET");
+      setLatestLimit(0);
+      setBudget(null);
+      setBudgetSpent(0);
+      setRemaining(0);
+    }
+  }, [selectedMonth]);
 
-    // our use effect to be called after an expense has been added from add expense
-    useEffect(()=>{
-      if (location.state?.expenseAdded){
-        getBudgetSummary()
-      }
-    },[location.state,getBudgetSummary])
+  // our use effect to be called after an expense has been added from add expense
+  useEffect(() => {
+    if (location.state?.expenseAdded) {
+      getBudgetSummary();
+    }
+  }, [location.state, getBudgetSummary]);
 
   // useEffect-->
   useEffect(() => {
@@ -211,44 +210,40 @@ const Dashboard = () => {
       }
     };
 
-   
-
     // get all time summary
-    const getAllTimeSummary = async ()=>{
-      try{
-        const response = await api.get('/get_all_time_summary')
-        setAllTimeSummary(response.data)
-      } catch (error){
-        console.log("No all time data")
-        setAllTimeSummary(null)
+    const getAllTimeSummary = async () => {
+      try {
+        const response = await api.get("/get_all_time_summary");
+        setAllTimeSummary(response.data);
+      } catch (error) {
+        console.log("No all time data");
+        setAllTimeSummary(null);
       }
-    } 
+    };
 
-    const getMonthlyHistory = async ()=>{
-      try{
-        const response = await api.get("/get_monthly_spending")
-        
-        setMonthlyHistory(response.data)
+    const getMonthlyHistory = async () => {
+      try {
+        const response = await api.get("/get_monthly_spending");
 
-      } catch(error){
-        console.error("Failed to load monthly history", error)
-        setMonthlyHistory([])
-
+        setMonthlyHistory(response.data);
+      } catch (error) {
+        console.error("Failed to load monthly history", error);
+        setMonthlyHistory([]);
       }
-    }
+    };
     // call the function
 
     // error handle
     // we introduce the if else statement for uniformity and prevent unnecessary calling of endpoints.
 
-    if (view === "month"){
+    if (view === "month") {
       getData();
-      // getBudgetSummary();
+      getBudgetSummary();
     } else {
-      getAllTimeSummary()
-      getMonthlyHistory()
+      getAllTimeSummary();
+      getMonthlyHistory();
     }
-  }, [selectedMonth, view]);
+  }, [selectedMonth, view,getBudgetSummary]);
 
   // since we created our view state,we will be able to use to filter our data based on the view month selected by user
 
@@ -316,60 +311,61 @@ const Dashboard = () => {
   // const averageExpense =
   //   searchData.length > 0 ? totalSpent / searchData.length : 0;
 
-   //Frequent expense
-    const frequentCat ={};
-    searchData.forEach(({spending})=>{
-      frequentCat[spending]=
-      (frequentCat[spending] || 0) + 1
-    })
-    let mostFrequent=null;
-    Object.entries(frequentCat).forEach(([category,count])=>{
-      if(!mostFrequent) {
-        mostFrequent = {
-          category,count
-        };
-      }
-      else if (count > mostFrequent.count) {
-        mostFrequent = {
-          category,count
-        };
-      }
-    });
+  //Frequent expense
+  const frequentCat = {};
+  searchData.forEach(({ spending }) => {
+    frequentCat[spending] = (frequentCat[spending] || 0) + 1;
+  });
+  let mostFrequent = null;
+  Object.entries(frequentCat).forEach(([category, count]) => {
+    if (!mostFrequent) {
+      mostFrequent = {
+        category,
+        count,
+      };
+    } else if (count > mostFrequent.count) {
+      mostFrequent = {
+        category,
+        count,
+      };
+    }
+  });
 
-    // Highest spending Day
-    const dailySpending={}
-    searchData.forEach(({date,amount})=>{
-      const day = new Date(date).toISOString().split("T")[0]
-      // since our database stores date in full we have to convert it into (2026-07-22)
-      dailySpending[day]=(dailySpending[day] || 0) + amount
-    })
-    let highestDay=null;
-     Object.entries(dailySpending).forEach(([day,total])=>{
-      if(!highestDay){
-        highestDay={
-          day,total
-        }
-      }else if(total > highestDay.total){
-        highestDay={
-          day,total
-        }
-      }
-     })
-    // Object.entries(highestDay).forEach(([day,total])=>{
-    //   if(!highestDay) {
-    //     highestDay={
-    //       day,total
-    //     }
-    //   }
-    //   else if(total > highestDay.total){
-    //     highestDay={
-    //       day,total
-    //     }
-    //   }
-    // })
-    
+  // Highest spending Day
+  const dailySpending = {};
+  searchData.forEach(({ date, amount }) => {
+    const day = new Date(date).toISOString().split("T")[0];
+    // since our database stores date in full we have to convert it into (2026-07-22)
+    dailySpending[day] = (dailySpending[day] || 0) + amount;
+  });
+  let highestDay = null;
+  Object.entries(dailySpending).forEach(([day, total]) => {
+    if (!highestDay) {
+      highestDay = {
+        day,
+        total,
+      };
+    } else if (total > highestDay.total) {
+      highestDay = {
+        day,
+        total,
+      };
+    }
+  });
+  // Object.entries(highestDay).forEach(([day,total])=>{
+  //   if(!highestDay) {
+  //     highestDay={
+  //       day,total
+  //     }
+  //   }
+  //   else if(total > highestDay.total){
+  //     highestDay={
+  //       day,total
+  //     }
+  //   }
+  // })
 
-    // console.log("Your totals are:",highestDay)
+  // console.log("Your totals are:",highestDay)
   // largest=stores the largest transaction so far.It starts with the first one.
   // current=new expenses added are thrown into the loop and compared,if the current is larger than the largest,then replace largest.
   //
@@ -385,7 +381,7 @@ const Dashboard = () => {
   searchData.forEach(({ spending, amount }) => {
     catTotals[spending] = (catTotals[spending] || 0) + amount;
   });
-  
+
   const catList = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
   const maxCat = catList[0]?.[1] || 1;
   const recent = searchData.slice(0, 6);
@@ -466,7 +462,7 @@ const Dashboard = () => {
               </button>
             </div> */}
             {/* We wrapped our selector in a view block and it is set ,if the user clicks (this month)-->the selector is displayed,(All time)-->the selector disappears */}
-            {view === "month"  && (
+            {view === "month" && (
               <div style={S.monthSelector}>
                 <button style={S.monthButton} onClick={goToPreviousMonth}>
                   ◀
@@ -477,7 +473,7 @@ const Dashboard = () => {
                   ▶
                 </button>
               </div>
-            ) }
+            )}
             <input
               type="text"
               placeholder="🔍 Search transactions..."
@@ -497,351 +493,77 @@ const Dashboard = () => {
         {/* <div>
           <h2>{largestExpense.amount}</h2>
         </div> */}
-        {view === 'month' ?(
+        {view === "month" ? (
           <>
-          {latestLimit > 0 && percentUsed >= 80 && percentUsed < 100 && (
-          <div
-            style={{
-              background: "#3d2d00",
-              color: "#facc15",
-              padding: "14px",
-              borderRadius: "10px",
-              marginBottom: "16px",
-              border: "1px solid #ca8a04 ",
-              fontWeight: "500",
-            }}
-          >
-            ⚠️ You have used {Math.round(percentUsed)}% of your current budget.
-            Spend carefully!
-          </div>
-        )}
-
-        {latestLimit > 0 && percentUsed >= 100 && (
-          <div
-            style={{
-              background: "#3b0d0d",
-              color: "#f87171",
-              padding: "14px",
-              borderRadius: "10px",
-              marginBottom: "16px",
-              border: "1px solid #dc2626",
-              fontWeight: "600",
-            }}
-          >
-            🚨 Current Budget exceeded! You've spent KSh{" "}
-            {budgetSpent.toLocaleString()} out of KSh{" "}
-            {latestLimit.toLocaleString()}.
-          </div>
-        )}
-
-        {/* our update banner */}
-        {updateBanner &&(
-          <div style={S.updateBanner}>
-            <div>
-              <div style={S.updateTitle}>
-               🎉 What's new in Pesa Wazi
-              </div>
-
-              <div style={S.updateText}>
-                We've changed the look of the All Time page,and made it easier to understand and manage your finances.
-                 <br/>
-                 <br/>
-                 • 🔍 Search your transactions
-                 <br/>
-                 • 📊 All time spending analytics
-                 <br/>
-                 • 📆 Monthly spending history
-              </div>
-            </div>
-
-            <button style={S.updateButton} onClick={()=>{
-              localStorage.setItem("pesaWaziUpdateV1_1", "seen")
-              setUpdateBanner(false)}}>Got it</button>
-              {/* so when user clicks the button, it is saved in localstorage that this update was seen for this version. Hide the banner as well */}
-
-          </div>
-        )}
-
-        {/* metric cards */}
-        <div
-          style={S.metricsGrid}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-4px)";
-            e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = "none";
-          }}
-        >
-          {[
-            {
-              label: "Spent this month",
-              value: fmt(totalSpent),
-              sub: `${filtered.length} transactions`,
-              color: "#f87171",
-            },
-            {
-              label: "Current Budget",
-              value: fmt(latestLimit),
-              sub: budget
-                ? `${new Date(budget.start_date).toLocaleDateString("en-GB", {
-                    day: "numeric",
-                    month: "short",
-                  })} → ${new Date(budget.end_date).toLocaleDateString(
-                    "en-GB",
-                    {
-                      day: "numeric",
-                      month: "short",
-                    },
-                  )}`
-                : "No active budget",
-              color: "#e2e8f0",
-            },
-
-            {
-              label: "Budget Spent",
-              value: budget ? fmt(budgetSpent) : "--",
-              sub: budget ? "Current budget period" : budgetStatus,
-              color: budget ? "#f59e0b" : "#6b7280",
-            },
-            {
-              label: "Remaining",
-              value: fmt(remaining),
-              sub: "available",
-              color: remaining >= 0 ? "#4ade80" : "#f87171",
-              border:
-                percentUsed >= 100
-                  ? "#dc2626"
-                  : percentUsed >= 80
-                    ? "#facc15"
-                    : "#1f2535",
-            },
-            {
-              label: "Categories",
-              value: catList.length,
-              sub: "spending areas",
-              color: "#e2e8f0",
-            },
-          ].map(({ label, value, sub, color, border }) => (
-            <div
-              key={label}
-              style={{
-                ...S.metricCard,
-                border: `1px solid ${border || "#1f2535"}`,
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-4px)";
-                e.currentTarget.style.boxShadow =
-                  "0 10px 25px rgba(0,0,0,0.25)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "none";
-              }}
-            >
-              <div style={S.metricLabel}>{label}</div>
-              <div style={{ ...S.metricValue, color }}>{value}</div>
-              <div style={S.metricSub}>{sub}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* our pie chart */}
-        <div style={S.grid2}>
-          <div style={S.card}>
-            <div style={S.cardTitle}>Spending By Category</div>
-
-            <CategoryPieChart data={catList} />
-          </div>
-
-          <div style={S.card}>
-            <div style={S.cardTitle}>Monthly Spending Trend</div>
-
-            <MonthlyTrend data={trendData} />
-          </div>
-        </div>
-
-        {/* recent transactions */}
-        <div
-          style={S.card}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-4px)";
-            e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = "none";
-          }}
-        >
-          <div style={S.cardTitle}>Recent transactions</div>
-          {recent.length === 0 ? (
-            <p style={{ color: "#6b7280", fontSize: "13px" }}>
-              No transactions for this period.
-            </p>
-          ) : (
-            recent.map((item, index) => (
-              <div
-                key={index}
-                style={
-                  index === recent.length - 1
-                    ? { ...S.txnRow, borderBottom: "none" }
-                    : S.txnRow
-                }
-              >
-                <div>
-                  <div style={S.txnName}>{item.spending}</div>
-                  {/* same format as your original: new Date().toLocaleDateString() */}
-                  <div style={S.txnDescription}>
-                    {item.description || "No description"}
-                  </div>
-                  <div style={S.txnDate}>
-                    {new Date(item.date).toLocaleDateString()}
-                  </div>
-                </div>
-                <div style={S.txnAmt}>-{item.amount.toLocaleString()}</div>
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* charts row */}
-        <div style={S.grid2}>
-          <div
-            style={S.card}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-4px)";
-              e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "none";
-            }}
-          >
-            <div style={S.cardTitle}>Spending by category</div>
-            {catList.map(([cat, amt]) => (
-              <SpendingBar key={cat} cat={cat} amount={amt} max={maxCat} />
-            ))}
-          </div>
-          <div
-            style={S.card}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-4px)";
-              e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "none";
-            }}
-          >
-            <div style={S.cardTitle}>Current Budget progress</div>
-            {budget && (
+            {latestLimit > 0 && percentUsed >= 80 && percentUsed < 100 && (
               <div
                 style={{
-                  color: "#9ca3af",
-                  fontSize: "13px",
-                  marginBottom: "12px",
+                  background: "#3d2d00",
+                  color: "#facc15",
+                  padding: "14px",
+                  borderRadius: "10px",
+                  marginBottom: "16px",
+                  border: "1px solid #ca8a04 ",
+                  fontWeight: "500",
                 }}
               >
-                {new Date(budget.start_date).toLocaleDateString("en-GB", {
-                  day: "numeric",
-                  month: "short",
-                })}
-                {" → "}
-                {new Date(budget.end_date).toLocaleDateString("en-GB", {
-                  day: "numeric",
-                  month: "short",
-                })}
+                ⚠️ You have used {Math.round(percentUsed)}% of your current
+                budget. Spend carefully!
               </div>
-
-              // progress bar for budget
             )}
 
-            <div style={S.progressTrack}>
+            {latestLimit > 0 && percentUsed >= 100 && (
               <div
                 style={{
-                  ...S.progressFill,
-                  width: `${percentUsed}%`,
-                  background:
-                    percentUsed >= 100
-                      ? "#ef4444"
-                      : percentUsed >= 80
-                        ? "#f59e0b"
-                        : "#22c55e",
+                  background: "#3b0d0d",
+                  color: "#f87171",
+                  padding: "14px",
+                  borderRadius: "10px",
+                  marginBottom: "16px",
+                  border: "1px solid #dc2626",
+                  fontWeight: "600",
                 }}
-              ></div>
-            </div>
-          </div>
-        </div></>
-        
-        //All time dashboard 
-        ):(
-          <>
-          <div style={S.sectionTitle}>
-            Lifetime Financial Overview</div>
+              >
+                🚨 Current Budget exceeded! You've spent KSh{" "}
+                {budgetSpent.toLocaleString()} out of KSh{" "}
+                {latestLimit.toLocaleString()}.
+              </div>
+            )}
 
-            <p>A summary of your spending since you started using Pesa Wazi.</p>
-          {/* metric cards */}
-        <div
-          style={S.metricsGrid}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-4px)";
-            e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = "none";
-          }}
-        >
-          {[
-            {
-              label: "lifetime spending",
-              value: allTimeSummary
-              ? fmt(allTimeSummary.total_spent)
-              :"--",
-              sub: "Since you joined Pesa Wazi",
-              color: "#60a5fa",
-            },
-            // total transactions
-            {
-              label: "Total Transaction",
-              value: allTimeSummary
-              ? allTimeSummary.total_transactions
-              :"--",
-              // sub:`${allTimeSummary.transaction_count}transactions`,
-              color: "#e2e8f0",
-            },
-            // largest expense
-            {
-              label: "Biggest Expense",
-              value: allTimeSummary ? fmt(allTimeSummary.largest_expense.amount) : "--",
-              // sub: allTimeSummary. ? allTimeSummary.largest_expense.description : "",
-              color: "#f59e0b" 
-            },
+            {/* our update banner */}
+            {updateBanner && (
+              <div style={S.updateBanner}>
+                <div>
+                  <div style={S.updateTitle}>🎉 What's new in Pesa Wazi</div>
 
-            // Average expense
-            {
-              label: "Average Expense",
-              value: allTimeSummary  ? fmt(allTimeSummary.average_expense) :"--",
-              sub: "",
-              color: "#68b741",               
-            },
+                  <div style={S.updateText}>
+                    We've changed the look of the All Time page,and made it
+                    easier to understand and manage your finances.
+                    <br />
+                    <br />
+                    • 🔍 Search your transactions
+                    <br />
+                    • 📊 All time spending analytics
+                    <br />• 📆 Monthly spending history
+                  </div>
+                </div>
 
-            // Frequent category
-            {
-              label: "Favourite category",
-              value: allTimeSummary ? allTimeSummary.frequent_category.spending :"--",
-              sub: allTimeSummary
-              ?`Used in ${allTimeSummary.frequent_category.frequent_cat}transactions`:"",
-              color: "#e2e8f0",
-            },
-          ].map(({ label, value, sub, color, border }) => (
+                <button
+                  style={S.updateButton}
+                  onClick={() => {
+                    localStorage.setItem("pesaWaziUpdateV1_1", "seen");
+                    setUpdateBanner(false);
+                  }}
+                >
+                  Got it
+                </button>
+                {/* so when user clicks the button, it is saved in localstorage that this update was seen for this version. Hide the banner as well */}
+              </div>
+            )}
+
+            {/* metric cards */}
             <div
-              key={label}
-              style={{
-                ...S.metricCard,
-                border: `1px solid ${border || "#1f2535"}`,
-              }}
+              style={S.metricsGrid}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = "translateY(-4px)";
                 e.currentTarget.style.boxShadow =
@@ -852,48 +574,347 @@ const Dashboard = () => {
                 e.currentTarget.style.boxShadow = "none";
               }}
             >
-              <div style={S.metricLabel}>{label}</div>
-              <div style={{ ...S.metricValue, color }}>{value}</div>
-              <div style={S.metricSub}>{sub}</div>
+              {[
+                {
+                  label: "Spent this month",
+                  value: fmt(totalSpent),
+                  sub: `${filtered.length} transactions`,
+                  color: "#f87171",
+                },
+                {
+                  label: "Current Budget",
+                  value: budgetStatus === "ACTIVE" ? fmt(latestLimit) : "--",
+                  sub: budget
+                    ? `${new Date(budget.start_date).toLocaleDateString(
+                        "en-GB",
+                        {
+                          day: "numeric",
+                          month: "short",
+                        },
+                      )} → ${new Date(budget.end_date).toLocaleDateString(
+                        "en-GB",
+                        {
+                          day: "numeric",
+                          month: "short",
+                        },
+                      )}`
+                    : "No active budget",
+                  color: "#e2e8f0",
+                },
+
+                {
+                  label: "Budget Spent",
+                  value: budgetStatus === "ACTIVE" ? fmt(budgetSpent) : "--",
+                  sub:
+                    budgetStatus === "ACTIVE"
+                      ? "Current budget period"
+                      : "No active budget",
+                  color: budget ? "#f59e0b" : "#6b7280",
+                },
+                {
+                  label: "Remaining",
+                  value: budgetStatus === "ACTIVE" ? fmt(remaining) : "--",
+                  sub:
+                    budgetStatus === "ACTIVE"
+                      ? "available"
+                      : "No active budget",
+                  color:
+                    budgetStatus === "ACTIVE"
+                      ? remaining >= 0
+                        ? "#4ade80"
+                        : "#f87171"
+                      : "#6b7280",
+                  border:
+                    budgetStatus === "ACTIVE"
+                      ? percentUsed >= 100
+                        ? "#dc2626"
+                        : percentUsed >= 80
+                          ? "#facc15"
+                          : "#1f2535"
+                      : "#1f2535",
+                },
+                {
+                  label: "Categories",
+                  value: catList.length,
+                  sub: "spending areas",
+                  color: "#e2e8f0",
+                },
+              ].map(({ label, value, sub, color, border }) => (
+                <div
+                  key={label}
+                  style={{
+                    ...S.metricCard,
+                    border: `1px solid ${border || "#1f2535"}`,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-4px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 10px 25px rgba(0,0,0,0.25)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
+                >
+                  <div style={S.metricLabel}>{label}</div>
+                  <div style={{ ...S.metricValue, color }}>{value}</div>
+                  <div style={S.metricSub}>{sub}</div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {/* Table of spending */}
-        <h3 style={S.sectiontitle}> Monthly Spending History</h3>
+            {/* our pie chart */}
+            <div style={S.grid2}>
+              <div style={S.card}>
+                <div style={S.cardTitle}>Spending By Category</div>
 
-        <table style={S.table}>
-          <thead style={S.tableHead}>
-            <tr>
-              <th style={S.tableHeaderCell}>Month</th>
-              <th style={S.tableHeaderCell}>Total Spent</th>
-            </tr>
-          </thead>
+                <CategoryPieChart data={catList} />
+              </div>
 
-          <tbody>
-            {monthlyHistory.map((item)=>(
-              <tr key={item.month}
-               onMouseEnter={(e) =>
-                (e.currentTarget.style.background = "#1e293b")
-            }
-            onMouseLeave={(e) =>
-                (e.currentTarget.style.background = "transparent")
-            }>
-                <td style={S.tableCell}>{item.month}</td>
-                <td style={S.tableCell}>{fmt(item.total_spent)}</td>
-              </tr>
-            ))}
-          </tbody>
+              <div style={S.card}>
+                <div style={S.cardTitle}>Monthly Spending Trend</div>
 
-        </table>
-      
+                <MonthlyTrend data={trendData} />
+              </div>
+            </div>
 
-          
-            </>
+            {/* recent transactions */}
+            <div
+              style={S.card}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-4px)";
+                e.currentTarget.style.boxShadow =
+                  "0 10px 25px rgba(0,0,0,0.25)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "none";
+              }}
+            >
+              <div style={S.cardTitle}>Recent transactions</div>
+              {recent.length === 0 ? (
+                <p style={{ color: "#6b7280", fontSize: "13px" }}>
+                  No transactions for this period.
+                </p>
+              ) : (
+                recent.map((item, index) => (
+                  <div
+                    key={index}
+                    style={
+                      index === recent.length - 1
+                        ? { ...S.txnRow, borderBottom: "none" }
+                        : S.txnRow
+                    }
+                  >
+                    <div>
+                      <div style={S.txnName}>{item.spending}</div>
+                      {/* same format as your original: new Date().toLocaleDateString() */}
+                      <div style={S.txnDescription}>
+                        {item.description || "No description"}
+                      </div>
+                      <div style={S.txnDate}>
+                        {new Date(item.date).toLocaleDateString()}
+                      </div>
+                    </div>
+                    <div style={S.txnAmt}>-{item.amount.toLocaleString()}</div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* charts row */}
+            <div style={S.grid2}>
+              <div
+                style={S.card}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 10px 25px rgba(0,0,0,0.25)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "none";
+                }}
+              >
+                <div style={S.cardTitle}>Spending by category</div>
+                {catList.map(([cat, amt]) => (
+                  <SpendingBar key={cat} cat={cat} amount={amt} max={maxCat} />
+                ))}
+              </div>
+              <div
+                style={S.card}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 10px 25px rgba(0,0,0,0.25)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "none";
+                }}
+              >
+                <div style={S.cardTitle}>Current Budget progress</div>
+                {budget && (
+                  <div
+                    style={{
+                      color: "#9ca3af",
+                      fontSize: "13px",
+                      marginBottom: "12px",
+                    }}
+                  >
+                    {new Date(budget.start_date).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "short",
+                    })}
+                    {" → "}
+                    {new Date(budget.end_date).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "short",
+                    })}
+                  </div>
+
+                  // progress bar for budget
+                )}
+
+                <div style={S.progressTrack}>
+                  <div
+                    style={{
+                      ...S.progressFill,
+                      width: `${percentUsed}%`,
+                      background:
+                        percentUsed >= 100
+                          ? "#ef4444"
+                          : percentUsed >= 80
+                            ? "#f59e0b"
+                            : "#22c55e",
+                    }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          //All time dashboard
+          <>
+            <div style={S.sectionTitle}>Lifetime Financial Overview</div>
+
+            <p>A summary of your spending since you started using Pesa Wazi.</p>
+            {/* metric cards */}
+            <div
+              style={S.metricsGrid}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-4px)";
+                e.currentTarget.style.boxShadow =
+                  "0 10px 25px rgba(0,0,0,0.25)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "none";
+              }}
+            >
+              {[
+                {
+                  label: "lifetime spending",
+                  value: allTimeSummary
+                    ? fmt(allTimeSummary.total_spent)
+                    : "--",
+                  sub: "Since you joined Pesa Wazi",
+                  color: "#60a5fa",
+                },
+                // total transactions
+                {
+                  label: "Total Transaction",
+                  value: allTimeSummary
+                    ? allTimeSummary.total_transactions
+                    : "--",
+                  // sub:`${allTimeSummary.transaction_count}transactions`,
+                  color: "#e2e8f0",
+                },
+                // largest expense
+                {
+                  label: "Biggest Expense",
+                  value: allTimeSummary
+                    ? fmt(allTimeSummary.largest_expense.amount)
+                    : "--",
+                  // sub: allTimeSummary. ? allTimeSummary.largest_expense.description : "",
+                  color: "#f59e0b",
+                },
+
+                // Average expense
+                {
+                  label: "Average Expense",
+                  value: allTimeSummary
+                    ? fmt(allTimeSummary.average_expense)
+                    : "--",
+                  sub: "",
+                  color: "#68b741",
+                },
+
+                // Frequent category
+                {
+                  label: "Favourite category",
+                  value: allTimeSummary
+                    ? allTimeSummary.frequent_category.spending
+                    : "--",
+                  sub: allTimeSummary
+                    ? `Used in ${allTimeSummary.frequent_category.frequent_cat}transactions`
+                    : "",
+                  color: "#e2e8f0",
+                },
+              ].map(({ label, value, sub, color, border }) => (
+                <div
+                  key={label}
+                  style={{
+                    ...S.metricCard,
+                    border: `1px solid ${border || "#1f2535"}`,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-4px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 10px 25px rgba(0,0,0,0.25)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
+                >
+                  <div style={S.metricLabel}>{label}</div>
+                  <div style={{ ...S.metricValue, color }}>{value}</div>
+                  <div style={S.metricSub}>{sub}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Table of spending */}
+            <h3 style={S.sectiontitle}> Monthly Spending History</h3>
+
+            <table style={S.table}>
+              <thead style={S.tableHead}>
+                <tr>
+                  <th style={S.tableHeaderCell}>Month</th>
+                  <th style={S.tableHeaderCell}>Total Spent</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {monthlyHistory.map((item) => (
+                  <tr
+                    key={item.month}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.background = "#1e293b")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.background = "transparent")
+                    }
+                  >
+                    <td style={S.tableCell}>{item.month}</td>
+                    <td style={S.tableCell}>{fmt(item.total_spent)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
         )}
-
-
-          
       </div>
     </div>
   );
@@ -911,20 +932,20 @@ const S = {
     marginBottom: "25px",
     borderRadius: "14px",
     background: "#111827",
-    border: "1px solid #1f2937"
+    border: "1px solid #1f2937",
   },
-  updateTitle:{
+  updateTitle: {
     color: "#2dd12d",
     fontSize: "17px",
     fontWeight: "600",
-    marginBottom: "6px"
+    marginBottom: "6px",
   },
-  updateText:{
+  updateText: {
     color: "#94a3b8",
     fontSize: "14px",
     lineHeight: "1.5",
   },
-  updateButton:{
+  updateButton: {
     padding: "9px 16px",
     borderRadius: "8px",
     border: "none",
@@ -936,40 +957,40 @@ const S = {
     whitespace: "nowrap",
   },
 
-  tableContainer :{
+  tableContainer: {
     marginTop: "30px",
-    background:"#0f172a",
+    background: "#0f172a",
     borderRadius: "16px",
     padding: "20px",
     border: "1px solid #1f2937",
     overflow: "auto",
   },
 
-  table:{
+  table: {
     width: "100%",
-    borderCollapse:"collapse",
+    borderCollapse: "collapse",
     color: "#e5e7eb",
   },
-  tableHeaderCell:{
-    padding : "14px",
-    textAlign: "left"
+  tableHeaderCell: {
+    padding: "14px",
+    textAlign: "left",
   },
-  tableCell:{
+  tableCell: {
     padding: "14px",
     fontSize: "14px",
     color: "#d1d5db",
   },
-  sectiontitle:{
+  sectiontitle: {
     marginTop: "35px",
     marginBottom: "15px",
-    color : "#f8fafc",
+    color: "#f8fafc",
     fontSize: "22px",
     fontWeight: "600",
   },
-  tableHead:{
+  tableHead: {
     background: "#111827",
   },
-  noBudgetProgress:{
+  noBudgetProgress: {
     height: "18px",
     borderRadius: "999px",
     background: "#374151",
@@ -978,8 +999,7 @@ const S = {
     alignItems: "center",
     color: "#9ca3af",
     fontSize: "13px",
-    fontWeight: "600"
-
+    fontWeight: "600",
   },
   insightDate: {
     marginTop: "10px",

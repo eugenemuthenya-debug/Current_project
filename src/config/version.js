@@ -1,4 +1,4 @@
-export const APP_VERSION="v1.1.0"
+export const APP_VERSION="v1.1.1"
 // Previous versions
 // v1.0.0-->Where it all started.(vMwanzo)
 // v1.0.1-->our first patch update.(vOptimized)

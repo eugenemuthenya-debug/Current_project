@@ -1,3 +1,5 @@
+import { APP_VERSION } from "../../config/version";
+
 const Footer = () => {
   return (
     <footer className="Footer-section" style={S.footer}>
@@ -17,7 +19,7 @@ const Footer = () => {
           Screenshots
         </a>
       </div>
-      <p style={S.version}>Current Version v1.0.1 by EugeneM</p>
+      <p style={S.version}>Current Version {APP_VERSION} by EugeneM</p>
 
       <p style={S.copy}>
         © {new Date().getFullYear()} Pesa Wazi. Built with ❤️ in Kenya.
