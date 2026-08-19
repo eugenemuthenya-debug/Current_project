@@ -1,12 +1,12 @@
 const Screenshots = () => {
   const previews = [
     {
-      title: "Signup",
+      title: "Sign Up",
       Description: "Create your free account.",
       image: "/images/Register.png",
     },
     {
-      title: "Sign in",
+      title: "Sign In",
       Description: "Log in if you already have a free account.",
       image: "/images/Signin.png",
     },

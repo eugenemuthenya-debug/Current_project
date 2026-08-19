@@ -13,7 +13,7 @@ const Signin = () => {
   const [error,    setError]    = useState("")
   const [showPassword,setShowPassword]=useState(false)
   
-  // false-->means everytime the field password stays hidden
+  // false-->means every time the field password stays hidden
   // navigate is used to navigate from one page to another with or without data
   const navigate = useNavigate()
 
@@ -33,28 +33,38 @@ const Signin = () => {
   // e.preventDefault()-->it prevents the fields from refreshing─────────────────────────────── 
   const submit = async (e) => {
     e.preventDefault()
+
+    // console.log("Submit running")
+    // console.log("default prevented:",e.defaultPrevented)
     setError("")
-    setLoading("Please wait while we sign you in...")
+    setLoading("Connecting to Pesa Wazi... The server may take a little longer to start.Thanks for your patience.")
+
     try {
       const response = await api.post("/signin",{ email: email, password: password })
         
       setLoading("")
+      console.log("Login success:",response.data)
+      
       // when we use json.stringify()-we convert our data into a string from an object since localstorage accepts a string
       // when we want to use it we convert it back to an object from local storage-we use json.parse()
       if (response.data.access_token) {
         localStorage.setItem("access_token", response.data.access_token)
         localStorage.setItem("refresh_token",response.data.refresh_token)
         localStorage.setItem("user", JSON.stringify(response.data.user))
+        setEmail("")
+        setPassword("")
         setTimeout(() => navigate("/dashboard"), 2000);
       }
       console.log("our response",response)
     } catch (error) {
       setLoading("")
+      console.log("Login failed:",error.response?.data)
       if (error.response && error.response.data) {
         setError(error.response.data.error || "Invalid login credentials")
       } else {
         setError("Network error. Please check your connection")
       }
+      // console.log("Catch finished")
     }
   }
 
@@ -163,7 +173,7 @@ const Signin = () => {
                 />
 
                 {/* eye icon/show password icon */}
-                {/* cursor:"pointer"-->chnages the cursor to a pointer when hovering over the show password icon  */}
+                {/* cursor:"pointer"-->changes the cursor to a pointer when hovering over the show password icon  */}
 
                 {/* <span
                   className="input-group-text"
@@ -210,7 +220,7 @@ const Signin = () => {
 
           <p style={S.footer}>
             Don't have an account?{" "}
-            <Link to="/" className="signin-link">Sign up</Link>
+            <Link to="/" className="signin-link">Sign Up</Link>
           </p>
 
         </div>

@@ -205,7 +205,7 @@ const Verifyemail=  ()=>{
             marginLeft:"6px"
            }}
            >
-           Sign in
+           Sign In
          </span>
         </p>
 
@@ -221,7 +221,7 @@ const Verifyemail=  ()=>{
             marginLeft:"6px"
            }}
            >
-            Back to sign up
+            Back to Sign Up
           </span>
         </p>
         </div>

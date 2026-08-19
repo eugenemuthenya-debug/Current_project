@@ -267,7 +267,7 @@ def resendVerification():
 
 
 
-# -------our gmail message using resend-------------
+# -------our gmail message using Brevo-------------
 def send_verification_email(email,otp,username):
     send_smtp_email=sib_api_v3_sdk.SendSmtpEmail(
         sender={

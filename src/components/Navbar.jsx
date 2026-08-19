@@ -83,8 +83,8 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Link to="/signin"  className="nav-link-item">Sign in</Link>
-              <Link to="/signup"  className="nav-link-item cta">Sign up</Link>
+              <Link to="/signin"  className="nav-link-item">Sign In</Link>
+              <Link to="/signup"  className="nav-link-item cta">Sign Up</Link>
               <Link to={"/"} className='nav-link-item'>About Pesa Wazi</Link>
             </>
           )}
@@ -117,8 +117,8 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Link to="/signin"  className="nav-link-item" style={N.mobileLink} onClick={() => setMenuOpen(false)}>Sign in</Link>
-              <Link to="/signup"  className="nav-link-item cta" style={N.mobileLink} onClick={() => setMenuOpen(false)}>Sign up</Link>
+              <Link to="/signin"  className="nav-link-item" style={N.mobileLink} onClick={() => setMenuOpen(false)}>Sign In</Link>
+              <Link to="/signup"  className="nav-link-item cta" style={N.mobileLink} onClick={() => setMenuOpen(false)}>Sign Up</Link>
               <Link to={"/"} className='nav-link-item' style={N.mobileLink} onClick={()=>setMenuOpen(false)}>About Pesa Wazi</Link>
             </>
           )}

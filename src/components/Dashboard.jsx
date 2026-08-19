@@ -136,7 +136,7 @@ const Dashboard = () => {
         `/get_budget_summary?month=${selectedMonth}`,
       );
 
-      console.log("BUDGET RESPONSE:",response.data)
+      // console.log("BUDGET RESPONSE:",response.data)
 
       const summary = response.data;
 
@@ -146,7 +146,7 @@ const Dashboard = () => {
       setRemaining(Number(summary.remaining));
       setBudgetSpent(Number(summary.total_spent) || 0);
     } catch (error) {
-      console.log("🔥 BUDGET ERROR:", error.response?.data || error.message);
+      // console.log("🔥 BUDGET ERROR:", error.response?.data || error.message);
 
       console.log("No budget found");
       // console.log("clearing budget cards")
@@ -754,6 +754,7 @@ const Dashboard = () => {
                 }}
               >
                 <div style={S.cardTitle}>Current Budget progress</div>
+                <div style={S.metricCard}>Ksh {remaining} remaining</div>
                 {budget && (
                   <div
                     style={{
@@ -772,6 +773,10 @@ const Dashboard = () => {
                       month: "short",
                     })}
                   </div>
+
+                  
+                  
+
 
                   // progress bar for budget
                 )}

@@ -12,7 +12,7 @@ What we have created so far
 -Add expense
 -Add budget
 -Used charts and budget limit warning
-
+-------------------------------------------------------------------
 
 `Version 1.0.1( previous version) codename=Optimized`
 (Minor updates)
@@ -30,7 +30,7 @@ What we have created so far
 
 ###fixed
 -Dashboard polish
-
+-----------------------------------------------------------
 
 `#Version 1.1.0(Current version) codename=Growth`
 1.Search transactions[DONE]
@@ -59,6 +59,27 @@ FILTERS: dropdown
  -Build the Create New Budget flow from the modal.
  -Make the dashboard feel complete when there isn't an active budget.[]
  -If time allows, begin redesigning the All Time view into a true financial summary instead of reusing the monthly dashboard.[DONE]
+
+ [PATCH]
+`#Version 1.1.1(Current version)`
+-Modified the dashboard to render everything correctly.
+-Budget metrics load when the Dashboard opens.
+-Budget metrics refresh after adding an expense.
+-Expired budgets aren't treated as active.
+-BudgetStatus properly represents the budget state.
+-Empty budget cards no longer misleadingly show KSh 0.
+-Month changes refresh the budget summary correctly.
+
+[PATCH2]
+-Clear console,users shouldn't be able see any credentials or tokens[DONE]
+-Sign up(email verification code isn't been sent)-Email api[DONE]-had to authorize an unknown ip address.
+-Sign in(display actual error if credentials are wrong or invalid)[DONE]
+-Sign in navigation(add a message to display to the user that this may take a while)[How to keep backend warm].[DONE]
+-Add a 404 page in case user tries unknown routes,then add catch all with a page not found display+ link home
+-Hero dashboard ss placeholder either remove or add it.
+ 
+
+----------------------------------------------------------------------------------------
 
 
 `Version 2.0`

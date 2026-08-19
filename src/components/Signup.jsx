@@ -201,7 +201,7 @@ const Signup = () => {
           </div>
 
           <h2 style={S.title}>Create your account</h2>
-          <p style={S.subtitle}>First time user? Sign up below</p>
+          <p style={S.subtitle}>First time user? Sign Up below</p>
 
           {/* Status banners */}
           {loading && (

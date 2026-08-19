@@ -27,7 +27,9 @@ const api = axios.create({
         async (error)=>{
 
             const originalRequest=error.config
-            if (error.response?.status=== 401  && !originalRequest._retry){
+            if (error.response?.status=== 401  && !originalRequest._retry && 
+                !originalRequest.url.includes("/signin")
+            ){
                 originalRequest._retry= true
                 console.log("Access token expired")
 
@@ -42,8 +44,8 @@ const api = axios.create({
                      const newAccessToken=response.data.access_token
                      localStorage.setItem("access_token",newAccessToken)
 
-                      console.log("New Token received")
-                      console.log(response.data)
+                    //   console.log("New Token received")
+                    //   console.log(response.data)
 
                      originalRequest.headers.Authorization= `Bearer ${newAccessToken}`
                      return api(originalRequest)
