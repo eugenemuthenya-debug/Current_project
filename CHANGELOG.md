@@ -75,8 +75,8 @@ FILTERS: dropdown
 -Sign up(email verification code isn't been sent)-Email api[DONE]-had to authorize an unknown ip address.
 -Sign in(display actual error if credentials are wrong or invalid)[DONE]
 -Sign in navigation(add a message to display to the user that this may take a while)[How to keep backend warm].[DONE]
--Add a 404 page in case user tries unknown routes,then add catch all with a page not found display+ link home
--Hero dashboard ss placeholder either remove or add it.
+-Add a 404 page in case user tries unknown routes,then add catch all with a page not found display+ link home[DONE] we used navigate(-1), goes back to last step in browsers navigation history.
+-Hero dashboard ss placeholder either remove or add it.[DONE.added]
  
 
 ----------------------------------------------------------------------------------------

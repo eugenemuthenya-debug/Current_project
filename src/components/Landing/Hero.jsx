@@ -22,7 +22,8 @@ const Hero= ()=>{
 
             <div className="Hero-right" style={S.right}>
                 <div style={S.placeholder}>
-                    Dashboard Screenshot
+                    {/* Dashboard Screenshot */}
+                    <img alt="Dashboard Screenshot" src="/images/Dashboard.png" style={S.previewImage}/>
                 </div>
 
             </div>
@@ -38,7 +39,6 @@ const Hero= ()=>{
         </section>
     )
 }
-
 
 const S = {
   hero: {
@@ -112,6 +112,15 @@ const S = {
     justifyContent: "center",
     alignItems: "center",
     color: "#9ca3af",
+  },
+
+  previewImage: {
+    width: "100%",
+    height: "260px",
+    objectFit: "cover",
+    marginBottom: "20px",
+    marginTop:"20px",
+    transition: "0.3s",
   },
 };
 export default Hero

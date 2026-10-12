@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { APP_VERSION } from "../config/version"
 
 const S ={
     overlay:{
@@ -220,7 +221,7 @@ const Tutorialmodel=({username,onClose})=>{
                         fontSize:"13px",
                         color:"#6b7280"
                     }}>
-                         🚧 This is Version 1.0.
+                         🚧 This is Version {APP_VERSION}.
 
                          Thank you for trying Finance Tracker.
                          Your feedback and suggestions will help shape future updates.

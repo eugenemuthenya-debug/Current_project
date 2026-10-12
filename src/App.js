@@ -10,6 +10,7 @@ import Dashboard from './components/Dashboard';
 import Verifyemail from './components/Verifyemail';
 import ProtectedRoute from './components/protectedRoute';
 import LandingPage from './Pages/Landingpage';
+import NotFound from './components/PageNotFound';
 
 
 
@@ -46,6 +47,8 @@ function App() {
             <Dashboard/>
             </ProtectedRoute>
         }/>
+
+        <Route path='*' element={<NotFound/>}/>
 
         
         
